@@ -577,6 +577,14 @@ footer{background:var(--navy-900);color:var(--w-64);padding:50px 0 20px}
 .sin-datos{grid-column:1/-1;padding:28px;text-align:center;color:var(--slate)}
 </style>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <script>
+    /* Configuración del sitio. La clave identifica a este portal ante el CRM
+       (dice a qué cartera entran las consultas); no es un secreto y se rota
+       desde el sistema. Ver README. */
+    window.MOLINS_API = 'https://crm-molins-app-production.up.railway.app';
+    window.MOLINS_CARTERA = 'propia';
+    window.MOLINS_CLAVE = 'sk_b-JCLrP70kIfjbIAiqhszOb7T6ZX3F7n';
+  </script>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script>
   /* Anota cada mapa que se crea. El bloque móvil del final los necesita para
@@ -637,11 +645,11 @@ footer{background:var(--navy-900);color:var(--w-64);padding:50px 0 20px}
 <!-- HERO -->
 <section class="hero">
   <div class="hero-bg" aria-hidden="true">
-    <div class="hs" style="--i:0;background-image:url('fotos/hero/MOL-209940.jpg')"></div>
-    <div class="hs" style="--i:1;background-image:url('fotos/hero/MOL-204329.jpg')"></div>
-    <div class="hs" style="--i:2;background-image:url('fotos/hero/MOL-215232.jpg')"></div>
-    <div class="hs" style="--i:3;background-image:url('fotos/hero/MOL-213170.jpg')"></div>
-    <div class="hs" style="--i:4;background-image:url('fotos/hero/MOL-220887.jpg')"></div>
+    <div class="hs" style="--i:0;background-image:url('img/hero-MOL-209940.jpg')"></div>
+    <div class="hs" style="--i:1;background-image:url('img/hero-MOL-204329.jpg')"></div>
+    <div class="hs" style="--i:2;background-image:url('img/hero-MOL-215232.jpg')"></div>
+    <div class="hs" style="--i:3;background-image:url('img/hero-MOL-213170.jpg')"></div>
+    <div class="hs" style="--i:4;background-image:url('img/hero-MOL-220887.jpg')"></div>
   </div>
   <div class="wrap">
     <div class="hero-inner">
@@ -728,7 +736,7 @@ footer{background:var(--navy-900);color:var(--w-64);padding:50px 0 20px}
         </div>
       </div>
       <div class="aires-ph reveal">
-        <img src="fotos/MOL-213170-1.jpg" alt="Vista de la zona de San Lorenzo, Salta" loading="lazy" />
+        <img src="img/zona-san-lorenzo.jpg" alt="Vista de la zona de San Lorenzo, Salta" loading="lazy" />
         <div class="cap">Imagen de la zona de San Lorenzo, tomada de otra propiedad de la cartera: el lote marcado no es Aires. Las imágenes del emprendimiento se entregan en la consulta.</div>
       </div>
     </div>
@@ -1067,6 +1075,7 @@ var ZONA_ORDEN = ['Centro','El Encón · Rosario de Lerma','San Lorenzo','Vaquer
 var NFOTOS = {'MOL-208531':2};
 var TEL_WA = '5493874153669';
 
+function nombre(p){ return p.sinDireccion ? p.titulo : p.tipo + ' en ' + p.titulo; }
 function tidy(s){
   if(!s) return s;
   if(s === s.toUpperCase()) s = s.toLowerCase();
@@ -1086,7 +1095,8 @@ var PROPS = [];
 function desdeApi(x){
   var p = {};
   p.codigo = x.codigo;
-  p.direccion = x.direccion || x.titulo;
+  p.direccion = x.direccion || null;
+  p.sinDireccion = !x.direccion;  /* la ficha no muestra la calle: el título es 'Tipo en Barrio' */
   p.barrio = x.barrio || '';
   p.tipo = TIPO_LEGIBLE[x.tipo] || 'Propiedad';
   p.operacion = x.operacion === 'VENTA' ? 'Venta' : 'Alquiler';
@@ -1098,7 +1108,7 @@ function desdeApi(x){
   p.descripcion = x.descripcion || '';
   p.geo = x.geo || null;
   p.zona = ZONA_DE_BARRIO[p.barrio] || (p.barrio === 'Centro' ? 'Centro' : 'Otras zonas de Salta');
-  p.titulo = tidy(p.direccion);
+  p.titulo = p.sinDireccion ? x.titulo : tidy(p.direccion);
   p.nf = (x.fotos && x.fotos.length) || 0;
   p.tags = intencion(p);
   FOTOS[p.codigo] = (x.fotos || []).map(function(u){ return u.indexOf('http') === 0 ? u : API + u; });
@@ -1118,8 +1128,8 @@ cargar().then(arrancar).catch(function(e){
   if(window.console) console.warn('portal: no se pudo cargar', e);
 });
 
-function arrancar(lista){
-PROPS = lista;
+function arrancar(cargadas){
+PROPS = cargadas;
 
 /* ---------- formato ---------- */
 function num(n){ return Math.round(n).toLocaleString('es-AR'); }
@@ -1176,7 +1186,7 @@ function cardHtml(p){
   var cuota = cuotaRef(p);
   return '<article class="card reveal" data-cod="' + p.codigo + '" data-tags="' + p.tags.join(' ') + '" data-tipo="' + esc(p.tipo) + '" data-zona="' + esc(p.zona) + '" tabindex="0" role="button" aria-label="Ver ' + esc(p.titulo) + '">' +
     '<div class="ph">' +
-      '<img src="' + foto(p.codigo,1,true) + '" alt="' + esc(p.tipo + ' en ' + p.titulo + ', ' + p.zona) + '" loading="lazy" />' +
+      '<img src="' + foto(p.codigo,1,true) + '" alt="' + esc(nombre(p) + ', ' + p.zona) + '" loading="lazy" />' +
       '<span class="badge ' + st.c + '">' + st.t + '</span>' +
       '<span class="op">' + p.operacion + '</span>' +
       '<span class="cod">' + p.codigo + '</span>' +
@@ -1184,7 +1194,7 @@ function cardHtml(p){
     '<div class="body">' +
       '<span class="zona">' + IC.pin + esc(p.zona) + '</span>' +
       '<h3>' + esc(p.titulo) + '</h3>' +
-      '<p class="tipo">' + esc(p.tipo) + '</p>' +
+      (p.sinDireccion ? '' : '<p class="tipo">' + esc(p.tipo) + '</p>') +
       '<div class="specs">' + specsHtml(p) + '</div>' +
       '<div class="price"><span class="v">' + money(p.moneda, p.precio) + '</span>' +
         (p.operacion === 'Alquiler' ? ' <span class="per">por mes</span>' : '') +
@@ -1202,7 +1212,7 @@ var terrenos = PROPS.filter(function(p){ return p.tipo === 'Terreno'; });
 document.getElementById('gridLotes').innerHTML = terrenos.map(function(p){
   var cuota = cuotaRef(p);
   return '<article class="lote reveal" data-cod="' + p.codigo + '" tabindex="0" role="button" aria-label="Ver ' + esc(p.titulo) + '">' +
-    '<div class="ph"><img src="' + foto(p.codigo,1,true) + '" alt="Terreno en ' + esc(p.titulo) + ', ' + esc(p.zona) + '" loading="lazy" /></div>' +
+    '<div class="ph"><img src="' + foto(p.codigo,1,true) + '" alt="' + esc(nombre(p)) + ', ' + esc(p.zona) + '" loading="lazy" /></div>' +
     '<div class="bd">' +
       '<span class="zona">' + IC.pin + esc(p.zona) + '</span>' +
       '<h3>' + esc(p.titulo) + '</h3>' +
@@ -1394,6 +1404,7 @@ mImg.addEventListener('load', function(){ mImg.style.visibility = ''; });
 
 /* ---------- descripción, redactada con los datos de la ficha ---------- */
 function ubicFrase(p){
+  if(p.sinDireccion) return '';
   var t = p.titulo;
   if(/sin nombre/i.test(t)) return '';
   if(/\s(y|&)\s/i.test(t)) return 'en la esquina de ' + t;
