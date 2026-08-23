@@ -1182,9 +1182,33 @@ var IC = {
   flecha:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>',
   wa:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163a11.867 11.867 0 0 1-1.587-5.946C.16 5.335 5.495 0 12.05 0a11.817 11.817 0 0 1 8.413 3.488 11.824 11.824 0 0 1 3.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 0 1-5.688-1.448L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884a9.86 9.86 0 0 0 1.51 5.26l-.999 3.648 3.978-1.052z"/></svg>'
 };
+/* Código corto derivado del id de visitante (seis caracteres): va al final del mensaje de
+   WhatsApp entre corchetes y en el registro del clic, para cruzar el mensaje con el anuncio. */
+function codigoCorto(){
+  var v = (window.ATRIB && ATRIB.visitanteId) || '';
+  var h = 0; for(var i = 0; i < v.length; i++) h = (h * 31 + v.charCodeAt(i)) >>> 0;
+  var abc = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789', out = '';
+  for(var k = 0; k < 6; k++){ out += abc.charAt(h % abc.length); h = Math.floor(h / abc.length) + 7; }
+  return out;
+}
 function waLink(p){
-  var t = 'Hola, quiero consultar por ' + p.titulo + ' (' + p.codigo + ').';
+  var t = 'Hola, quiero consultar por ' + p.titulo + ' (' + p.codigo + ') [' + codigoCorto() + ']';
   return 'https://wa.me/' + TEL_WA + '?text=' + encodeURIComponent(t);
+}
+/* El clic se registra en el instante, antes de que exista el mensaje: mucha gente borra el texto. */
+function registrarClic(tipo, p){
+  try {
+    var a = window.ATRIB || {};
+    fetch(API + '/api/publico/clics', {
+      method: 'POST', keepalive: true,
+      headers: { 'Content-Type': 'application/json', 'x-sitio-clave': CLAVE_SITIO },
+      body: JSON.stringify({
+        tipo: tipo, codigo: codigoCorto(), visitanteId: a.visitanteId || null, propiedadCodigo: p ? p.codigo : null,
+        utm_source: a.utm_source || null, utm_medium: a.utm_medium || null, utm_campaign: a.utm_campaign || null, utm_content: a.utm_content || null,
+        referrer: a.referrer || null, pagina: location.href, idioma: 'es', dispositivo: window.innerWidth < 768 ? 'celular' : 'escritorio'
+      })
+    }).catch(function(){});
+  } catch(e) {}
 }
 function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
@@ -1772,7 +1796,7 @@ calc();
 /* ---------- atribución: de dónde vino esta visita ----------
    Se guarda al entrar (primer toque) y viaja con la consulta. Lo mismo que
    usa la web de Aires, para que el CRM compare campañas con una sola regla. */
-var ATRIB = (function(){
+window.ATRIB = (function(){
   var q = {}; try { new URLSearchParams(location.search).forEach(function(v,k){ q[k] = v; }); } catch(e){}
   var guardada = {};
   try { guardada = JSON.parse(sessionStorage.getItem('molins_atrib') || '{}'); } catch(e){}
@@ -1794,6 +1818,7 @@ var ATRIB = (function(){
   try { sessionStorage.setItem('molins_atrib', JSON.stringify(a)); } catch(e){}
   return a;
 })();
+var ATRIB = window.ATRIB;
 
 var formBtn = document.querySelector('#leadForm button[type="submit"]');
 document.getElementById('leadForm').addEventListener('submit', function(ev){
@@ -1821,6 +1846,7 @@ document.getElementById('leadForm').addEventListener('submit', function(ev){
     telefono: w.value.trim(),
     email: m.value.trim() || null,
     interes: interes,
+    propiedadCodigo: ctxProp ? ctxProp.codigo : null,
     mensaje: 'Busca: ' + busca + (ctxProp ? '. Consultó por la ficha ' + ctxProp.codigo + '.' : ''),
     canal: 'PORTAL',
     utm_source: ATRIB.utm_source, utm_medium: ATRIB.utm_medium, utm_campaign: ATRIB.utm_campaign,
@@ -1897,6 +1923,25 @@ document.getElementById('anio').textContent = new Date().getFullYear();
   if(PROPS.some(function(p){ return p.codigo === cod; })) abrir(cod);
   else urlFicha(null);
 })();
+
+
+/* Todo WhatsApp del sitio (barra, hero, pie, botón flotante, ficha) registra el clic y lleva el
+   código corto al final del texto. Delegado: sirve para los enlaces que se arman después. */
+document.addEventListener('click', function(ev){
+  var a = ev.target.closest('a[href^="https://wa.me"], a[href^="tel:"]');
+  if(!a) return;
+  var tel = a.getAttribute('href').indexOf('tel:') === 0;
+  var cod = a.closest('[data-cod]');
+  var p = cod ? PROPS.filter(function(x){ return x.codigo === cod.getAttribute('data-cod'); })[0] : (a.closest('#modal') ? actual : null);
+  registrarClic(tel ? 'llamar' : 'whatsapp', p || null);
+  if(!tel){
+    try {
+      var u = new URL(a.href), t = u.searchParams.get('text') || 'Hola, vi el sitio y quiero consultar.';
+      if(t.indexOf('[' + codigoCorto() + ']') < 0) u.searchParams.set('text', t + ' [' + codigoCorto() + ']');
+      a.href = u.toString();
+    } catch(e) {}
+  }
+});
 
 } /* arrancar */
 })();
