@@ -5,6 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Molins Negocios Inmobiliarios — Propiedades en Salta</title>
 <meta name="description" content="Casas, departamentos, locales, oficinas y terrenos en Salta. Cartera propia de Francisco Molins, corredor inmobiliario matriculado CUCIS MP 251. LPZ Grupo y Molins." />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2314233a'/%3E%3Ctext x='32' y='44' text-anchor='middle' font-family='Georgia,serif' font-size='36' font-weight='700' fill='%23fff'%3EM%3C/text%3E%3C/svg%3E" />
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Molins Negocios Inmobiliarios — Propiedades en Salta" />
+<meta property="og:description" content="Casas, departamentos, locales y terrenos en Salta. Cartera propia, atendida por un corredor matriculado." />
+<meta property="og:image" content="img/hero-MOL-204329.jpg" />
+<meta property="og:locale" content="es_AR" />
 <style>
 :root{
   /* azules derivados del CRM #2C4A6E */
@@ -74,7 +80,7 @@ h1,h2,h3,h4{font-family:var(--fd);font-weight:600;line-height:1.14;letter-spacin
 
 /* ---- topbar ---- */
 .topbar{background:var(--navy-900);color:var(--w-78);font-size:12.5px;position:relative;z-index:101}
-.topbar .wrap{display:flex;justify-content:space-between;align-items:center;height:40px;gap:16px;padding-left:160px}
+.topbar .wrap{display:flex;justify-content:space-between;align-items:center;height:40px;gap:16px}
 .topbar .tb-left{display:flex;align-items:center;gap:8px;min-width:0}
 .topbar .tb-left svg{width:14px;height:14px;color:var(--gold)}
 .topbar .tb-left b{color:var(--white);font-weight:600}
@@ -378,6 +384,7 @@ input[type=range]::-moz-range-thumb{width:19px;height:19px;border-radius:50%;bac
 .field input.err{border-color:var(--terra-600)}
 .form .btn{width:100%}
 .form .rea{font-size:12px;color:var(--muted);text-align:center;margin-top:11px}
+.form .rea.err{color:var(--terra-600);font-weight:600}
 .form-ok{display:none;text-align:center;padding:24px 6px}
 .form-ok.show{display:block}
 .form-ok .oi{width:56px;height:56px;border-radius:50%;background:var(--ok-50);display:grid;place-items:center;margin:0 auto 14px}
@@ -553,7 +560,7 @@ footer{background:var(--navy-900);color:var(--w-64);padding:50px 0 20px}
 @media(prefers-reduced-motion:reduce){
   *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
   .reveal{opacity:1;transform:none}
-  .hs{opacity:0}.hs:first-child{opacity:1}
+  .hs{opacity:0;display:none}.hs:first-child{opacity:1;display:block}
 }
 
 /* Qué se firma: cadena de tramos, no tarjetas */
@@ -576,13 +583,14 @@ footer{background:var(--navy-900);color:var(--w-64);padding:50px 0 20px}
 .field.trampa{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
 .sin-datos{grid-column:1/-1;padding:28px;text-align:center;color:var(--slate)}
 </style>
+<style>:root{--serif:var(--fd);--sans:var(--fs)}</style>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <script>
     /* Configuración del sitio. La clave identifica a este portal ante el CRM
        (dice a qué cartera entran las consultas); no es un secreto y se rota
        desde el sistema. Ver README. */
     window.MOLINS_API = 'https://crm-molins-app-production.up.railway.app';
-    window.MOLINS_CARTERA = 'propia';
+    window.MOLINS_CARTERA = 'propia,alquileres';
     window.MOLINS_CLAVE = 'sk_b-JCLrP70kIfjbIAiqhszOb7T6ZX3F7n';
   </script>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -876,7 +884,7 @@ footer{background:var(--navy-900);color:var(--w-64);padding:50px 0 20px}
           <p class="sub">Te contestamos por WhatsApp o por mail, como prefieras.</p>
           <div class="ctx" id="formCtx"></div>
           <form id="leadForm" novalidate>
-            <div class="field trampa" aria-hidden="true"><label for="fEmpresa">Empresa</label><input type="text" id="fEmpresa" name="empresa" tabindex="-1" autocomplete="off" /></div>
+            <div class="field trampa" aria-hidden="true"><label for="fEmpresa">Dejá este campo vacío</label><input type="text" id="fEmpresa" name="campo_vacio_bots" tabindex="-1" autocomplete="off" /></div>
             <div class="field"><label for="fNombre">Nombre</label><input type="text" id="fNombre" name="nombre" placeholder="Cómo te llamás" autocomplete="name" /></div>
             <div class="field"><label for="fWa">WhatsApp</label><input type="tel" id="fWa" name="whatsapp" placeholder="387 000 0000" autocomplete="tel" /></div>
             <div class="field"><label for="fMail">Email</label><input type="email" id="fMail" name="email" placeholder="tu@correo.com" autocomplete="email" /></div>
@@ -933,7 +941,7 @@ footer{background:var(--navy-900);color:var(--w-64);padding:50px 0 20px}
       <span>© <span id="anio">2026</span> LPZ Grupo y Molins — CUCIS MP 251</span>
       <span>Salta, Argentina</span>
     </div>
-    <div class="demo-flag">Sitio de demostración. Las propiedades, fotos y precios son los de la cartera real; la disponibilidad se confirma al consultar.</div>
+    <div class="demo-flag">Los precios y la disponibilidad son los cargados en el sistema al momento de la visita y se confirman al consultar.</div>
   </div>
 </footer>
 
@@ -1100,6 +1108,8 @@ function desdeApi(x){
   p.barrio = x.barrio || '';
   p.tipo = TIPO_LEGIBLE[x.tipo] || 'Propiedad';
   p.operacion = x.operacion === 'VENTA' ? 'Venta' : 'Alquiler';
+  p.temporario = x.operacion === 'ALQUILER_TEMPORARIO';
+  p.cocheras = x.cocheras || 0; p.ambientes = x.ambientes || 0; p.cubierta = x.supCubierta || 0; p.antiguedad = x.antiguedad; p.expensas = x.expensas || 0; p.caracteristicas = x.caracteristicas || [];
   p.moneda = x.moneda; p.precio = x.precio || 0;
   p.dorm = x.dormitorios || 0; p.banos = x.banos || 0; p.m2 = x.supTotal || 0;
   p.ficha = 0; p.cartera = x.cartera;
@@ -1122,10 +1132,17 @@ function cargar(){
     .then(function(r){ if(!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
     .then(function(j){ return (j.propiedades || []).map(desdeApi); });
 }
-cargar().then(arrancar).catch(function(e){
-  var g = document.getElementById('grid');
-  if(g) g.innerHTML = '<p class="sin-datos">En este momento no podemos mostrar las propiedades. Escribinos por WhatsApp y te pasamos lo que buscás.</p>';
+var SIN_API = false;
+document.getElementById('grid').innerHTML = '<p class="sin-datos" aria-live="polite">Cargando las propiedades…</p>';
+cargar().catch(function(e){
+  SIN_API = true;
   if(window.console) console.warn('portal: no se pudo cargar', e);
+  return [];
+}).then(function(lista){
+  try { arrancar(lista); }
+  catch(e){ if(window.console) console.error('portal: error al arrancar', e); }
+  if(SIN_API) document.getElementById('grid').innerHTML = '<p class="sin-datos">En este momento no podemos mostrar las propiedades. Escribinos por WhatsApp y te pasamos lo que buscás.</p>';
+  else if(!lista.length) document.getElementById('grid').innerHTML = '<p class="sin-datos">Por ahora no hay propiedades publicadas. Escribinos y te contamos qué está por salir.</p>';
 });
 
 function arrancar(cargadas){
@@ -1141,10 +1158,11 @@ function esFem(p){ return !!GEN_F[p.tipo]; }
 var ES_VIVIENDA = {'Casa':1, 'Departamento':1, 'Dúplex':1};
 
 function estadoTxt(p){
+  if(p.estado === 'reservada') return {t: esFem(p) ? 'Reservada' : 'Reservado', c:'taken'};
   if(p.operacion === 'Alquiler')
     return p.estado === 'alquilada'
       ? {t: esFem(p) ? 'Alquilada' : 'Alquilado', c:'taken'}
-      : {t:'En alquiler', c:'rent'};
+      : {t: p.temporario ? 'Alquiler temporario' : 'En alquiler', c:'rent'};
   return {t:'Disponible', c:''};
 }
 function cuotaRef(p){
@@ -1184,7 +1202,7 @@ var grid = document.getElementById('grid');
 function cardHtml(p){
   var st = estadoTxt(p);
   var cuota = cuotaRef(p);
-  return '<article class="card reveal" data-cod="' + p.codigo + '" data-tags="' + p.tags.join(' ') + '" data-tipo="' + esc(p.tipo) + '" data-zona="' + esc(p.zona) + '" tabindex="0" role="button" aria-label="Ver ' + esc(p.titulo) + '">' +
+  return '<article class="card reveal" data-cod="' + p.codigo + '" data-tags="' + p.tags.join(' ') + '" data-tipo="' + esc(p.tipo) + '" data-zona="' + esc(p.zona) + '" tabindex="0" role="button">' +
     '<div class="ph">' +
       '<img src="' + foto(p.codigo,1,true) + '" alt="' + esc(nombre(p) + ', ' + p.zona) + '" loading="lazy" />' +
       '<span class="badge ' + st.c + '">' + st.t + '</span>' +
@@ -1192,7 +1210,7 @@ function cardHtml(p){
       '<span class="cod">' + p.codigo + '</span>' +
     '</div>' +
     '<div class="body">' +
-      '<span class="zona">' + IC.pin + esc(p.zona) + '</span>' +
+      '<span class="zona">' + IC.pin + esc(p.barrio && p.barrio !== p.zona ? p.barrio + ' · ' + zonaCorta(p) : p.zona) + '</span>' +
       '<h3>' + esc(p.titulo) + '</h3>' +
       (p.sinDireccion ? '' : '<p class="tipo">' + esc(p.tipo) + '</p>') +
       '<div class="specs">' + specsHtml(p) + '</div>' +
@@ -1209,12 +1227,12 @@ grid.innerHTML = PROPS.map(cardHtml).join('');
 
 /* ---------- terrenos ---------- */
 var terrenos = PROPS.filter(function(p){ return p.tipo === 'Terreno'; });
-document.getElementById('gridLotes').innerHTML = terrenos.map(function(p){
+document.getElementById('gridLotes').innerHTML = !terrenos.length ? '<p class="sin-datos">Por ahora no hay terrenos publicados. Consultanos: suelen entrar lotes que se reservan antes de publicarse.</p>' : terrenos.map(function(p){
   var cuota = cuotaRef(p);
-  return '<article class="lote reveal" data-cod="' + p.codigo + '" tabindex="0" role="button" aria-label="Ver ' + esc(p.titulo) + '">' +
+  return '<article class="lote reveal" data-cod="' + p.codigo + '" tabindex="0" role="button">' +
     '<div class="ph"><img src="' + foto(p.codigo,1,true) + '" alt="' + esc(nombre(p)) + ', ' + esc(p.zona) + '" loading="lazy" /></div>' +
     '<div class="bd">' +
-      '<span class="zona">' + IC.pin + esc(p.zona) + '</span>' +
+      '<span class="zona">' + IC.pin + esc(p.barrio && p.barrio !== p.zona ? p.barrio + ' · ' + zonaCorta(p) : p.zona) + '</span>' +
       '<h3>' + esc(p.titulo) + '</h3>' +
       '<span class="v">' + money(p.moneda, p.precio) + '</span>' +
       (cuota ? '<span class="mo">' + IC.cuota + 'referencia ' + cuota + '/mes</span>' : '') +
@@ -1372,7 +1390,7 @@ function verFoto(n){
   if(!total){ mImg.removeAttribute('src'); mImg.alt = 'Sin fotos todavía'; mCount.textContent = ''; return; }
   fotoN = ((n - 1) % total + total) % total + 1;
   mImg.src = foto(actual.codigo, fotoN, false);
-  mImg.alt = actual.tipo + ' en ' + actual.titulo + ' — foto ' + fotoN + ' de ' + total;
+  mImg.alt = nombre(actual) + ' — foto ' + fotoN + ' de ' + total;
   mCount.textContent = fotoN + ' de ' + total;
   mThumbs.querySelectorAll('button').forEach(function(b){
     b.classList.toggle('on', +b.getAttribute('data-n') === fotoN);
@@ -1536,7 +1554,7 @@ function abrir(cod){
   flag.className = 'm-flag ' + st.c;
 
   /* encabezado */
-  document.getElementById('mZona').innerHTML = IC.pin + ' ' + esc(p.zona);
+  document.getElementById('mZona').innerHTML = IC.pin + ' ' + esc(p.barrio && p.barrio !== p.zona ? p.barrio + ' · ' + zonaCorta(p) : p.zona);
   document.getElementById('mTitulo').textContent = p.titulo;
   document.getElementById('mTags').innerHTML =
     '<span class="op">' + esc(p.operacion) + '</span>' +
@@ -1579,9 +1597,15 @@ function abrir(cod){
 
   /* características */
   var car = fila('Tipo de propiedad', esc(p.tipo)) + fila('Operación', esc(p.operacion));
-  car += fila('Superficie', p.m2 > 0 ? num(p.m2) + ' m²' : 'A confirmar con el plano');
+  car += fila('Superficie', p.m2 > 0 ? num(p.m2) + ' m²' + (p.cubierta > 0 ? ' (' + num(p.cubierta) + ' m² cubiertos)' : '') : 'A confirmar con el plano');
+  if(p.ambientes > 0) car += fila('Ambientes', p.ambientes);
   if(p.dorm > 0) car += fila('Dormitorios', p.dorm);
   if(p.banos > 0) car += fila('Baños', p.banos);
+  if(p.cocheras > 0) car += fila('Cocheras', p.cocheras);
+  if(p.antiguedad != null) car += fila('Antigüedad', p.antiguedad === 0 ? 'A estrenar' : p.antiguedad + ' años');
+  if(p.expensas > 0) car += fila('Expensas', '$ ' + num(p.expensas) + ' por mes');
+  if(p.caracteristicas && p.caracteristicas.length) car += fila('Tiene', esc(p.caracteristicas.join(', ')));
+  if(p.barrio) car += fila('Barrio', esc(p.barrio));
   car += fila('Zona', esc(p.zona));
   car += fila('Estado', esc(st.t));
   document.getElementById('mCarac').innerHTML = car;
@@ -1698,6 +1722,7 @@ function bindAbrir(root){
   });
   root.addEventListener('keydown', function(ev){
     if(ev.key !== 'Enter' && ev.key !== ' ') return;
+    if(ev.target.closest('a, button')) return;  /* el WhatsApp de la tarjeta se activa solo, con su propio Enter */
     var c = ev.target.closest('[data-cod]'); if(!c) return;
     ev.preventDefault(); abrir(c.getAttribute('data-cod'));
   });
@@ -1778,9 +1803,15 @@ document.getElementById('leadForm').addEventListener('submit', function(ev){
     if(f === m && f.value.trim() && f.value.indexOf('@') < 0) bad = true;
     if(f === m && !f.value.trim()) bad = false;  /* el mail es opcional: con el WhatsApp alcanza */
     f.classList.toggle('err', bad);
+    f.setAttribute('aria-invalid', bad ? 'true' : 'false');
     if(bad) ok = false;
   });
-  if(!ok){ return; }
+  var rea0 = document.querySelector('#leadForm .rea');
+  if(!ok){
+    if(rea0){ rea0.textContent = 'Falta tu nombre o tu WhatsApp, o el correo no tiene forma de correo.'; rea0.classList.add('err'); rea0.setAttribute('role','alert'); }
+    return;
+  }
+  if(rea0){ rea0.textContent = 'Sin compromiso. Usamos tus datos solo para responderte.'; rea0.classList.remove('err'); rea0.removeAttribute('role'); }
   var busca = document.getElementById('fBusca').value;
   var interes = ctxProp ? (ctxProp.codigo + ' · ' + ctxProp.tipo + ' en ' + ctxProp.zona) : (ctxEl.classList.contains('show') ? 'Aires de San Lorenzo' : busca);
   var cuerpo = {
@@ -1795,7 +1826,6 @@ document.getElementById('leadForm').addEventListener('submit', function(ev){
     referrer: ATRIB.referrer, paginaEntrada: ATRIB.paginaEntrada, paginaConsulta: location.href,
     dispositivo: window.innerWidth < 768 ? 'celular' : 'escritorio',
     idioma: 'es', visitanteId: ATRIB.visitanteId,
-    codigo: ctxProp ? ctxProp.codigo : null,
     empresa: document.getElementById('fEmpresa').value
   };
   if(formBtn){ formBtn.disabled = true; formBtn.textContent = 'Enviando'; }
@@ -1804,14 +1834,16 @@ document.getElementById('leadForm').addEventListener('submit', function(ev){
     headers: { 'Content-Type': 'application/json', 'x-sitio-clave': CLAVE_SITIO },
     body: JSON.stringify(cuerpo)
   }).then(function(r){
-    if(!r.ok) throw new Error('HTTP ' + r.status);
+    if(!r.ok) return r.json().catch(function(){ return {}; }).then(function(b){ var e = new Error('HTTP ' + r.status); e.status = r.status; e.cuerpo = b; throw e; });
     document.getElementById('okMsg').textContent = 'Gracias, ' + cuerpo.nombre.split(' ')[0] + '. Te escribimos al ' + cuerpo.telefono + ' a la brevedad.';
     document.getElementById('formFields').style.display = 'none';
     document.getElementById('formOk').classList.add('show');
   }).catch(function(e){
     if(formBtn){ formBtn.disabled = false; formBtn.textContent = 'Enviar la consulta'; }
-    var t = 'No pudimos enviar la consulta. Escribinos directo por WhatsApp y te respondemos igual.';
-    var rea = document.querySelector('#leadForm .rea'); if(rea){ rea.textContent = t; rea.classList.add('err'); }
+    var t = e.status === 429 ? 'Recibimos varias consultas seguidas desde tu conexión. Esperá unos minutos o escribinos por WhatsApp.'
+      : e.status === 400 ? 'Revisá los datos: ' + (e.cuerpo && e.cuerpo.error ? e.cuerpo.error : 'falta algo o tiene un formato raro') + '.'
+      : 'No pudimos enviar la consulta. Escribinos directo por WhatsApp y te respondemos igual.';
+    var rea = document.querySelector('#leadForm .rea'); if(rea){ rea.textContent = t; rea.classList.add('err'); rea.setAttribute('role','alert'); }
     if(window.console) console.warn('portal: consulta no enviada', e);
   });
 });
