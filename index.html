@@ -44,7 +44,7 @@
   --e:cubic-bezier(.22,.61,.36,1);
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
+html{scroll-behavior:smooth;scroll-padding-top:76px}
 body{font-family:var(--fs);color:var(--ink);background:var(--bg);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
 img{max-width:100%;display:block}
 a{color:inherit;text-decoration:none}
@@ -554,6 +554,48 @@ footer{background:var(--navy-900);color:var(--w-64);padding:50px 0 20px}
   .m-thumbs button{width:66px;height:50px}
 }
 
+/* ---- feedback de pulsado: todo lo clickeable responde al tap ---- */
+.btn,.card,.lote,.wa,.wafab,.chip,.zona-fila,.faq-q,.modal-close,.m-prev,.m-next,.m-thumbs button,.navlinks a,.burger{-webkit-tap-highlight-color:transparent}
+.btn:active,.wa:active,.wafab:active,.chip:active,.faq-q:active,.modal-close:active,.m-prev:active,.m-next:active,.burger:active{transform:scale(.97);transition-duration:.14s}
+.card:active,.lote:active{transform:scale(.985);transition-duration:.14s}
+/* ---- escalonado de grillas: cada hijo entra 40 ms después del anterior ---- */
+[data-fx-stagger] > .reveal{transition-delay:calc(var(--n, 0) * 40ms)}
+/* ---- barra de lectura ---- */
+.progreso{position:fixed;top:0;left:0;height:2px;width:100%;z-index:600;background:var(--terra-500);transform:scaleX(0);transform-origin:left;pointer-events:none}
+/* ---- entrada del titular del hero: una sola vez, escalonada ---- */
+.hero-inner > *{opacity:0;transform:translateY(12px);animation:heroIn .7s var(--e) forwards}
+.hero-inner > :nth-child(2){animation-delay:.12s}.hero-inner > :nth-child(3){animation-delay:.22s}.hero-inner > :nth-child(4){animation-delay:.32s}.hero-inner > :nth-child(5){animation-delay:.42s}
+@keyframes heroIn{to{opacity:1;transform:none}}
+/* ---- propiedad destacada en el hero ---- */
+.hero-dest{position:absolute;right:clamp(16px,4vw,56px);bottom:clamp(22px,5vh,56px);width:min(340px,calc(100% - 32px));background:var(--w-90);color:var(--ink);border-radius:var(--r);box-shadow:var(--sh-lg);overflow:hidden;text-decoration:none;display:none;opacity:0;transform:translateY(14px);transition:opacity .6s var(--e),transform .6s var(--e)}
+.hero-dest.on{opacity:1;transform:none}
+.hero-dest .hd-ph{aspect-ratio:16/10;background:var(--navy-800) center/cover no-repeat;transition:background-image .3s}
+.hero-dest .hd-bd{padding:12px 14px 14px;display:grid;gap:3px}
+.hero-dest .hd-k{font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--terra-600);font-weight:700}
+.hero-dest .hd-t{font-family:var(--fd);font-size:18px;line-height:1.2;font-weight:600}
+.hero-dest .hd-p{font-size:15px;font-weight:700;margin-top:2px}
+.hero-dest .hd-z{font-size:12.5px;color:var(--slate)}
+.hero-dest .hd-dots{position:absolute;top:10px;right:12px;display:flex;gap:4px}.hero-dest .hd-dots i{width:5px;height:5px;border-radius:99px;background:var(--w-64)}.hero-dest .hd-dots i.on{background:var(--white)}
+@media(min-width:980px){.hero-dest{display:block}.hero-inner{max-width:min(680px,calc(100% - 400px))}}
+/* ---- buscar por zona desde el hero ---- */
+.hero-zona{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+.hero-zona a{font-size:12.5px;font-weight:600;color:var(--white);background:var(--w-12, rgba(255,255,255,.12));border:1px solid var(--w-24, rgba(255,255,255,.24));border-radius:99px;padding:6px 12px;text-decoration:none;transition:background-color .2s var(--e),transform .2s var(--e)}
+.hero-zona a:hover{background:var(--w-24, rgba(255,255,255,.24))}
+/* ---- preguntas frecuentes ---- */
+.faq{max-width:820px}
+.faq details{border-top:1px solid var(--line)}
+.faq details:last-child{border-bottom:1px solid var(--line)}
+.faq summary{list-style:none;cursor:pointer;padding:18px 44px 18px 0;position:relative;font-family:var(--fd);font-size:19px;font-weight:600;line-height:1.25}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"";position:absolute;right:6px;top:50%;width:10px;height:10px;border-right:2px solid var(--terra-600);border-bottom:2px solid var(--terra-600);transform:translateY(-70%) rotate(45deg);transition:transform .3s var(--e)}
+.faq details[open] summary::after{transform:translateY(-30%) rotate(225deg)}
+.faq .faq-a{padding:0 0 20px;color:var(--slate);line-height:1.65;max-width:64ch}
+.faq details[open] .faq-a{animation:faqIn .35s var(--e)}
+@keyframes faqIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+/* ---- transición tarjeta → ficha ---- */
+::view-transition-old(foto-ficha),::view-transition-new(foto-ficha){animation-duration:.45s}
+@media(prefers-reduced-motion:reduce){.hero-inner > *{animation:none;opacity:1;transform:none}.progreso{display:none}[data-fx-stagger] > .reveal{transition-delay:0s}}
+
 /* ---- reveal ---- */
 .reveal{opacity:0;transform:translateY(20px);transition:opacity .7s var(--e),transform .7s var(--e)}
 .reveal.in{opacity:1;transform:none}
@@ -652,6 +694,7 @@ footer{background:var(--navy-900);color:var(--w-64);padding:50px 0 20px}
 <main id="top">
 
 <!-- HERO -->
+<div class="progreso" id="progreso" aria-hidden="true"></div>
 <section class="hero">
   <div class="hero-bg" aria-hidden="true">
     <div class="hs" style="--i:0;background-image:url('img/hero-MOL-209940.jpg')"></div>
@@ -674,7 +717,18 @@ footer{background:var(--navy-900);color:var(--w-64);padding:50px 0 20px}
         </a>
         <a href="#aires" class="btn btn-ghost">Aires de San Lorenzo</a>
       </div>
+      <nav class="hero-zona" id="heroZona" aria-label="Buscar por zona"></nav>
     </div>
+    <a class="hero-dest" id="heroDest" href="#propiedades" aria-label="Propiedad destacada">
+      <div class="hd-ph" id="hdPh"></div>
+      <div class="hd-dots" id="hdDots" aria-hidden="true"></div>
+      <div class="hd-bd">
+        <span class="hd-k" id="hdK">Destacada</span>
+        <span class="hd-t" id="hdT"></span>
+        <span class="hd-p" id="hdP"></span>
+        <span class="hd-z" id="hdZ"></span>
+      </div>
+    </a>
   </div>
 </section>
 
@@ -704,9 +758,10 @@ footer{background:var(--navy-900);color:var(--w-64);padding:50px 0 20px}
       </div>
     </div>
 
-    <div class="grid-props" id="grid"></div>
+    <div class="grid-props" id="grid" data-fx-stagger></div>
     <p class="empty" id="empty">No hay propiedades con esa combinación. Probá con otro filtro o escribinos y la buscamos.</p>
   </div>
+    <p class="reveal" style="margin-top:28px;font-size:14px;color:var(--slate)">¿No está lo que buscás? <a href="#contacto" id="alertaZona" style="color:var(--terra-600);font-weight:600">Avisame cuando entre algo en mi zona</a>. Dejás el WhatsApp y te escribimos cuando aparezca, antes de publicarlo.</p>
 </section>
 
 <!-- TERRENOS -->
@@ -717,7 +772,7 @@ footer{background:var(--navy-900);color:var(--w-64);padding:50px 0 20px}
       <h2>Terrenos y lotes</h2>
       <p class="lead">Es lo que mejor se acomoda a un plan de pago: se aparta con una entrega y el saldo se conversa. Los valores de cuota que ves abajo son una referencia con 30% de anticipo en 60 meses.</p>
     </div>
-    <div class="grid-lotes reveal" id="gridLotes"></div>
+    <div class="grid-lotes" id="gridLotes" data-fx-stagger></div>
     <p style="margin-top:22px;font-size:13px;color:var(--muted)">Cada plan se arma según la propiedad y el comprador. Para ver el tuyo, usá la <a href="#financiacion" style="color:var(--terra-700);font-weight:600">calculadora</a> o consultá directo.</p>
   </div>
 </section>
@@ -851,6 +906,24 @@ footer{background:var(--navy-900);color:var(--w-64);padding:50px 0 20px}
   </div>
 </section>
 
+<!-- PREGUNTAS FRECUENTES -->
+<section class="section" id="preguntas">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <h2>Lo que siempre preguntan</h2>
+      <p class="lead">Las respuestas cortas. Lo largo, con Francisco, por WhatsApp.</p>
+    </div>
+    <div class="faq reveal">
+      <details><summary>Cuánto se paga de seña y qué pasa si me arrepiento</summary><div class="faq-a">La reserva suele ser un porcentaje chico del precio, se firma un recibo con plazo, y si el vendedor no cumple se devuelve. Si el que se arrepiente es el comprador, la seña se pierde. Cada operación lo deja por escrito antes de pagar.</div></details>
+      <details><summary>Quién paga los honorarios del corredor</summary><div class="faq-a">En una venta, cada parte paga los de su corredor. El porcentaje se acuerda antes y figura en la autorización y en el boleto. No hay sorpresas al final.</div></details>
+      <details><summary>Qué es el informe de dominio y por qué importa</summary><div class="faq-a">Es el certificado del Registro que dice quién es el dueño y si la propiedad tiene hipotecas, embargos o inhibiciones. Se pide antes del boleto. Una propiedad sin informe no se firma.</div></details>
+      <details><summary>Puedo pagar en cuotas</summary><div class="faq-a">En terrenos y en Aires de San Lorenzo, sí: anticipo y cuotas en pesos ajustadas por el índice de la construcción (CAC). La referencia de cuota que ves en cada ficha es eso. En casas y departamentos de la cartera, depende del vendedor.</div></details>
+      <details><summary>Cuánto tarda una escritura</summary><div class="faq-a">Entre el boleto y la escritura pasan normalmente de 30 a 60 días: el escribano pide certificados, se liquidan impuestos y se coordina la firma. Si hay hipoteca bancaria, un poco más.</div></details>
+      <details><summary>La dirección exacta de una propiedad</summary><div class="faq-a">Algunas fichas muestran solo el barrio, por pedido del propietario. La dirección se pasa al coordinar la visita.</div></details>
+    </div>
+  </div>
+</section>
+
 <!-- CONTACTO -->
 <section class="section" id="contacto">
   <div class="wrap">
@@ -897,6 +970,7 @@ footer{background:var(--navy-900);color:var(--w-64);padding:50px 0 20px}
                 <option value="Un terreno">Un terreno</option>
                 <option value="Aires de San Lorenzo">Aires de San Lorenzo</option>
                 <option value="Todavía estoy viendo">Todavía estoy viendo</option>
+                <option value="Avisame cuando entre algo en mi zona">Avisame cuando entre algo en mi zona</option>
               </select>
             </div>
             <button class="btn btn-terra" type="submit">Enviar la consulta</button>
@@ -1149,6 +1223,26 @@ cargar().catch(function(e){
 function arrancar(cargadas){
 PROPS = cargadas;
 
+/* ---------- datos estructurados: la inmobiliaria y cada propiedad, generados de lo cargado ---------- */
+(function(){
+  try {
+    var base = location.origin + location.pathname;
+    var agente = { "@context": "https://schema.org", "@type": "RealEstateAgent", "name": "Molins Negocios Inmobiliarios",
+      "url": base, "telephone": "+54 387 415 3669", "address": { "@type": "PostalAddress", "streetAddress": "20 de Febrero 1705, Of. 7", "addressLocality": "Salta", "addressCountry": "AR" },
+      "areaServed": "Salta, Argentina" };
+    var items = PROPS.slice(0, 40).map(function(p, i){
+      return { "@type": "ListItem", "position": i + 1, "item": {
+        "@type": "RealEstateListing", "name": nombre(p), "url": base + '?ficha=' + encodeURIComponent(p.codigo),
+        "image": p.nf ? foto(p.codigo, 1) : undefined,
+        "offers": p.precio > 0 ? { "@type": "Offer", "price": p.precio, "priceCurrency": p.moneda, "availability": p.estado === 'reservada' ? "https://schema.org/LimitedAvailability" : "https://schema.org/InStock" } : undefined,
+        "address": { "@type": "PostalAddress", "addressLocality": p.barrio || zonaCorta(p), "addressRegion": "Salta", "addressCountry": "AR" }
+      } };
+    });
+    var lista = { "@context": "https://schema.org", "@type": "ItemList", "name": "Propiedades en venta y alquiler en Salta", "numberOfItems": PROPS.length, "itemListElement": items };
+    [agente, lista].forEach(function(o){ var sc = document.createElement('script'); sc.type = 'application/ld+json'; sc.textContent = JSON.stringify(o); document.head.appendChild(sc); });
+  } catch(e) {}
+})();
+
 /* ---------- formato ---------- */
 function num(n){ return Math.round(n).toLocaleString('es-AR'); }
 function money(moneda, v){ return (moneda === 'USD' ? 'USD ' : '$ ') + num(v); }
@@ -1249,10 +1343,13 @@ function cardHtml(p){
     '</div></article>';
 }
 grid.innerHTML = PROPS.map(cardHtml).join('');
+function numerarStagger(cont){ var n = 0; Array.prototype.forEach.call(cont.children, function(c){ if(c.classList.contains('reveal')) c.style.setProperty('--n', Math.min(n++, 8)); }); }
+numerarStagger(grid);
 
 /* ---------- terrenos ---------- */
 var terrenos = PROPS.filter(function(p){ return p.tipo === 'Terreno'; });
-document.getElementById('gridLotes').innerHTML = !terrenos.length ? '<p class="sin-datos">Por ahora no hay terrenos publicados. Consultanos: suelen entrar lotes que se reservan antes de publicarse.</p>' : terrenos.map(function(p){
+var gridLotes = document.getElementById('gridLotes');
+gridLotes.innerHTML = !terrenos.length ? '<p class="sin-datos">Por ahora no hay terrenos publicados. Consultanos: suelen entrar lotes que se reservan antes de publicarse.</p>' : terrenos.map(function(p){
   var cuota = cuotaRef(p);
   return '<article class="lote reveal" data-cod="' + p.codigo + '" tabindex="0" role="button">' +
     '<div class="ph"><img src="' + foto(p.codigo,1,true) + '" alt="' + esc(nombre(p)) + ', ' + esc(p.zona) + '" loading="lazy" /></div>' +
@@ -1264,6 +1361,7 @@ document.getElementById('gridLotes').innerHTML = !terrenos.length ? '<p class="s
       '<span class="cod">' + p.codigo + ' · ' + p.operacion + '</span>' +
     '</div></article>';
 }).join('');
+numerarStagger(gridLotes);
 
 /* ---------- zonas ---------- */
 var conteo = {};
@@ -1322,6 +1420,7 @@ document.getElementById('zonaLista').innerHTML =
     });
   }
 
+  window.__centrarZona = function(z){ marcar(z); if(marcas[z]) { mapa.flyTo(ZONA_GEO[z], 13, { duration:.7 }); marcas[z].openPopup(); } };
   document.querySelectorAll('.zona-fila').forEach(function(f){
     f.addEventListener('click', function(){
       var z = f.dataset.zona;
@@ -1379,6 +1478,40 @@ chipsEl.addEventListener('click', function(ev){
 });
 selTipo.addEventListener('change', function(){ estado.tipo = selTipo.value; aplicar(); });
 selZona.addEventListener('change', function(){ estado.zona = selZona.value; aplicar(); });
+
+/* ---------- buscar por zona desde el hero: filtra la grilla y centra el mapa ---------- */
+var heroZona = document.getElementById('heroZona');
+heroZona.innerHTML = ZONA_ORDEN.filter(function(z){ return conteo[z]; }).map(function(z){
+  return '<a href="#propiedades" data-zona="' + esc(z) + '">' + esc(z === 'Otras zonas de Salta' ? 'Salta' : z) + ' <span style="opacity:.7">' + conteo[z] + '</span></a>';
+}).join('');
+heroZona.addEventListener('click', function(ev){
+  var a = ev.target.closest('a[data-zona]'); if(!a) return;
+  estado.zona = a.getAttribute('data-zona'); selZona.value = estado.zona; aplicar();
+  if(window.__centrarZona) window.__centrarZona(estado.zona);
+});
+
+/* ---------- propiedad destacada en el hero: una ficha real que rota ---------- */
+(function(){
+  var box = document.getElementById('heroDest'); if(!box) return;
+  var lista = PROPS.filter(function(p){ return p.nf > 0 && p.precio > 0 && p.estado === 'activa'; }).slice(0, 6);
+  if(!lista.length) return;
+  var i = 0, t = null;
+  document.getElementById('hdDots').innerHTML = lista.map(function(){ return '<i></i>'; }).join('');
+  function mostrar(k){
+    var p = lista[k];
+    document.getElementById('hdPh').style.backgroundImage = 'url("' + foto(p.codigo, 1) + '")';
+    document.getElementById('hdK').textContent = p.operacion === 'Alquiler' ? 'En alquiler' : 'En venta';
+    document.getElementById('hdT').textContent = p.sinDireccion ? p.titulo : p.tipo + ' en ' + p.titulo;
+    document.getElementById('hdP').textContent = money(p.moneda, p.precio) + (p.operacion === 'Alquiler' ? ' por mes' : '');
+    document.getElementById('hdZ').textContent = ubicCorta(p) + ' · ' + p.codigo;
+    box.setAttribute('data-cod', p.codigo);
+    Array.prototype.forEach.call(document.querySelectorAll('#hdDots i'), function(d, n){ d.classList.toggle('on', n === k); });
+  }
+  mostrar(0); box.classList.add('on');
+  box.addEventListener('click', function(ev){ ev.preventDefault(); abrir(box.getAttribute('data-cod')); });
+  if(!rm) t = setInterval(function(){ i = (i + 1) % lista.length; box.classList.remove('on'); setTimeout(function(){ mostrar(i); box.classList.add('on'); }, 300); }, 6000);
+  box.addEventListener('mouseenter', function(){ if(t) clearInterval(t); t = null; });
+})();
 document.getElementById('fClear').addEventListener('click', function(){
   estado = {f:'all', tipo:'', zona:''};
   selTipo.value = ''; selZona.value = '';
@@ -1593,7 +1726,8 @@ function abrir(cod){
 
   /* acciones */
   var acts = '<a class="btn btn-wa" href="' + waLink(p) + '" target="_blank" rel="noopener">' + IC.wa + ' Consultar por WhatsApp</a>' +
-             '<button class="btn btn-out" type="button" id="mForm">Dejar mis datos</button>';
+             '<button class="btn btn-out" type="button" id="mForm">Dejar mis datos</button>' +
+             '<button class="btn btn-out" type="button" id="mShare" aria-label="Compartir esta propiedad">Compartir</button>';
   if(p.operacion === 'Venta' && p.moneda === 'USD' && !cuota)
     acts += '<button class="btn btn-out" type="button" id="mCalc">Calcular la cuota</button>';
   var actsEl = document.getElementById('mActs');
@@ -1687,7 +1821,15 @@ function abrir(cod){
 
   if(!yaAbierto){
     volverA = document.activeElement;
-    modal.classList.add('open');
+    /* la foto de la tarjeta "viaja" a la galería (View Transitions); sin soporte, el modal entra como siempre */
+    var origen = document.querySelector('[data-cod="' + cod + '"] img');
+    if(origen && document.startViewTransition && !rm){
+      origen.style.viewTransitionName = 'foto-ficha';
+      mImg.style.viewTransitionName = 'foto-ficha';
+      document.startViewTransition(function(){ modal.classList.add('open'); }).finished.then(function(){ origen.style.viewTransitionName = ''; mImg.style.viewTransitionName = ''; });
+    } else {
+      modal.classList.add('open');
+    }
     document.body.style.overflow = 'hidden';
     document.getElementById('modalClose').focus();
   }
@@ -1841,7 +1983,8 @@ document.getElementById('leadForm').addEventListener('submit', function(ev){
   }
   if(rea0){ rea0.textContent = 'Sin compromiso. Usamos tus datos solo para responderte.'; rea0.classList.remove('err'); rea0.removeAttribute('role'); }
   var busca = document.getElementById('fBusca').value;
-  var interes = ctxProp ? (ctxProp.codigo + ' · ' + ctxProp.tipo + ' en ' + ctxProp.zona) : (ctxEl.classList.contains('show') ? 'Aires de San Lorenzo' : busca);
+  var interes = ctxProp ? (ctxProp.codigo + ' · ' + ctxProp.tipo + ' en ' + ctxProp.zona)
+    : (ctxEl.classList.contains('show') ? (/^Alerta/.test(ctxEl.textContent) ? ctxEl.textContent : 'Aires de San Lorenzo') : busca);
   var cuerpo = {
     nombre: n.value.trim(),
     telefono: w.value.trim(),
@@ -1877,6 +2020,24 @@ document.getElementById('leadForm').addEventListener('submit', function(ev){
   });
 });
 
+/* ---------- alerta de nueva propiedad: el formulario queda preparado ---------- */
+document.getElementById('alertaZona').addEventListener('click', function(){
+  var sel = document.getElementById('fBusca'); sel.value = 'Avisame cuando entre algo en mi zona';
+  ctxProp = null; ctxEl.classList.remove('show');
+  var z = estado.zona ? ' Zona: ' + estado.zona + '.' : '';
+  ctxEl.textContent = 'Alerta de nueva propiedad.' + z; ctxEl.classList.add('show');
+});
+
+/* ---------- compartir la ficha (Web Share en celular, WhatsApp en escritorio) ---------- */
+document.addEventListener('click', function(ev){
+  var b = ev.target.closest('#mShare'); if(!b || !actual) return;
+  var p = actual;
+  var url = location.origin + location.pathname + '?ficha=' + encodeURIComponent(p.codigo);
+  var texto = nombre(p) + ' · ' + ubicCorta(p) + ' · ' + money(p.moneda, p.precio) + (p.operacion === 'Alquiler' ? ' por mes' : '') + '\n' + url;
+  if(navigator.share){ navigator.share({ title: nombre(p), text: texto, url: url }).catch(function(){}); }
+  else { window.open('https://wa.me/?text=' + encodeURIComponent(texto), '_blank', 'noopener'); }
+});
+
 /* ---------- nav / reveal / varios ---------- */
 var nav = document.getElementById('nav'), heroEl = document.querySelector('.hero');
 function navScroll(){
@@ -1885,6 +2046,9 @@ function navScroll(){
   nav.classList.toggle('scrolled', !over);
 }
 window.addEventListener('scroll', navScroll, {passive:true});
+var progresoEl = document.getElementById('progreso');
+function progreso(){ var h = document.documentElement; var max = h.scrollHeight - h.clientHeight; progresoEl.style.transform = 'scaleX(' + (max > 0 ? h.scrollTop / max : 0) + ')'; }
+window.addEventListener('scroll', progreso, {passive:true}); progreso();
 navScroll();
 
 var burger = document.getElementById('burger'), links = document.getElementById('navlinks');
