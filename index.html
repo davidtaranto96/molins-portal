@@ -1210,7 +1210,7 @@ function cardHtml(p){
       '<span class="cod">' + p.codigo + '</span>' +
     '</div>' +
     '<div class="body">' +
-      '<span class="zona">' + IC.pin + esc(p.barrio && p.barrio !== p.zona ? p.barrio + ' · ' + zonaCorta(p) : p.zona) + '</span>' +
+      '<span class="zona">' + IC.pin + esc(ubicCorta(p)) + '</span>' +
       '<h3>' + esc(p.titulo) + '</h3>' +
       (p.sinDireccion ? '' : '<p class="tipo">' + esc(p.tipo) + '</p>') +
       '<div class="specs">' + specsHtml(p) + '</div>' +
@@ -1232,7 +1232,7 @@ document.getElementById('gridLotes').innerHTML = !terrenos.length ? '<p class="s
   return '<article class="lote reveal" data-cod="' + p.codigo + '" tabindex="0" role="button">' +
     '<div class="ph"><img src="' + foto(p.codigo,1,true) + '" alt="' + esc(nombre(p)) + ', ' + esc(p.zona) + '" loading="lazy" /></div>' +
     '<div class="bd">' +
-      '<span class="zona">' + IC.pin + esc(p.barrio && p.barrio !== p.zona ? p.barrio + ' · ' + zonaCorta(p) : p.zona) + '</span>' +
+      '<span class="zona">' + IC.pin + esc(ubicCorta(p)) + '</span>' +
       '<h3>' + esc(p.titulo) + '</h3>' +
       '<span class="v">' + money(p.moneda, p.precio) + '</span>' +
       (cuota ? '<span class="mo">' + IC.cuota + 'referencia ' + cuota + '/mes</span>' : '') +
@@ -1382,6 +1382,8 @@ function lista(a){
   return a.slice(0, -1).join(', ') + ' y ' + a[a.length - 1];
 }
 function zonaCorta(p){ return p.zona === 'Otras zonas de Salta' ? 'Salta' : p.zona; }
+/* 'La Caldera · Vaqueros', pero no 'El Encón · El Encón · Rosario de Lerma' ni 'Salta · Salta' */
+function ubicCorta(p){ var z = zonaCorta(p); return p.barrio && z.indexOf(p.barrio) < 0 ? p.barrio + ' · ' + z : z; }
 
 /* ---------- galería ---------- */
 function verFoto(n){
@@ -1554,7 +1556,7 @@ function abrir(cod){
   flag.className = 'm-flag ' + st.c;
 
   /* encabezado */
-  document.getElementById('mZona').innerHTML = IC.pin + ' ' + esc(p.barrio && p.barrio !== p.zona ? p.barrio + ' · ' + zonaCorta(p) : p.zona);
+  document.getElementById('mZona').innerHTML = IC.pin + ' ' + esc(ubicCorta(p));
   document.getElementById('mTitulo').textContent = p.titulo;
   document.getElementById('mTags').innerHTML =
     '<span class="op">' + esc(p.operacion) + '</span>' +
