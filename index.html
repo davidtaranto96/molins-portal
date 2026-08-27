@@ -1939,6 +1939,127 @@ calc();
 /* ---------- atribución: de dónde vino esta visita ----------
    Se guarda al entrar (primer toque) y viaja con la consulta. Lo mismo que
    usa la web de Aires, para que el CRM compare campañas con una sola regla. */
+/* ═══ Cookies · consentimiento y envío de visitas ═════════════════════════
+   Reusa API y CLAVE_SITIO, que ya están definidos más arriba para el formulario
+   y los clics. Tres reglas:
+
+    1. SIN CONSENTIMIENTO NO SE GUARDA NADA IDENTIFICABLE. Se manda un palito
+       —sesión, la respuesta al banner y la fecha— y nada más. El CRM además lo
+       descarta de nuevo del otro lado, sin confiar en que el sitio lo omitió.
+    2. EL VISITANTE VIVE EN UNA COOKIE DE 180 DÍAS, no en sessionStorage: si se
+       pierde al cerrar la pestaña, "volvió" nunca puede dar verdadero.
+    3. NO PUEDE ROMPER EL SITIO. Todo adentro de try. */
+window.CK = (function(){
+  var C_OK = 'molins_consent', C_VID = 'molins_vid', D180 = 180;
+
+  function leer(n){
+    try { var m = document.cookie.match('(^|;)\\s*' + n + '\\s*=\\s*([^;]+)'); return m ? decodeURIComponent(m[2]) : null; }
+    catch(e){ return null; }
+  }
+  function escribir(n, v){
+    try {
+      var exp = new Date(Date.now() + D180 * 864e5).toUTCString();
+      var seguro = location.protocol === 'https:' ? ';Secure' : '';
+      document.cookie = n + '=' + encodeURIComponent(v) + ';expires=' + exp + ';path=/;SameSite=Lax' + seguro;
+    } catch(e){}
+  }
+  function borrar(n){ try { document.cookie = n + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/'; } catch(e){} }
+  function aleatorio(){
+    var r = '', abc = 'abcdefghijkmnpqrstuvwxyz23456789';
+    for (var i = 0; i < 16; i++) r += abc.charAt(Math.floor(Math.random() * abc.length));
+    return r;
+  }
+
+  var api = {
+    estado: function(){ return leer(C_OK) || 'sin_responder'; },
+    visitante: function(){
+      if (api.estado() !== 'si') return null;
+      var v = leer(C_VID);
+      if (!v) { v = aleatorio(); escribir(C_VID, v); }
+      return v;
+    },
+    decidir: function(ok){
+      escribir(C_OK, ok ? 'si' : 'no');
+      if (!ok) borrar(C_VID); else api.visitante();
+      var b = document.getElementById('ck'); if (b) b.hidden = true;
+      try { if (window.VISITAS) VISITAS.alAceptar(); } catch(e){}
+    }
+  };
+  return api;
+})();
+
+window.VISITAS = (function(){
+  var COLA = [], TOPE = 30, timer = null, sid = null;
+
+  function sesion(){
+    if (sid) return sid;
+    try {
+      sid = sessionStorage.getItem('molins_sid');
+      if (!sid) { sid = Date.now().toString(36) + Math.random().toString(36).slice(2, 12); sessionStorage.setItem('molins_sid', sid); }
+    } catch(e){ sid = Date.now().toString(36) + Math.random().toString(36).slice(2, 12); }
+    return sid;
+  }
+
+  function cuerpo(){
+    var ok = CK.estado() === 'si';
+    var base = { sesionId: sesion(), consentimiento: CK.estado(), eventos: [] };
+    if (!ok) { COLA.length = 0; return base; }
+    var a = window.ATRIB || {};
+    base.eventos      = COLA.splice(0, TOPE);
+    base.visitanteId  = CK.visitante();
+    base.utm_source   = a.utm_source   || null;
+    base.utm_medium   = a.utm_medium   || null;
+    base.utm_campaign = a.utm_campaign || null;
+    base.utm_content  = a.utm_content  || null;
+    base.utm_term     = a.utm_term     || null;
+    base.referrer     = a.referrer     || null;
+    base.paginaEntrada = String(a.paginaEntrada || location.pathname).slice(0, 500);
+    base.dispositivo  = window.matchMedia('(max-width: 768px)').matches ? 'movil' : 'escritorio';
+    base.idioma       = (document.documentElement.lang || 'es').slice(0, 5);
+    /* De acá sale el país en el CRM, sin mirar la IP: ni la VPN ni el Relay
+       privado de Apple rompen el reloj, que es justo lo que sí le pasa a la IP. */
+    try { base.zonaHoraria = Intl.DateTimeFormat().resolvedOptions().timeZone || null; } catch(e){}
+    return base;
+  }
+
+  function enviar(final){
+    try {
+      var b = JSON.stringify(cuerpo());
+      if (final && navigator.sendBeacon) {
+        navigator.sendBeacon(API + '/api/publico/visitas?clave=' + encodeURIComponent(CLAVE_SITIO),
+                             new Blob([b], { type: 'application/json' }));
+        return;
+      }
+      fetch(API + '/api/publico/visitas', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-sitio-clave': CLAVE_SITIO },
+        body: b, keepalive: true
+      }).catch(function(){});
+    } catch(e){}
+  }
+
+  function anotar(tipo, valor, propiedadCodigo){
+    if (CK.estado() !== 'si') return false;
+    if (COLA.length >= TOPE) return false;
+    COLA.push({ tipo: tipo, valor: String(valor || '').slice(0, 500) || null,
+                propiedadCodigo: propiedadCodigo || null, en: new Date().toISOString() });
+    if (!timer) timer = setTimeout(function(){ timer = null; enviar(false); }, 5000);
+    return true;
+  }
+
+  function alAceptar(){
+    try {
+      document.querySelectorAll('section[id]').forEach(function(sec){
+        var r = sec.getBoundingClientRect();
+        if (r.top < innerHeight && r.bottom > 0) anotar('seccion', sec.id);
+      });
+    } catch(e){}
+    enviar(false);
+  }
+
+  return { enviar: enviar, anotar: anotar, alAceptar: alAceptar };
+})();
+
 window.ATRIB = (function(){
   var q = {}; try { new URLSearchParams(location.search).forEach(function(v,k){ q[k] = v; }); } catch(e){}
   var guardada = {};
@@ -1953,15 +2074,49 @@ window.ATRIB = (function(){
     paginaEntrada: guardada.paginaEntrada || location.href.split('#')[0],
     visitanteId: guardada.visitanteId || null
   };
-  if(!a.visitanteId){
-    var r = ''; var abc = 'abcdefghijkmnpqrstuvwxyz23456789';
-    for(var i=0;i<12;i++) r += abc.charAt(Math.floor(Math.random()*abc.length));
-    a.visitanteId = r;
-  }
+  /* El id de visitante SOLO existe si la persona aceptó, y vive en una cookie
+     de 180 días y no en sessionStorage: en sessionStorage se pierde al cerrar
+     la pestaña, así que "volvió" nunca podría dar verdadero. */
+  a.visitanteId = window.CK && CK.estado() === 'si' ? CK.visitante() : null;
   try { sessionStorage.setItem('molins_atrib', JSON.stringify(a)); } catch(e){}
   return a;
 })();
 var ATRIB = window.ATRIB;
+
+/* ── arranque del seguimiento ─────────────────────────────────────────── */
+(function(){
+  var banner = document.getElementById('ck');
+  if (banner) {
+    if (CK.estado() === 'sin_responder') banner.hidden = false;
+    var si = banner.querySelector('.js-ck-si'), no = banner.querySelector('.js-ck-no');
+    if (si) si.addEventListener('click', function(){ CK.decidir(true); });
+    if (no) no.addEventListener('click', function(){ CK.decidir(false); });
+  }
+
+  VISITAS.anotar('pagina', location.pathname + location.hash);
+  VISITAS.enviar(false);
+
+  try {
+    if ('IntersectionObserver' in window) {
+      var vistas = {};
+      var obs = new IntersectionObserver(function(es){
+        es.forEach(function(e){
+          if (!e.isIntersecting) return;
+          var id = e.target.id;
+          if (!id || vistas[id]) return;
+          /* Se marca sólo si se pudo anotar: si no, lo que miró antes de
+             aceptar se perdería para siempre. */
+          if (VISITAS.anotar('seccion', id)) vistas[id] = 1;
+        });
+      }, { threshold: 0.5 });
+      document.querySelectorAll('section[id]').forEach(function(x){ obs.observe(x); });
+    }
+  } catch(e){}
+
+  addEventListener('hashchange', function(){ VISITAS.anotar('pagina', location.pathname + location.hash); });
+  addEventListener('visibilitychange', function(){ if (document.visibilityState === 'hidden') VISITAS.enviar(true); });
+  addEventListener('pagehide', function(){ VISITAS.enviar(true); });
+})();
 
 var formBtn = document.querySelector('#leadForm button[type="submit"]');
 document.getElementById('leadForm').addEventListener('submit', function(ev){
@@ -2702,6 +2857,39 @@ window.addEventListener('resize', function(){
      recorte es de 4 y el borde de 1,5 se come dos: quedaban 42 de alto
      medidos. Con la altura escrita, los 44 son reales. */
 }
+</style>
+
+
+<!-- ═══ Cookies · el banner y el seguimiento ═══════════════════════════════
+     Va acá abajo y no arriba a propósito: el sitio tiene que poder leerse sin
+     tocar nada. Se muestra una vez, se recuerda 180 días, y hasta que la
+     persona conteste no se guarda ni un dato que la identifique. -->
+<div id="ck" class="ck" hidden>
+  <p class="ck__txt">
+    Usamos cookies para saber de qué aviso llegaste y no volver a mostrarte lo mismo.
+    Si preferís que no, el sitio anda igual.
+  </p>
+  <div class="ck__acc">
+    <button type="button" class="ck__no js-ck-no">Prefiero no</button>
+    <button type="button" class="ck__si js-ck-si">Entendido</button>
+  </div>
+</div>
+<style>
+.ck{position:fixed;left:16px;right:16px;bottom:16px;z-index:120;display:flex;flex-wrap:wrap;
+    align-items:center;gap:12px;justify-content:space-between;max-width:760px;margin:0 auto;
+    background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:14px 16px;
+    box-shadow:0 12px 40px rgba(16,26,36,.16)}
+.ck[hidden]{display:none}
+.ck__txt{margin:0;font-size:13.5px;line-height:1.45;color:var(--ink);flex:1 1 340px}
+.ck__acc{display:flex;gap:8px;flex:0 0 auto}
+.ck__no,.ck__si{font:inherit;font-size:13px;border-radius:9px;padding:9px 16px;cursor:pointer;
+    /* 44px de alto real: es el mínimo para tocar con el pulgar sin errar. */
+    min-height:44px;border:1px solid var(--line)}
+.ck__no{background:transparent;color:var(--ink);opacity:.75}
+.ck__no:hover{opacity:1}
+.ck__si{background:var(--ink);color:#fff;border-color:var(--ink);font-weight:600}
+.ck__si:hover{opacity:.9}
+@media (max-width:520px){ .ck{left:10px;right:10px;bottom:10px} .ck__acc{width:100%} .ck__no,.ck__si{flex:1} }
 </style>
 
 </body>
