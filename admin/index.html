@@ -13,12 +13,14 @@
         se paga mientras esta página todavía se está leyendo y no después.
      2) el script redirige apenas se parsea, sin esperar a que exista el body.
      3) el meta refresh queda de red por si el JS está apagado.
-     Va a la raíz y no a /login a propósito: quien ya entró tiene que caer en
-     el sistema, no en el formulario de nuevo. -->
+     Va a /inicio y no a la raíz: la raíz SIEMPRE redirige —a /login si no
+     hay sesión, a /inicio si la hay— así que apuntarle costaba un viaje entero
+     al servidor, siempre. Yendo derecho a /inicio, quien ya entró lo ahorra; y
+     quien no, el middleware lo manda al login igual que antes. -->
 <link rel="preconnect" href="https://crm.franciscomolins.com" crossorigin />
 <link rel="dns-prefetch" href="https://crm.franciscomolins.com" />
-<script>location.replace("https://crm.franciscomolins.com/");</script>
-<meta http-equiv="refresh" content="0; url=https://crm.franciscomolins.com/" />
+<script>location.replace("https://crm.franciscomolins.com/inicio");</script>
+<meta http-equiv="refresh" content="0; url=https://crm.franciscomolins.com/inicio" />
 <style>
   html{background:#14233a;color:#fff;font:16px/1.6 system-ui,-apple-system,Segoe UI,sans-serif}
   body{margin:0;min-height:100vh;display:grid;place-items:center;padding:24px;text-align:center}
@@ -27,6 +29,6 @@
 </head>
 <body>
   <p>Llevándote al sistema. Si no arranca solo,
-     <a href="https://crm.franciscomolins.com/">entrá desde acá</a>.</p>
+     <a href="https://crm.franciscomolins.com/inicio">entrá desde acá</a>.</p>
 </body>
 </html>
