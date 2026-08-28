@@ -641,6 +641,24 @@ footer{background:var(--navy-900);color:var(--w-64);padding:50px 0 20px}
     window.MOLINS_API = 'https://crm-molins-app-production.up.railway.app';
     window.MOLINS_CARTERA = 'propia,alquileres';
     window.MOLINS_CLAVE = 'sk_b-JCLrP70kIfjbIAiqhszOb7T6ZX3F7n';
+
+    /* Cloudflare Web Analytics. Va sin consentimiento y a proposito: no usa
+       cookies, no identifica a nadie y no hace falta pedir permiso, asi que
+       mide el 100% de las visitas y no solo las que aceptan el cartel.
+       Sale de Cloudflare > Analytics & Logs > Web Analytics > Add a site.
+       Es un token publico: viaja en el HTML. Vacio = no se carga nada.
+       Ojo al leer los numeros: los bloqueadores de publicidad tapan este
+       script, asi que marca MENOS que el contador propio del CRM, que es de
+       la misma casa y no lo bloquea nadie. */
+    window.CF_ANALYTICS = '';
+    if (window.CF_ANALYTICS) {
+      var cf = document.createElement('script');
+      cf.defer = true;
+      cf.type = 'module';   // sin esto, los navegadores viejos tiran un error de sintaxis
+      cf.src = 'https://static.cloudflareinsights.com/beacon.min.js';
+      cf.setAttribute('data-cf-beacon', JSON.stringify({ token: window.CF_ANALYTICS }));
+      document.head.appendChild(cf);
+    }
   </script>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script>
