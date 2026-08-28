@@ -1699,9 +1699,20 @@ function pintarMapa(p){
 /* ---------- armado de la ficha ---------- */
 function fila(dt, dd){ return '<div><dt>' + dt + '</dt><dd>' + dd + '</dd></div>'; }
 
+/* Las fichas abiertas, una sola vez por sesion y por propiedad. Sin esto el CRM
+   no tiene con que llenar "Que miran", que es la tabla que dice cual se mira
+   mucho y no genera una sola consulta: la que tiene el precio o las fotos mal.
+   El tope de la cola es 30, asi que repetir la misma ficha al ir y volver de la
+   galeria se comia el presupuesto de eventos de la visita entera. */
+var fichasVistas = {};
+
 function abrir(cod){
   var p = PROPS.filter(function(x){ return x.codigo === cod; })[0];
   if(!p) return;
+  if (!fichasVistas[p.codigo]) {
+    fichasVistas[p.codigo] = 1;
+    try { if (window.VISITAS) VISITAS.anotar('ficha', p.titulo || p.codigo, p.codigo); } catch(e){}
+  }
   var yaAbierto = modal.classList.contains('open');
   actual = p;
   var st = estadoTxt(p), cuota = cuotaRef(p), esAlq = p.operacion === 'Alquiler';
