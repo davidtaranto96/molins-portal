@@ -413,6 +413,12 @@ footer{background:var(--navy-900);color:var(--w-64);padding:50px 0 20px}
 .wafab{position:fixed;right:16px;bottom:16px;z-index:150;width:54px;height:54px;border-radius:50%;background:var(--wa);
   color:var(--white);display:grid;place-items:center;box-shadow:0 8px 22px var(--gl-wa);transition:transform .25s var(--e)}
 .wafab:hover{transform:scale(1.07)}
+/* Hasta 599px el aviso de cookies ocupa el ancho completo abajo y el globo le
+   queda justo encima del botón de aceptar. De 600 para arriba el aviso se va a
+   la esquina izquierda y no se tocan, así que el globo se queda. */
+@media(max-width:599px){
+  .ck-abierto .wafab{opacity:0;pointer-events:none;transform:translateY(10px)}
+}
 .wafab svg{width:28px;height:28px}
 
 /* ---- modal · ficha de propiedad ---- */
@@ -1982,6 +1988,7 @@ window.CK = (function(){
       escribir(C_OK, ok ? 'si' : 'no');
       if (!ok) borrar(C_VID); else api.visitante();
       var b = document.getElementById('ck'); if (b) b.hidden = true;
+      document.documentElement.classList.remove('ck-abierto');
       try { if (window.VISITAS) VISITAS.alAceptar(); } catch(e){}
     }
   };
@@ -2087,7 +2094,13 @@ var ATRIB = window.ATRIB;
 (function(){
   var banner = document.getElementById('ck');
   if (banner) {
-    if (CK.estado() === 'sin_responder') banner.hidden = false;
+    if (CK.estado() === 'sin_responder') {
+      banner.hidden = false;
+      // En el celular el aviso y el globo de WhatsApp caen en el mismo lugar y
+      // el globo tapa el botón de aceptar. Mientras hay que contestar, el globo
+      // se va; vuelve apenas se contesta.
+      document.documentElement.classList.add('ck-abierto');
+    }
     var si = banner.querySelector('.js-ck-si'), no = banner.querySelector('.js-ck-no');
     if (si) si.addEventListener('click', function(){ CK.decidir(true); });
     if (no) no.addEventListener('click', function(){ CK.decidir(false); });
@@ -2867,11 +2880,10 @@ window.addEventListener('resize', function(){
 <div id="ck" class="ck" hidden>
   <p class="ck__txt">
     Usamos cookies para saber de qué aviso llegaste y no volver a mostrarte lo mismo.
-    Si preferís que no, el sitio anda igual.
   </p>
   <div class="ck__acc">
     <button type="button" class="ck__no js-ck-no">Prefiero no</button>
-    <button type="button" class="ck__si js-ck-si">Entendido</button>
+    <button type="button" class="ck__si js-ck-si">Aceptar</button>
   </div>
 </div>
 <style>
@@ -2890,6 +2902,21 @@ window.addEventListener('resize', function(){
 .ck__si{background:var(--ink);color:#fff;border-color:var(--ink);font-weight:600}
 .ck__si:hover{opacity:.9}
 @media (max-width:520px){ .ck{left:10px;right:10px;bottom:10px} .ck__acc{width:100%} .ck__no,.ck__si{flex:1} }
+/* Desde 600px el aviso se corre a la esquina de abajo a la izquierda en vez de
+   quedar como una barra centrada al pie. No es gusto: medido sobre 14.135
+   visitantes reales, el mismo aviso en la esquina se contesta el 33,1% de las
+   veces y como barra al pie, el 9,6% (Utz et al., ACM CCS 2019). La barra tapa
+   el contenido y el ojo la descarta. En el celular se queda abajo y ancho, que
+   es donde llega el pulgar. */
+@media(min-width:600px){
+  .ck{right:auto;margin:0;max-width:min(420px,calc(100vw - 32px));
+      flex-direction:column;align-items:stretch;gap:12px}
+  /* En columna el flex-basis gobierna el ALTO, no el ancho: sin esto el texto
+     se estira a 340px y la tarjeta se come media pantalla. Es el mismo error
+     que ya se comió el banner de Aires en su momento. */
+  .ck__txt{flex:0 0 auto}
+  .ck__acc{justify-content:flex-end}
+}
 </style>
 
 </body>
