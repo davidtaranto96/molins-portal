@@ -1,0 +1,52 @@
+:root{
+  --terracota: #9C3A20;
+  --terracota-oscuro: #7C2D17;
+  --hueso: #FBF9F6;
+  --crema: #F3EADA;
+  --crema-claro: #F6EFE3;
+  --tinta: #29211A;
+  --tinta-oscura: #211711;
+  --tinta-suave: #4A4038;
+  --gris-calido: #6F6357;
+  --gris-claro: #757068;  /* corregido por contraste, venía #8B8177 */
+  --estado-libre: #2F6B4E;
+  --estado-reservada: #8A6420;  /* corregido por contraste, venía #A0762C */
+  --whatsapp: #0F7A6D;  /* corregido por contraste, venía #128C7E */
+  --ambar-texto: #6E5119;  /* corregido por contraste, venía #7A5A20 */
+}
+
+/* `sc-if` en el editor NO crea un nodo: rinde como fragmento. El envase que
+   emite el transpilador sí lo crea, y eso rompe todo layout donde los hijos
+   tenían que ser hermanos — en el encabezado, la navegación y el botón
+   quedaban adentro de UN solo item de flex. `display:contents` borra la caja
+   y deja pasar a los hijos, que es exactamente lo que hacía el fragmento.
+   El !important del hidden le gana, así que ocultar sigue funcionando. */
+[data-si]{display:contents}
+[hidden]{display:none !important}
+
+/* Los hover y foco que el editor guardaba en atributos propios. */
+[data-fx~="fx-1"]:hover{color:var(--terracota);}
+[data-fx~="fx-2"]:hover{background:var(--terracota-oscuro);}
+[data-fx~="fx-3"]:hover{background:var(--terracota-oscuro);transform:translateY(-1px);}
+[data-fx~="fx-4"]:hover{background:rgba(243,234,218,0.14);border-color:var(--crema);}
+[data-fx~="fx-5"]:hover{border-color:var(--terracota);}
+[data-fx~="fx-6"]:hover{color:var(--terracota-oscuro);}
+[data-fx~="fx-7"]:hover{border-color:var(--terracota);color:var(--terracota);}
+[data-fx~="fx-8"]:focus-visible{border-color:var(--terracota);}
+[data-fx~="fx-9"]:hover{background:#fff;}
+[data-fx~="fx-10"]:hover{border-color:var(--crema);background:rgba(243,234,218,0.07);}
+[data-fx~="fx-11"]:hover{background:#0E7265;}
+[data-fx~="fx-12"]:hover{background:rgba(243,234,218,0.25);}
+
+/* El logotipo de La Torre está quemado adentro del render de portada. En
+   pantalla angosta la imagen se recorta al centro y ese logotipo cae justo
+   detrás del título. Subiendo el encuadre queda arriba, se lee como marca, y
+   el título apoya limpio sobre el degradado. */
+@media (max-width: 640px) {
+  /* OJO CON EL EJE: la imagen es 16:9 y la caja del hero en celular es
+     vertical, así que object-fit cover la recorta a lo ANCHO, no a lo alto. Mover el eje
+     Y no hace nada — hay que correr la X. Con 22 % se ve el cuerpo del edificio
+     y el logotipo queda fuera del recorte, así que el título se lee limpio. */
+  .hero-img { object-position: 22% center !important; }
+}
+
