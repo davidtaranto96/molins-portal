@@ -15,6 +15,12 @@
 (() => {
   "use strict";
 
+  // ¿El sitio está adentro de otro (la vista previa del CRM)? Entonces no es
+  // un visitante: no se muestra el cartel de medición y los clics no se
+  // registran. El try es por si un padre de otro origen bloquea leer `top`.
+  let EMBEBIDO = false;
+  try { EMBEBIDO = window.self !== window.top; } catch (e) { EMBEBIDO = true; }
+
   // ── Configuración ─────────────────────────────────────────────────────────
   // Se sobreescribe desde el HTML con window.TORRE_CONFIG, así el mismo archivo
   // sirve para la prueba y para producción sin tocar código.
@@ -115,6 +121,7 @@
   const cabeceras = () => ({ "Content-Type": "application/json", "x-sitio-clave": CFG.clave });
 
   function clic(tipo, dato) {
+    if (EMBEBIDO) return;
     if (st.consent !== "si" || !CFG.clave) return;
     const cuerpo = JSON.stringify({ tipo, dato: dato ?? null, campania: ctx.campania, origen: ctx.origen, url: location.href });
     // `fetch` con keepalive y no `sendBeacon`: sendBeacon no deja poner
@@ -349,7 +356,7 @@
       modalSrc: st.modal ? st.modal.src : "",
       modalTitulo: st.modal ? st.modal.titulo : "",
       modalCerrar: () => { st.modal = null; pintar(); },
-      consentVisible: st.consent === "pend",
+      consentVisible: !EMBEBIDO && st.consent === "pend",
       aceptarMedicion: () => guardarConsent("si"),
       rechazarMedicion: () => guardarConsent("no"),
       waDisplay: waDisplay(),

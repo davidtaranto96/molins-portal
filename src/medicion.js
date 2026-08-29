@@ -31,6 +31,15 @@
   var CARTERA = window.MOLINS_CARTERA || "propia,alquileres";
   var CLAVE_SITIO = window.MOLINS_CLAVE || "";
 
+  /* ¿El sitio está adentro de otro (la vista previa del CRM)? Entonces no es
+     un visitante: no se muestra el cartel de cookies, no se mide nada y los
+     clics no se registran. Sin esto, cada vez que Francisco abría «Mi portal
+     web» el CRM se contaba a sí mismo como una entrada. El try es por si un
+     padre de otro origen bloquea leer `top`: ahí también estamos embebidos. */
+  var EMBEBIDO = false;
+  try { EMBEBIDO = window.self !== window.top; } catch (e) { EMBEBIDO = true; }
+  window.MOLINS_EMBEBIDO = EMBEBIDO;
+
 window.CK = (function(){
   var C_OK = 'molins_consent', C_VID = 'molins_vid', D180 = 180;
 
@@ -106,6 +115,7 @@ window.VISITAS = (function(){
   }
 
   function enviar(final){
+    if (EMBEBIDO) return;
     try {
       var b = JSON.stringify(cuerpo());
       if (final && navigator.sendBeacon) {
@@ -133,6 +143,7 @@ window.VISITAS = (function(){
   }
 
   function anotar(tipo, valor, propiedadCodigo, segundos){
+    if (EMBEBIDO) return false;
     if (CK.estado() !== 'si') return false;
     if (COLA.length >= TOPE) return false;
     var ev = { tipo: tipo, valor: String(valor || '').slice(0, 500) || null,
@@ -204,6 +215,7 @@ window.ATRIB = (function(){
    * gente borra el texto prellenado de WhatsApp antes de mandarlo.
    */
   window.registrarClic = function (tipo, p) {
+    if (EMBEBIDO) return;
     try {
       var a = window.ATRIB || {};
       fetch(API + "/api/publico/clics", {

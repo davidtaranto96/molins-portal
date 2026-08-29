@@ -501,7 +501,9 @@
       estiloNotaForm: "font-size:12px;text-align:center;margin:11px 0 0;" + (S.formError ? "color:var(--alerta);font-weight:600" : "color:var(--gris)"),
       okMsg: S.okMsg, ctxConsulta: S.ctx,
 
-      ckVisible: window.CK ? CK.estado() === "sin_responder" : false,
+      // Embebido en la vista previa del CRM no hay cartel: ahí no hay nada
+      // que consentir porque no se mide nada (ver medicion.js).
+      ckVisible: !window.MOLINS_EMBEBIDO && (window.CK ? CK.estado() === "sin_responder" : false),
       ckSi: function () { CK.decidir(true); if (window.VISITAS) VISITAS.alAceptar(); pintar(); },
       ckNo: function () { CK.decidir(false); pintar(); },
 
@@ -564,6 +566,9 @@
     document.addEventListener("click", function (ev) {
       var a = ev.target.closest && ev.target.closest('a[href^="https://wa.me"], a[href^="tel:"]');
       if (!a) return;
+      // En la vista previa del CRM, WhatsApp abre en pestaña nueva: navegar el
+      // iframe hacia wa.me lo dejaría en blanco (wa.me no se deja embeber).
+      if (window.MOLINS_EMBEBIDO) a.target = "_blank";
       var esTel = a.getAttribute("href").indexOf("tel:") === 0;
       var m = /\((MOL-[0-9]+)\)/.exec(decodeURIComponent(a.getAttribute("href") || ""));
       var cod = m ? m[1] : (a.closest("[data-si='fichaAbierta']") ? S.ficha : null);
