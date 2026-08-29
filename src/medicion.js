@@ -6,6 +6,12 @@
  * 1989-2121 del commit a501738). Se mueve, no se traduce, justamente para no
  * perder nada en el camino.
  *
+ * SEGUNDA PASADA, 2026-08-29 (más tarde): se le AGREGÓ —sin tocar lo que ya
+ * andaba— lo que el CRM aprendió a mirar: `anotar()` acepta un cuarto
+ * parámetro `segundos` (cuánto tiempo estuvo en una sección) y `alAceptar()`
+ * avisa con el evento `molins:acepto` para que `app.js` re-mida lo pendiente.
+ * Los relojes por sección y los hitos de scroll viven en `app.js`.
+ *
  * POR QUÉ IMPORTA, 2026-08-29: el rediseño que trajo Claude Design sólo leía
  * propiedades. No mandaba el formulario, no registraba clics de WhatsApp y no
  * medía visitas. Publicarlo tal cual dejaba a Francisco sin consultas por la
@@ -126,11 +132,13 @@ window.VISITAS = (function(){
     } catch(e){}
   }
 
-  function anotar(tipo, valor, propiedadCodigo){
+  function anotar(tipo, valor, propiedadCodigo, segundos){
     if (CK.estado() !== 'si') return false;
     if (COLA.length >= TOPE) return false;
-    COLA.push({ tipo: tipo, valor: String(valor || '').slice(0, 500) || null,
-                propiedadCodigo: propiedadCodigo || null, en: new Date().toISOString() });
+    var ev = { tipo: tipo, valor: String(valor || '').slice(0, 500) || null,
+               propiedadCodigo: propiedadCodigo || null, en: new Date().toISOString() };
+    if (typeof segundos === 'number' && segundos > 0) ev.segundos = Math.min(7200, Math.round(segundos));
+    COLA.push(ev);
     if (!timer) timer = setTimeout(function(){ timer = null; enviar(false); }, 5000);
     return true;
   }
@@ -142,6 +150,9 @@ window.VISITAS = (function(){
         if (r.top < innerHeight && r.bottom > 0) anotar('seccion', sec.id);
       });
     } catch(e){}
+    /* Aviso para app.js: lo que quedó pendiente de antes de aceptar (los hitos
+       de scroll, por ejemplo) se re-mide recién ahora que se puede anotar. */
+    try { document.dispatchEvent(new CustomEvent('molins:acepto')); } catch(e){}
     enviar(false);
   }
 

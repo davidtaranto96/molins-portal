@@ -582,24 +582,80 @@
     if (window.VISITAS) {
       VISITAS.anotar("pagina", location.pathname + location.hash);
       VISITAS.enviar(false);
+
+      /* Cada sección que entra en pantalla cuenta como "la miró", y de paso se
+         le toma el tiempo: del entrar al salir. Los relojes corren en memoria y
+         se vuelcan como eventos con `segundos` recién al esconderse la pestaña;
+         el CRM junta los dos avisos de la misma sección en uno. El patrón vino
+         del sitio de Cañada Húmeda (29/8), junto con los hitos de scroll. */
+      var abiertas = {}; // id -> timestamp de apertura (0 = abierta, reloj parado)
+      var relojSec = {}; // id -> milisegundos acumulados
       try {
         if ("IntersectionObserver" in window) {
           var vistas = {};
           var obs = new IntersectionObserver(function (es) {
             es.forEach(function (e) {
-              if (!e.isIntersecting) return;
               var id = e.target.id;
-              /* Se marca sólo si se pudo anotar: si no, lo que miró antes de
-                 aceptar el cartel se perdería para siempre. */
-              if (id && !vistas[id] && VISITAS.anotar("seccion", id)) vistas[id] = 1;
+              if (!id) return;
+              if (e.isIntersecting) {
+                abiertas[id] = Date.now();
+                /* Se marca sólo si se pudo anotar: si no, lo que miró antes de
+                   aceptar el cartel se perdería para siempre. */
+                if (!vistas[id] && VISITAS.anotar("seccion", id)) vistas[id] = 1;
+              } else if (abiertas[id]) {
+                relojSec[id] = (relojSec[id] || 0) + (Date.now() - abiertas[id]);
+                delete abiertas[id];
+              }
             });
           }, { threshold: 0.5 });
           document.querySelectorAll("section[id]").forEach(function (x) { obs.observe(x); });
         }
       } catch (e) {}
+
+      function volcarTiempos() {
+        try {
+          var ahora = Date.now();
+          Object.keys(abiertas).forEach(function (id) {
+            /* 0 = abierta con el reloj en pausa: si la pestaña queda escondida
+               veinte minutos, esos veinte minutos no son lectura. */
+            if (abiertas[id]) { relojSec[id] = (relojSec[id] || 0) + (ahora - abiertas[id]); abiertas[id] = 0; }
+          });
+          Object.keys(relojSec).forEach(function (id) {
+            var seg = Math.round(relojSec[id] / 1000);
+            if (seg >= 1 && VISITAS.anotar("seccion", id, null, seg)) relojSec[id] = 0;
+          });
+        } catch (e) {}
+      }
+
+      /* Hasta dónde baja: 25/50/75/100 por ciento, una sola vez cada marca. Si
+         todavía no aceptó, la marca queda pendiente y se anota al aceptar. */
+      var hitoScroll = {};
+      function medirScroll() {
+        try {
+          var doc = document.documentElement;
+          var alto = Math.max(1, (doc.scrollHeight || 1) - innerHeight);
+          var pct = alto <= 1 ? 100 : Math.min(100, Math.round((window.scrollY || doc.scrollTop || 0) / alto * 100));
+          [25, 50, 75, 100].forEach(function (h) {
+            if (pct >= h && !hitoScroll[h] && VISITAS.anotar("scroll", String(h))) hitoScroll[h] = 1;
+          });
+        } catch (e) {}
+      }
+      var scrollEnCola = false;
+      addEventListener("scroll", function () {
+        if (scrollEnCola) return;
+        scrollEnCola = true;
+        setTimeout(function () { scrollEnCola = false; medirScroll(); }, 400);
+      }, { passive: true });
+      document.addEventListener("molins:acepto", medirScroll);
+
       addEventListener("hashchange", function () { VISITAS.anotar("pagina", location.pathname + location.hash); });
-      addEventListener("visibilitychange", function () { if (document.visibilityState === "hidden") VISITAS.enviar(true); });
-      addEventListener("pagehide", function () { VISITAS.enviar(true); });
+      /* Primero se vuelcan los relojes y después sale el beacon: al revés, los
+         segundos quedarían para un envío que puede no llegar nunca. */
+      addEventListener("visibilitychange", function () {
+        if (document.visibilityState === "hidden") { volcarTiempos(); VISITAS.enviar(true); }
+        else { var ahora = Date.now(); Object.keys(abiertas).forEach(function (id) { abiertas[id] = ahora; }); }
+      });
+      addEventListener("pagehide", function () { volcarTiempos(); VISITAS.enviar(true); });
     }
 
     var anio = document.getElementById("anio");
