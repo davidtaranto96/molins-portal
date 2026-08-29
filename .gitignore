@@ -1,1 +1,5 @@
 .DS_Store
+
+# Intermedios del transpilador (molins-torres/scripts/transpilar.mjs).
+# Sirven para depurar la conversión; el sitio no los usa y se regeneran.
+build/

@@ -1,0 +1,70 @@
+:root{
+  --verde: #113C3D;
+  --verde-claro: #175052;
+  --tinta: #16211F;
+  --tinta-suave: #3E4F4D;
+  --gris: #66756F;
+  --naranja: #F66503;
+  --hueso: #FAF9F5;
+  --crema: #EFF2EC;
+  --borde: #E3E6DF;
+  --borde-fuerte: #DDE1D8;
+  --naranja-oscuro: #B34A02;
+  --naranja-claro: #F5A56B;
+  --naranja-suave: #FDEFE3;
+  --naranja-palido: #FFC59B;
+  --naranja-borde: #F8D8BC;
+  --verde-suave: #EDF3F1;
+  --verde-palido: #F5F8F6;
+  --verde-medio: #155150;
+  --verde-hondo: #12403F;
+  --hueso-2: #F7F8F4;
+  --hueso-3: #F5F6F1;
+  --hueso-4: #F3F4EE;
+  --borde-suave: #E7EAE1;
+  --whatsapp: #25D366;
+  --verde-noche: #0C2B2C;
+  --ok: #1E8A50;
+  --ok-claro: #4ADE80;
+  --ok-suave: #E4F2EA;
+  --borde-2: #C9CFC2;
+  --borde-3: #DCE0D6;
+  --borde-4: #DCE5E2;
+  --borde-5: #EDEEE7;
+}
+
+/* `sc-if` en el editor NO crea un nodo: rinde como fragmento. El envase que
+   emite el transpilador sí lo crea, y eso rompe todo layout donde los hijos
+   tenían que ser hermanos — en el encabezado, la navegación y el botón
+   quedaban adentro de UN solo item de flex. `display:contents` borra la caja
+   y deja pasar a los hijos, que es exactamente lo que hacía el fragmento.
+   El !important del hidden le gana, así que ocultar sigue funcionando. */
+[data-si]{display:contents}
+[hidden]{display:none !important}
+
+/* Los hover y foco que el editor guardaba en atributos propios. */
+[data-fx~="fx-1"]:hover{background:#D95700;transform:translateY(-2px);}
+[data-fx~="fx-2"]:hover{background:#D95700;}
+[data-fx~="fx-3"]:hover{transform:translateY(-4px);box-shadow:0 10px 30px rgba(17,60,61,.1),0 28px 56px rgba(17,60,61,.07);}
+[data-fx~="fx-4"]:hover{background:#1EB558;}
+[data-fx~="fx-5"]:hover{border-color:var(--verde-claro);}
+[data-fx~="fx-6"]:hover{background:rgba(255,255,255,.18);}
+[data-fx~="fx-7"]:hover{border-color:var(--verde-claro);transform:translateY(-3px);box-shadow:0 1px 2px rgba(17,60,61,.04),0 8px 20px rgba(17,60,61,.08);}
+[data-fx~="fx-8"]:hover{transform:scale(1.07);}
+[data-fx~="fx-9"]:hover{border-color:var(--verde-claro);transform:translateY(-3px);}
+
+/* Ajustes de contraste medidos sobre el sitio armado, no a ojo. */
+
+/* El verde `--ok` (#1E8A50) con blanco da 4.37 y el badge es texto chico:
+   hace falta 4.5. Éste da 4.71 y a ojo es el mismo verde. */
+:root{--ok-fuerte:#1D844D}
+
+/* `--gris` daba 4.38 sobre `--hueso-4` (#F3F4EE), la superficie más
+   oscura donde se lo usa — cuatro párrafos del recorrido de firmas. Con
+   este otro da 4.62 y sobre blanco queda igual de sobrio. */
+:root{--gris:#63716C}
+
+/* Los numerales 1-4 del recorrido: `--borde-2` daba 1.44 y son el orden
+   de los pasos, no adorno. Éste da 3.14, que es el mínimo para texto
+   grande, y los deja igual de discretos. */
+:root{--numeral:#878B82}
