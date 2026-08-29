@@ -93,7 +93,11 @@ window.Pintor = (function () {
       var f = fn(d.click, alcance);
       el.onclick = el.tagName === "A" ? function (ev) { ev.preventDefault(); return f(ev); } : f;
     }
-    if (d.submit !== undefined) el.onsubmit = fn(d.submit, alcance);
+    /* En un <form> hay que frenar el envío nativo, que recargaría la página. */
+    if (d.submit !== undefined) {
+      var fs = fn(d.submit, alcance);
+      el.onsubmit = function (ev) { ev.preventDefault(); return fs(ev); };
+    }
     if (d.input !== undefined) el.oninput = fn(d.input, alcance);
     if (d.change !== undefined) {
       /* En el editor `onChange` salta en cada cambio. En HTML, `change` de un

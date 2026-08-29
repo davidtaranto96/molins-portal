@@ -21,7 +21,7 @@
   const CFG = Object.assign(
     {
       crm: "https://crm.franciscomolins.com",
-      clave: "",
+      clave: "sk_JaM2iwc_VomlqxOK-mu3PYydaMP_i2Vy",
       cartera: "torre",
       whatsapp: "5493874153669",
       vigenciaPrecios: "agosto 2026",
@@ -171,7 +171,16 @@
       if (!ps.length) return;
       const mapeadas = ps
         .map((p) => {
-          const id = String(p.unidad || p.codigo || "").toUpperCase().match(/[0-9][AB]/)?.[0];
+          /* El identificador de la unidad es piso + letra: "6A".
+             OJO: en el CRM son DOS campos —`piso` es 6 y `unidad` es "A"—, así
+             que no alcanza con mirar `unidad`. La primera versión hacía
+             `p.unidad || p.codigo` y buscaba el patrón `6A` adentro: como
+             `unidad` viene con la letra sola y es un valor verdadero, nunca
+             caía al código, el patrón no encontraba nada, TODAS las unidades se
+             descartaban y el sitio seguía mostrando el respaldo — con la
+             conexión al CRM andando y sin un solo error en consola. */
+          const armado = p.piso != null && p.unidad ? String(p.piso) + String(p.unidad) : "";
+          const id = (armado || String(p.codigo || "")).toUpperCase().match(/[0-9][AB]/)?.[0];
           if (!id) return null;
           return {
             id,
@@ -324,6 +333,11 @@
         nombre: st.fNombre, tel: st.fTel,
         setNombre: (ev) => { st.fNombre = ev.target.value; },
         setTel: (ev) => { st.fTel = ev.target.value; },
+        /* El <form> del HTML dice `data-submit="form.enviar"` y acá no había
+           ningún `enviar`: el `enviar` de más arriba es el del simulador, que
+           es otro objeto. El envío quedaba colgado de un listener puesto sobre
+           `#form-consulta`, un id que el marcado tampoco tiene. */
+        enviar: () => enviarForm(),
         opciones: UN.map((x) => ({ id: x.id, label: x.codigo + " — " + x.tip + " (" + torre(x) + ")" }))
           .concat([{ id: "cochera", label: "Cochera en planta baja" }, { id: "general", label: "Consulta general por el edificio" }]),
         enviando: st.envio === "enviando",
@@ -433,8 +447,6 @@
     leerURL();         // el deep-link puede apuntar a una unidad que sólo el CRM conoce
     pintar();
     reveals();
-    const f = $("#form-consulta");
-    if (f) f.addEventListener("submit", (e) => { e.preventDefault(); enviarForm(); });
     document.addEventListener("keydown", (e) => { if (e.key === "Escape" && st.modal) { st.modal = null; pintar(); } });
   }
 
