@@ -242,7 +242,7 @@
       const em = estadoMeta(x.estado);
       const s = st.sel === x.id;
       return {
-        id: x.id, codigo: x.codigo, sub: x.tip + " · " + x.sup + " m²", estadoLabel: em.label,
+        id: x.id, codigo: x.codigo, sub: x.tip + " · " + x.sup + " m²", estadoLabel: x.estado === "libre" ? "" : em.label,
         sel: () => {
           st.sel = x.id; st.tipoActiva = x.tip; pintar();
           // En el celular la ficha vive abajo de la lista: sin este scroll,
@@ -397,6 +397,14 @@
       waDisplay: waDisplay(),
       clicWaGeneral: () => clic("whatsapp", "contacto"),
       clicWaFlotante: () => clic("whatsapp", "flotante"),
+      clicWaPie: () => clic("whatsapp", "pie"),
+      // Desde el pie se puede volver a decidir: borra la respuesta guardada y
+      // el banner vuelve a aparecer, como en Aires.
+      volverAElegirCookies: () => {
+        try { localStorage.removeItem("latorre_consent"); } catch (e) {}
+        st.consent = "pend"; pintar();
+        window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+      },
     };
   }
 

@@ -53,14 +53,14 @@
        "LA TORRE" en letras — se pisaban. El texto de la página va abajo, chico
        y sereno, y deja que la marca del render sea la protagonista. -->
   <img class="hero-img ken-burns" src="img/hero-cover.jpg" alt="Edificio La Torre sobre Balcarce y Aniceto Latorre, Salta" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 30%">
-  <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(18,12,9,0.42) 0%,rgba(18,12,9,0.05) 30%,rgba(18,12,9,0.12) 58%,rgba(18,12,9,0.88) 100%)"></div>
+  <div class="hero-scrim" style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(18,12,9,0.42) 0%,rgba(18,12,9,0.05) 30%,rgba(18,12,9,0.12) 58%,rgba(18,12,9,0.88) 100%)"></div>
 
   <div class="hero-pie" style="position:absolute;left:0;right:0;bottom:0;padding:0 28px 74px">
     <div style="max-width:1280px;margin:0 auto;display:flex;align-items:flex-end;justify-content:space-between;gap:28px;flex-wrap:wrap">
       <div style="max-width:640px">
         <span class="eyebrow eyebrow--clara hero-entra" style="letter-spacing:0.42em">Venta en pozo · Salta Capital</span>
         <h1 class="hero-entra-2 titulo-editorial" style="font-size:clamp(26px,3.4vw,42px);color:var(--crema);margin:14px 0 0">Un símbolo de tu ascenso personal</h1>
-        <p class="hero-entra-3" style="margin:12px 0 0;color:rgba(243,234,218,0.85);font-size:15.5px;max-width:52ch;line-height:1.6">Doce unidades en pozo entre Torre Norte y Torre Sur, sobre Balcarce y Aniceto Latorre.</p>
+        <p class="hero-entra-3 hero-desc" style="margin:12px 0 0;color:rgba(243,234,218,0.85);font-size:15.5px;max-width:52ch;line-height:1.6">Doce unidades en pozo entre Torre Norte y Torre Sur, sobre Balcarce y Aniceto Latorre.</p>
       </div>
       <div class="hero-entra-3" style="display:flex;gap:12px;flex-wrap:wrap">
         <a href="#historia" style="background:var(--terracota);color:var(--crema-claro);border-radius:4px;padding:14px 26px;font-size:14.5px;font-weight:600;text-decoration:none;transition:background 180ms ease,transform 180ms ease;display:inline-flex;align-items:center;gap:9px" data-fx="fx-3">Hacer la visita</a>
@@ -83,13 +83,8 @@
     <p data-reveal="1" class="titulo-editorial t-manifiesto">La Torre nace como una manifestación arquitectónica de la verticalidad del tiempo <span class="acento">y la transformación personal.</span></p>
     <p data-reveal="1" style="margin:26px auto 0;color:var(--gris-calido);font-size:16px;max-width:58ch;line-height:1.7">Se vende en pozo, con anticipo al boleto, cuotas de obra y un único cuadro de precios vigente, administrado desde el sistema de Molins.</p>
   </div>
-  <div style="max-width:1280px;margin:0 auto;padding:0 24px clamp(70px,10vh,110px)">
-    <div data-reveal="1" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:0 32px;border-top:1px solid rgba(41,33,26,0.16)">
-      <div style="padding:22px 0"><div style="font-family:var(--serif);font-size:clamp(26px,2.6vw,34px)">12</div><div class="eyebrow" style="margin-top:6px">unidades · dos torres</div></div>
-      <div style="padding:22px 0"><div style="font-family:var(--serif);font-size:clamp(26px,2.6vw,34px)">6</div><div class="eyebrow" style="margin-top:6px">plantas por torre</div></div>
-      <div style="padding:22px 0"><div style="font-family:var(--serif);font-size:clamp(26px,2.6vw,34px)">37–55</div><div class="eyebrow" style="margin-top:6px">m² por unidad</div></div>
-      <div style="padding:22px 0"><div style="font-family:var(--serif);font-size:clamp(26px,2.6vw,34px)">PB</div><div class="eyebrow" style="margin-top:6px">cocheras y acceso</div></div>
-    </div>
+  <div style="max-width:920px;margin:0 auto;padding:0 24px clamp(70px,10vh,110px);text-align:center">
+    <p data-reveal="1" class="eyebrow" style="font-size:10.5px;line-height:2.2">12 unidades · 6 plantas por torre · 37 a 55 m² · cocheras en planta baja</p>
   </div>
 </section>
 
@@ -104,62 +99,73 @@
       <p style="margin:18px 0 0;color:rgba(243,234,218,0.8);font-size:16px;max-width:56ch;line-height:1.7">Recorré el edificio como si ya vivieras acá. Deslizá para caminar el recorrido.</p>
     </div>
   </div>
-  <div class="riel-historia" data-reveal="1">
+  <div class="visita-guia" data-reveal="1" style="margin-bottom:14px">
+    <span class="eyebrow eyebrow--clara" style="font-size:10px">01</span>
+    <span class="visita-barra"><span id="visita-progreso"></span></span>
+    <span class="eyebrow eyebrow--clara" style="font-size:10px">09</span>
+  </div>
+  <div class="riel-historia" data-reveal="1" id="riel-visita">
     <article class="panel-historia">
-      <img src="img/render-interior.jpg" alt="El acceso peatonal, de noche" loading="lazy">
+      <img src="img/render-interior.jpg" alt="La llegada" loading="lazy">
       <div class="panel-pie">
         <span class="panel-num">01</span>
-        <div>
-          <h3>La llegada</h3>
-          <p>Entrás por Balcarce. El acceso peatonal, iluminado y con verde, te recibe todos los días.</p>
-        </div>
+        <div><h3>La llegada</h3><p>Entrás por Balcarce. El acceso peatonal, iluminado y con verde, te recibe todos los días.</p></div>
       </div>
     </article>
     <article class="panel-historia">
-      <img src="img/cocheras.jpg" alt="Las cocheras en planta baja" loading="lazy">
+      <img src="img/cocheras.jpg" alt="Tu cochera" loading="lazy">
       <div class="panel-pie">
         <span class="panel-num">02</span>
-        <div>
-          <h3>Tu cochera</h3>
-          <p>En planta baja, a metros del ascensor. Llegás y ya estás en tu casa.</p>
-        </div>
+        <div><h3>Tu cochera</h3><p>En planta baja, a metros del ascensor. Llegás y ya estás en tu casa.</p></div>
       </div>
     </article>
     <article class="panel-historia">
-      <img src="img/pasillo-verde.jpg" alt="Las circulaciones con muros verdes" loading="lazy">
+      <img src="img/pasillo-verde.jpg" alt="El ascenso" loading="lazy">
       <div class="panel-pie">
         <span class="panel-num">03</span>
-        <div>
-          <h3>El ascenso</h3>
-          <p>Circulaciones con muros verdes que suben con vos, piso a piso.</p>
-        </div>
+        <div><h3>El ascenso</h3><p>Circulaciones con muros verdes que suben con vos, piso a piso.</p></div>
       </div>
     </article>
     <article class="panel-historia">
-      <img src="img/area-cocina.jpg" alt="Los interiores, cálidos y equipados" loading="lazy">
+      <img src="img/area-cocina.jpg" alt="La cocina" loading="lazy">
       <div class="panel-pie">
         <span class="panel-num">04</span>
-        <div>
-          <h3>La vida diaria</h3>
-          <p>Interiores cálidos y luminosos, pensados para el día a día de verdad.</p>
-        </div>
+        <div><h3>La cocina</h3><p>Equipada y abierta al estar: el lugar donde empieza el día.</p></div>
       </div>
     </article>
     <article class="panel-historia">
-      <img src="img/area-terraza.jpg" alt="La terraza propia" loading="lazy">
+      <img src="img/area-dormitorio.jpg" alt="El dormitorio" loading="lazy">
       <div class="panel-pie">
         <span class="panel-num">05</span>
-        <div>
-          <h3>Tu terraza</h3>
-          <p>El cielo de Salta desde tu propio piso. Sin compartirlo con nadie.</p>
-        </div>
+        <div><h3>El dormitorio</h3><p>En suite, con vestidor. Tu propio final del día.</p></div>
+      </div>
+    </article>
+    <article class="panel-historia">
+      <img src="img/area-terraza.jpg" alt="Tu terraza" loading="lazy">
+      <div class="panel-pie">
+        <span class="panel-num">06</span>
+        <div><h3>Tu terraza</h3><p>El cielo de Salta desde tu propio piso, sin compartirlo con nadie.</p></div>
+      </div>
+    </article>
+    <article class="panel-historia">
+      <img src="img/area-suite.jpg" alt="La suite" loading="lazy">
+      <div class="panel-pie">
+        <span class="panel-num">07</span>
+        <div><h3>La suite</h3><p>Comedor y estar separados de la cocina, con dos balcones propios.</p></div>
+      </div>
+    </article>
+    <article class="panel-historia">
+      <img src="img/area-estar.jpg" alt="El estar" loading="lazy">
+      <div class="panel-pie">
+        <span class="panel-num">08</span>
+        <div><h3>El estar</h3><p>Luz de tarde, altura y silencio. Así se vive acá arriba.</p></div>
       </div>
     </article>
     <article class="panel-historia panel-cierre">
       <div>
         <span class="eyebrow eyebrow--clara">El final del recorrido</span>
         <h3 style="font-family:var(--serif);font-size:clamp(28px,3.4vw,44px);color:var(--crema);margin:14px 0 0;line-height:1.1">¿En qué piso<br>te ves?</h3>
-        <a href="#unidades" style="display:inline-block;margin-top:26px;background:var(--crema);color:var(--terracota-oscuro);border-radius:4px;padding:14px 26px;font-size:14.5px;font-weight:600;text-decoration:none;transition:background 180ms ease" data-fx="fx-9">Elegir la unidad</a>
+        <a href="#unidades" class="fx-tap-g" style="display:inline-block;margin-top:26px;background:var(--crema);color:var(--terracota-oscuro);border-radius:4px;padding:14px 26px;font-size:14.5px;font-weight:600;text-decoration:none;transition:background 180ms ease" data-fx="fx-9">Elegir la unidad</a>
       </div>
     </article>
   </div>
@@ -262,19 +268,20 @@
             <span data-si="verPrecios" hidden><div style="font-size:12px;color:var(--gris-calido);margin-top:2px">Precios en USD · vigencia <span data-txt="vigencia"></span></div></span><span data-si="verPrecios" hidden></span>
           </div>
           <div style="display:flex;gap:10px;flex-wrap:wrap">
-            <button data-click="ficha.consultar" style="background:var(--terracota);color:var(--crema-claro);border:none;border-radius:4px;padding:13px 20px;font-size:14px;font-weight:600;cursor:pointer;transition:background 180ms ease,transform 180ms ease" data-fx="fx-3"><span data-txt="ficha.cta"></span></button>
+            <button data-click="ficha.consultar" style="background:var(--terracota);color:var(--crema-claro);border:none;border-radius:4px;padding:13px 20px;font-size:14px;font-weight:600;cursor:pointer;transition:background 180ms ease,transform 180ms ease" data-fx="fx-3">Consultar</button>
             <span data-si="verPrecios" hidden><button data-click="ficha.simular" style="background:transparent;color:var(--tinta);border:1px solid rgba(41,33,26,0.28);border-radius:4px;padding:13px 20px;font-size:14px;font-weight:500;cursor:pointer;transition:color 180ms ease,border-color 180ms ease" data-fx="fx-7">Simular la financiación</button></span>
           </div>
         </div>
       </div>
     </div>
-    <div data-reveal="1" style="margin-top:22px;background:#fff;border:1px solid rgba(41,33,26,0.14);border-radius:6px;padding:16px 20px;display:flex;align-items:center;gap:18px;flex-wrap:wrap">
-      <img loading="lazy" src="img/cocheras.jpg" alt="Cocheras en planta baja" style="width:132px;height:76px;object-fit:cover;border-radius:4px;flex:none">
-      <div style="flex:1;min-width:220px">
-        <strong style="font-size:15px">Cochera en planta baja</strong>
-        <div style="font-size:13px;color:var(--gris-calido)"><span data-txt="cocheraLinea"></span></div>
+    <div data-reveal="1" class="bloque-cochera fx-tap-g" style="margin-top:26px">
+      <img loading="lazy" src="img/cochera-bloque.jpg" alt="Las cocheras en planta baja del edificio">
+      <div class="cochera-txt">
+        <span class="eyebrow eyebrow--clara">Planta baja</span>
+        <h3 style="font-family:var(--serif);font-weight:400;font-size:clamp(24px,3vw,34px);margin:8px 0 0">Tu cochera, abajo de tu casa</h3>
+        <p style="margin:8px 0 0;font-size:13.5px;color:rgba(243,234,218,0.86);max-width:52ch"><span data-txt="cocheraLinea"></span></p>
+        <span data-si="verPrecios" hidden><button data-click="sumarCochera" class="fx-tap-g" style="margin-top:14px;background:var(--crema);color:var(--terracota-oscuro);border:none;border-radius:4px;padding:11px 18px;font-size:13.5px;font-weight:600;cursor:pointer" data-fx="fx-9">Sumarla en el simulador</button></span>
       </div>
-      <span data-si="verPrecios" hidden><button data-click="sumarCochera" style="background:transparent;color:var(--tinta);border:1px solid rgba(41,33,26,0.28);border-radius:4px;padding:11px 18px;font-size:14px;font-weight:500;cursor:pointer;transition:color 180ms ease,border-color 180ms ease" data-fx="fx-7">Sumarla en el simulador</button></span>
     </div>
   </div>
 </section>
@@ -358,24 +365,22 @@
       <h2 class="titulo-editorial t-seccion" style="margin-top:14px">Cuatro tipologías</h2>
       <p style="margin:18px 0 0;color:var(--gris-calido);font-size:16px;max-width:64ch;line-height:1.7">Del monoambiente al dormitorio en suite. Cada tipología con su lámina, su superficie y las unidades donde se repite.</p>
     </div>
-    <!-- Una tipología por vez, como bloques editoriales alternados: la foto de
-         SU área (la misma página del brochure que la sigue) + el nombre grande.
-         Tocar la foto abre el ambiente; el plano y las unidades, en botones. -->
-    <div style="display:flex;flex-direction:column;gap:clamp(56px,9vh,100px);margin-top:48px">
+    <!-- Las cuatro, parejas y en riel horizontal: ninguna vale más que otra.
+         La foto es la de SU área (la página del brochure que la sigue). -->
+    <div class="riel-tipologias" data-reveal="1">
       <template data-lista="tiposFicha" data-alias="t">
-        <article class="tipo-bloque" data-reveal="1">
-          <button data-click="t.verAmbiente" class="tipo-foto" title="Ver el ambiente en grande" style="padding:0;border:none;background:none;cursor:zoom-in;display:block">
-            <img data-src="t.foto" alt="" loading="lazy" style="width:100%;aspect-ratio:16/10;object-fit:cover;display:block;border-radius:6px">
+        <article class="tipo-card">
+          <button data-click="t.verAmbiente" title="Ver el ambiente en grande">
+            <img data-src="t.foto" alt="" loading="lazy">
           </button>
-          <div class="tipo-texto">
-            <span class="eyebrow">Tipología <span data-txt="t.num"></span></span>
-            <h3 style="font-family:var(--serif);font-size:clamp(36px,4.8vw,62px);font-weight:400;color:var(--tinta);margin:10px 0 0;line-height:1.02"><span data-txt="t.nombre"></span></h3>
-            <p style="font-size:15.5px;color:var(--tinta-suave);margin:16px 0 0;font-weight:500"><span data-txt="t.desc"></span></p>
-            <p style="font-size:13.5px;color:var(--gris-calido);margin:8px 0 0;line-height:1.7"><span data-txt="t.areas"></span></p>
-            <p class="eyebrow" style="margin:16px 0 0;font-size:10px"><span data-txt="t.ubic"></span></p>
-            <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:22px">
-              <button data-click="t.verPlano" style="background:var(--terracota);color:var(--crema-claro);border:none;border-radius:4px;padding:12px 18px;font-size:13.5px;font-weight:600;cursor:pointer;transition:background 180ms ease" data-fx="fx-2">Ver el plano</button>
-              <button data-click="t.verUnidades" style="background:transparent;color:var(--tinta);border:1px solid rgba(41,33,26,0.28);border-radius:4px;padding:12px 18px;font-size:13.5px;font-weight:500;cursor:pointer;transition:color 180ms ease,border-color 180ms ease" data-fx="fx-7">Ver sus unidades</button>
+          <div class="tipo-cuerpo">
+            <span class="eyebrow" style="font-size:10px">Tipología <span data-txt="t.num"></span></span>
+            <h3 style="font-family:var(--serif);font-weight:400;font-size:27px;color:var(--tinta);margin:2px 0 0;line-height:1.1"><span data-txt="t.nombre"></span></h3>
+            <p style="font-size:13.5px;color:var(--tinta-suave);margin:0;font-weight:500"><span data-txt="t.desc"></span></p>
+            <p style="font-size:12.5px;color:var(--gris-calido);margin:0;line-height:1.6"><span data-txt="t.areas"></span></p>
+            <div class="tipo-acciones">
+              <button data-click="t.verPlano" class="fx-tap-g" style="flex:1;background:var(--terracota);color:var(--crema-claro);border:none;border-radius:4px;padding:11px 12px;font-size:13px;font-weight:600;cursor:pointer" data-fx="fx-2">Ver el plano</button>
+              <button data-click="t.verUnidades" class="fx-tap-g" style="flex:1;background:transparent;color:var(--tinta);border:1px solid rgba(41,33,26,0.28);border-radius:4px;padding:11px 12px;font-size:13px;font-weight:500;cursor:pointer" data-fx="fx-7">Sus unidades</button>
             </div>
           </div>
         </article>
@@ -503,27 +508,55 @@
   </div>
 </section>
 
-<footer data-screen-label="Pie" style="background:var(--tinta-oscura);color:rgba(243,234,218,0.75)">
-  <div style="max-width:1200px;margin:0 auto;padding:46px 24px;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:28px">
-    <div>
-      <div style="font-family:var(--serif);letter-spacing:0.34em;color:var(--crema);font-size:18px">LA TORRE</div>
-      <div style="font-size:13px;margin-top:8px">Balcarce y Aniceto Latorre · Salta Capital<br>Emprendimiento en pozo · Torre Norte y Torre Sur</div>
+<footer data-screen-label="Pie" style="background:var(--tinta-oscura);color:rgba(243,234,218,0.72)">
+  <div style="max-width:1280px;margin:0 auto;padding:clamp(50px,8vh,72px) 24px 26px">
+    <div class="foot-grid">
+      <div class="foot-marca">
+        <div style="font-family:var(--serif);letter-spacing:0.34em;color:var(--crema);font-size:20px">LA TORRE</div>
+        <p style="margin:12px 0 0;font-size:13.5px;line-height:1.7;max-width:38ch">Doce unidades en pozo entre Torre Norte y Torre Sur, sobre Balcarce y Aniceto Latorre, Salta Capital.</p>
+        <a data-href="waGeneral" target="_blank" rel="noreferrer" data-click="clicWaPie" class="fx-tap-g" style="display:inline-flex;align-items:center;gap:9px;margin-top:16px;background:var(--whatsapp);color:#fff;border-radius:4px;padding:11px 18px;font-size:13.5px;font-weight:600;text-decoration:none" data-fx="fx-11">
+          <i class="fa-brands fa-whatsapp" style="font-size:17px"></i>Escribir por WhatsApp
+        </a>
+      </div>
+      <nav class="foot-col" aria-labelledby="foot-c1">
+        <h3 id="foot-c1">El edificio</h3>
+        <a href="#historia">La visita</a>
+        <a href="#unidades">Unidades</a>
+        <a href="#tipologias">Tipologías</a>
+        <a href="#avance">Avance de obra</a>
+      </nav>
+      <nav class="foot-col" aria-labelledby="foot-c2">
+        <h3 id="foot-c2">Dónde queda</h3>
+        <a href="#ubicacion">Ubicación</a>
+        <a href="https://www.google.com/maps/search/?api=1&query=Aniceto+Latorre+y+Balcarce,+Salta,+Argentina" target="_blank" rel="noreferrer">Abrir en Google Maps</a>
+      </nav>
+      <nav class="foot-col" aria-labelledby="foot-c3">
+        <h3 id="foot-c3">Quién vende</h3>
+        <a href="#contacto">Dejar una consulta</a>
+        <a data-href="waGeneral" target="_blank" rel="noreferrer">Francisco Molins</a>
+        <span style="display:block;font-size:12px;color:rgba(243,234,218,0.55);line-height:1.6;padding-top:6px">Corredor matriculado<br>CUCIS MP 251 · LPZ Grupo y Molins</span>
+      </nav>
     </div>
-    <div style="font-size:13px">Comercializa Molins Negocios Inmobiliarios<br>Francisco Molins · corredor matriculado CUCIS MP 251<br>LPZ Grupo y Molins</div>
-    <div style="font-size:13px"><span data-si="verPrecios" hidden>Precios en USD · vigencia <span data-txt="vigencia"></span><br></span>Cuadro de precios único, administrado desde el sistema de Molins<br>© 2026 Edificio La Torre</div>
+    <div class="foot-bottom">
+      <span>© 2026 Edificio La Torre · Salta Capital</span>
+      <button class="foot-ck fx-tap-g" type="button" data-click="volverAElegirCookies">Volver a elegir tus cookies</button>
+      <span><span data-si="verPrecios" hidden>Precios en USD · vigencia <span data-txt="vigencia"></span> · </span>Cuadro de precios único, administrado desde el sistema de Molins</span>
+    </div>
   </div>
 </footer>
 
-<a data-href="waGeneral" target="_blank" rel="noreferrer" data-click="clicWaFlotante" title="Escribir por WhatsApp" style="position:fixed;right:22px;bottom:22px;width:54px;height:54px;border-radius:50%;background:var(--whatsapp);color:#fff;display:flex;align-items:center;justify-content:center;font-size:25px;box-shadow:0 8px 24px rgba(18,12,9,0.35);z-index:140;text-decoration:none;transition:background 180ms ease" data-fx="fx-11">
+<a data-href="waGeneral" target="_blank" rel="noreferrer" data-click="clicWaFlotante" title="Escribir por WhatsApp" class="wa-flotante" style="position:fixed;right:22px;bottom:22px;width:54px;height:54px;border-radius:50%;background:var(--whatsapp);color:#fff;display:flex;align-items:center;justify-content:center;font-size:25px;box-shadow:0 8px 24px rgba(18,12,9,0.35);z-index:140;text-decoration:none;transition:background 180ms ease" data-fx="fx-11">
   <i class="fa-brands fa-whatsapp"></i>
 </a>
 
 <div data-si="consentVisible" hidden>
-  <div style="position:fixed;left:22px;bottom:22px;max-width:340px;background:#fff;border:1px solid rgba(41,33,26,0.16);border-radius:6px;box-shadow:0 12px 32px rgba(18,12,9,0.18);padding:18px;z-index:150">
-    <div style="font-size:14px;color:var(--tinta)">Medimos las visitas para saber qué anuncio trae cada consulta. El sitio funciona igual si no aceptás.</div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px">
-      <button data-click="aceptarMedicion" style="background:var(--terracota);color:var(--crema-claro);border:none;border-radius:4px;padding:10px 16px;font-size:13px;font-weight:600;cursor:pointer;transition:background 180ms ease" data-fx="fx-2">Aceptar la medición</button>
-      <button data-click="rechazarMedicion" style="background:transparent;color:var(--tinta);border:1px solid rgba(41,33,26,0.28);border-radius:4px;padding:10px 16px;font-size:13px;cursor:pointer;transition:border-color 180ms ease" data-fx="fx-5">Seguir sin medición</button>
+  <div class="ck-torre" role="dialog" aria-live="polite" aria-labelledby="ck-t">
+    <div class="ck-in">
+      <p id="ck-t">Medimos las visitas para saber qué anuncio trae cada consulta. El sitio funciona igual si no aceptás.</p>
+      <div class="ck-btns">
+        <button class="ck-no fx-tap-g" data-click="rechazarMedicion" type="button">Prefiero no</button>
+        <button class="ck-si fx-tap-g" data-click="aceptarMedicion" type="button">Entendido</button>
+      </div>
     </div>
   </div>
 </div>
@@ -565,6 +598,19 @@
     });
     document.querySelectorAll(".nav-menu a, .cta-header").forEach(function (a) { a.addEventListener("click", cerrar); });
     document.addEventListener("keydown", function (e) { if (e.key === "Escape") cerrar(); });
+
+    // La barra de progreso de la visita: cuánto del recorrido llevás caminado.
+    var riel = document.getElementById("riel-visita");
+    var prog = document.getElementById("visita-progreso");
+    if (riel && prog) {
+      var pintarProg = function () {
+        var max = riel.scrollWidth - riel.clientWidth;
+        var pct = max > 0 ? (riel.scrollLeft / max) * 100 : 0;
+        prog.style.width = Math.max(12, Math.min(100, pct || 12)) + "%";
+      };
+      riel.addEventListener("scroll", pintarProg, { passive: true });
+      pintarProg();
+    }
   })();
 </script>
 <script src="src/pintor.js"></script>

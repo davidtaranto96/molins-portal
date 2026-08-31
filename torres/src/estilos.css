@@ -48,7 +48,7 @@
      vertical, así que object-fit cover la recorta a lo ANCHO, no a lo alto. Mover el eje
      Y no hace nada — hay que correr la X. Con 22 % se ve el cuerpo del edificio
      y el logotipo queda fuera del recorte, así que el título se lee limpio. */
-  .hero-img { object-position: 22% center !important; }
+  .hero-img { object-position: 51% 45% !important; }  /* la marca del render, centrada */
 }
 
 
@@ -172,3 +172,129 @@ body.paso-el-hero .header-torre .nav-link:hover{color:var(--terracota)}
 @media (prefers-reduced-motion: reduce){.fx-tap-g,.fx-tap-g:active{transition:none;transform:none}}
 /* El CTA del panel solo existe en el menú del celular. */
 @media (min-width:901px){.cta-menu{display:none}}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   RONDA DE CORRECCIONES · 31/8 (las de David sobre el celular)
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* ── 6 · EL BUG DEL MENÚ ───────────────────────────────────────────────────
+   Con la página scrolleada, el header lleva `backdrop-filter`, y un ancestro
+   con backdrop-filter SE VUELVE EL BLOQUE CONTENEDOR de sus descendientes
+   `position:fixed`. El panel del menú quedaba encerrado en la franja de 62 px
+   del header en vez de cubrir la pantalla: por eso arriba de la página abría
+   bien y abajo aparecía cortado y no se podía usar. Mientras el menú está
+   abierto, el header no filtra nada (ya tiene fondo sólido). */
+body.menu-abierto .header-torre{backdrop-filter:none !important;-webkit-backdrop-filter:none !important;transform:none !important;filter:none !important}
+
+/* ── 4, 5 y 7 · EL MENÚ: jerarquía y movimiento ────────────────────────── */
+@media (max-width:900px){
+  .nav-menu{padding:96px 26px 34px;gap:0 !important;justify-content:flex-start}
+  /* Los seis enlaces pesan igual y son grandes. El CTA es el chico. */
+  .nav-menu .nav-link{font-size:clamp(27px,7.4vw,34px) !important;line-height:1.25;padding:15px 0 !important;letter-spacing:-0.01em}
+  .nav-menu .nav-link.cta-menu{width:auto !important;align-self:flex-start;margin-top:26px !important;padding:12px 22px !important;font-size:13.5px !important;letter-spacing:0.02em;line-height:1.2}
+  /* Entran escalonados cuando el panel abre. */
+  .nav-menu > *{opacity:0;transform:translateY(14px)}
+  body.menu-abierto .nav-menu > *{animation:menu-item 460ms cubic-bezier(0.22,1,0.36,1) both}
+  body.menu-abierto .nav-menu > *:nth-child(1){animation-delay:40ms}
+  body.menu-abierto .nav-menu > *:nth-child(2){animation-delay:80ms}
+  body.menu-abierto .nav-menu > *:nth-child(3){animation-delay:120ms}
+  body.menu-abierto .nav-menu > *:nth-child(4){animation-delay:160ms}
+  body.menu-abierto .nav-menu > *:nth-child(5){animation-delay:200ms}
+  body.menu-abierto .nav-menu > *:nth-child(6){animation-delay:240ms}
+  body.menu-abierto .nav-menu > *:nth-child(7){animation-delay:280ms}
+  body.menu-abierto .nav-menu > *:nth-child(8){animation-delay:320ms}
+  .nav-menu{animation:menu-panel 300ms ease both}
+  .nav-burger i{transition:transform 280ms cubic-bezier(0.22,1,0.36,1)}
+  body.menu-abierto .nav-burger i{transform:rotate(90deg)}
+}
+@keyframes menu-item{to{opacity:1;transform:none}}
+@keyframes menu-panel{from{opacity:0}to{opacity:1}}
+
+/* ── 2 · LA TORRE SE FORMA AL ABRIR ───────────────────────────────────────
+   Sin video del edificio, el render se descubre de abajo hacia arriba: la
+   torre "crece" en un segundo y medio y recién ahí arranca el paneo lento. */
+@keyframes torre-crece{from{clip-path:inset(100% 0 0 0);transform:scale(1.06)}to{clip-path:inset(0 0 0 0);transform:scale(1.02)}}
+.hero-img{animation:torre-crece 1500ms cubic-bezier(0.16,1,0.3,1) both, ken-burns 24s 1500ms ease-out both}
+
+/* ── 3 · EL WHATSAPP NO TAPA LA PORTADA ──────────────────────────────────
+   Aparece recién cuando se deja el hero. En la portada no existe. */
+.wa-flotante{opacity:0;visibility:hidden;transform:translateY(14px) scale(0.9);transition:opacity 300ms ease,transform 300ms cubic-bezier(0.22,1,0.36,1),visibility 300ms}
+body.paso-el-hero .wa-flotante{opacity:1;visibility:visible;transform:none}
+
+/* ── 10 · LAS UNIDADES, EN GRILLA Y SIN REPETIR PALABRAS ─────────────────
+   El estado se lee por color (con su leyenda), no repitiendo "Libre" doce
+   veces. Dos columnas: la lista entera entra de un vistazo. */
+.lista-unidades{display:grid !important;grid-template-columns:repeat(2,1fr);gap:8px !important}
+.lista-unidades button{flex-direction:column !important;align-items:flex-start !important;justify-content:flex-start !important;gap:2px !important;padding:12px 13px !important;min-height:74px}
+@media (min-width:1100px){.lista-unidades{grid-template-columns:1fr}.lista-unidades button{flex-direction:row !important;align-items:center !important;justify-content:space-between !important;min-height:0}}
+
+/* ── 12 · LA COCHERA: la imagen manda, el texto va adentro ───────────────*/
+.bloque-cochera{position:relative;border-radius:8px;overflow:hidden;min-height:clamp(230px,34vh,340px);display:flex;align-items:flex-end}
+.bloque-cochera img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scale(1.04);transition:transform 900ms cubic-bezier(0.22,1,0.36,1)}
+.bloque-cochera:hover img{transform:scale(1.1)}
+.bloque-cochera .cochera-txt{position:relative;padding:22px;color:var(--crema);background:linear-gradient(180deg,rgba(18,12,9,0) 0%,rgba(18,12,9,0.82) 62%);width:100%}
+
+/* ── 13 · LAS CUATRO TIPOLOGÍAS, HORIZONTALES Y PAREJAS ─────────────────*/
+.riel-tipologias{display:flex;gap:18px;overflow-x:auto;scroll-snap-type:x proximity;padding:8px 4px 22px;margin:36px -4px 0;scrollbar-width:thin}
+.tipo-card{flex:0 0 auto;width:min(320px,80vw);scroll-snap-align:start;background:#fff;border:1px solid rgba(41,33,26,0.14);border-radius:8px;overflow:hidden;display:flex;flex-direction:column;transition:border-color 260ms ease,box-shadow 260ms ease,transform 260ms ease}
+.tipo-card:hover{border-color:var(--terracota);box-shadow:0 14px 34px rgba(156,58,32,0.16);transform:translateY(-3px)}
+.tipo-card > button:first-child{padding:0;border:none;background:none;cursor:zoom-in;display:block;overflow:hidden}
+.tipo-card img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;transition:transform 700ms cubic-bezier(0.22,1,0.36,1)}
+.tipo-card:hover img{transform:scale(1.05)}
+.tipo-card .tipo-cuerpo{padding:18px 18px 20px;display:flex;flex-direction:column;gap:6px;flex:1}
+.tipo-card .tipo-acciones{display:flex;gap:8px;margin-top:auto;padding-top:14px}
+
+/* ── 9 · LA VISITA: progreso y entrada de cada capítulo ─────────────────*/
+.panel-historia{transition:transform 420ms cubic-bezier(0.22,1,0.36,1)}
+.panel-historia:hover{transform:translateY(-4px)}
+.panel-historia img{transition:transform 900ms cubic-bezier(0.22,1,0.36,1)}
+.panel-historia:hover img{transform:scale(1.04)}
+.visita-guia{display:flex;align-items:center;gap:14px;max-width:1280px;margin:0 auto;padding:0 24px}
+.visita-barra{flex:1;height:2px;background:rgba(243,234,218,0.2);border-radius:2px;overflow:hidden}
+.visita-barra span{display:block;height:100%;width:12%;background:var(--terracota-claro);border-radius:2px;transition:width 220ms ease}
+
+/* ── 14 · EL FOOTER, al patrón de Aires y Cañada ────────────────────────*/
+.foot-grid{display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:36px}
+@media (max-width:860px){.foot-grid{grid-template-columns:1fr 1fr;gap:30px 24px}.foot-marca{grid-column:1/-1}}
+@media (max-width:420px){.foot-grid{grid-template-columns:1fr}}
+.foot-col h3{font-family:var(--serif);font-weight:400;font-size:15px;color:var(--crema);margin:0 0 12px}
+.foot-col a{display:block;color:rgba(243,234,218,0.72);text-decoration:none;font-size:13.5px;padding:6px 0;transition:color 180ms ease}
+.foot-col a:hover{color:var(--crema)}
+.foot-bottom{display:flex;flex-wrap:wrap;gap:12px 22px;align-items:center;justify-content:space-between;border-top:1px solid rgba(243,234,218,0.16);margin-top:34px;padding-top:20px;font-size:12px;color:rgba(243,234,218,0.6)}
+.foot-ck{background:none;border:0;padding:8px 0;color:rgba(243,234,218,0.72);font-size:12px;cursor:pointer;text-decoration:underline;text-underline-offset:3px;font-family:inherit}
+.foot-ck:hover{color:var(--crema)}
+
+/* ── 15 · EL BANNER DE COOKIES, como el de Aires ────────────────────────
+   Barra al pie en el celular, tarjeta abajo a la izquierda en escritorio.
+   Las dos opciones pesan lo mismo: rechazar tiene que ser tan fácil como
+   aceptar, y es lo que hace honesta la tasa de aceptación del CRM. */
+.ck-torre{position:fixed;left:0;right:0;bottom:0;z-index:150;padding:14px}
+.ck-torre .ck-in{max-width:1040px;margin:0 auto;background:var(--tinta-oscura);color:var(--crema);border:1px solid rgba(243,234,218,0.18);border-radius:8px;box-shadow:0 14px 40px rgba(18,12,9,0.4);padding:16px 18px;display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.ck-torre p{flex:1 1 300px;margin:0;font-size:13.5px;line-height:1.5;color:rgba(243,234,218,0.9)}
+.ck-torre .ck-btns{display:flex;gap:8px;align-items:center;flex:0 0 auto}
+.ck-torre button{min-height:44px;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;font-family:inherit;font-size:13.5px;border-radius:4px}
+.ck-no{background:none;border:0;padding:12px 14px;color:rgba(243,234,218,0.75);text-decoration:underline;text-underline-offset:3px}
+.ck-no:hover{color:var(--crema)}
+.ck-si{background:var(--crema);color:var(--tinta-oscura);border:1px solid var(--crema);padding:12px 24px;font-weight:600}
+.ck-si:hover{background:#fff}
+@media (min-width:901px){.ck-torre{right:auto;max-width:min(440px,calc(100vw - 40px));padding:20px}.ck-torre .ck-in{flex-direction:column;align-items:flex-start}.ck-torre .ck-btns{width:100%;justify-content:flex-end}}
+@media (max-width:560px){.ck-torre{padding:0}.ck-torre .ck-in{border-radius:0;border-left:0;border-right:0;border-bottom:0}.ck-torre .ck-btns{width:100%}.ck-si{flex:1}}
+
+@media (prefers-reduced-motion: reduce){
+  .hero-img,.nav-menu,body.menu-abierto .nav-menu > *,.nav-burger i,
+  .panel-historia,.panel-historia img,.tipo-card,.tipo-card img,.bloque-cochera img,.wa-flotante{animation:none !important;transition:none !important;transform:none !important;clip-path:none !important}
+  .wa-flotante{opacity:1;visibility:visible}
+}
+
+/* ── 1 · EL HERO EN EL CELULAR ─────────────────────────────────────────────
+   La marca del render es el titular: va centrada. Para que no choque con el
+   texto, en el celular se cae el párrafo (dice lo mismo que el manifiesto de
+   abajo), el titular se achica y el velo de abajo sube. */
+@media (max-width:640px){
+  .hero-desc{display:none}
+  .hero-pie h1{font-size:23px !important;line-height:1.25 !important;margin-top:10px !important}
+  .hero-scrim{background:linear-gradient(180deg,rgba(18,12,9,0.5) 0%,rgba(18,12,9,0.1) 26%,rgba(18,12,9,0.34) 52%,rgba(18,12,9,0.9) 78%,rgba(18,12,9,0.96) 100%) !important}
+}
+/* El render de la cochera trae el cartel "Cocheras | Disponibles" quemado a la
+   izquierda: se encuadra a la derecha para que no choque con el título. */
+.bloque-cochera img{object-position:28% center}  /* la franja recortada: los autos a la vista */
