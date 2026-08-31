@@ -262,7 +262,12 @@
     const btnBase = { border: "1px solid rgba(41,33,26,0.24)", borderRadius: "4px", padding: "11px 16px", fontSize: "14px", cursor: "pointer", transition: "background 180ms ease, border-color 180ms ease", background: "#fff", color: "var(--tinta)", fontWeight: "500" };
     const btnOn = Object.assign({}, btnBase, { background: "var(--terracota)", border: "1px solid var(--terracota)", color: "var(--crema-claro)", fontWeight: "600" });
 
-    const tabBase = { display: "inline-flex", alignItems: "baseline", gap: "8px", fontFamily: "'Prata',serif", fontSize: "16px", padding: "11px 18px", borderRadius: "4px", cursor: "pointer", transition: "background 180ms ease, border-color 180ms ease", background: "#fff", color: "var(--tinta)", border: "1px solid rgba(41,33,26,0.2)" };
+    // Las tipologías dejaron de ser solapas: son TARJETAS de un carrusel
+    // horizontal (el patrón de la referencia que trajo David). El estilo vive
+    // acá porque data-estilo pinta el style entero; el riel y el snap los pone
+    // la clase .riel-tipos en estilos.css.
+    const cardBase = { display: "block", flex: "0 0 auto", width: "min(300px, 74vw)", scrollSnapAlign: "start", padding: "0", borderRadius: "6px", overflow: "hidden", cursor: "pointer", textAlign: "left", background: "#fff", border: "1px solid rgba(41,33,26,0.16)", transition: "border-color 200ms ease, box-shadow 200ms ease, transform 200ms ease" };
+    const cardOn = Object.assign({}, cardBase, { border: "1px solid var(--terracota)", boxShadow: "0 10px 30px rgba(156,58,32,0.18)", transform: "translateY(-2px)" });
     const tMeta = TIPOS.find((t) => t.nombre === st.tipoActiva) || TIPOS[0];
     const delTipo = UN.filter((x) => x.tip === tMeta.nombre);
     const libres = delTipo.filter((x) => x.estado === "libre");
@@ -314,10 +319,10 @@
         },
       },
       tipos: TIPOS.map((t) => ({
-        num: "0" + t.n, nombre: t.nombre,
+        num: "0" + t.n, nombre: t.nombre, desc: t.desc, foto: t.render,
         sel: () => { st.tipoActiva = t.nombre; pintar(); },
-        st: aEstilo(st.tipoActiva === t.nombre ? Object.assign({}, tabBase, { background: "var(--terracota)", border: "1px solid var(--terracota)", color: "var(--crema)" }) : tabBase),
-        stN: aEstilo({ fontFamily: "'Archivo',sans-serif", fontSize: "11px", opacity: "0.65" }),
+        st: aEstilo(st.tipoActiva === t.nombre ? cardOn : cardBase),
+        stN: aEstilo({ fontFamily: "'Archivo',sans-serif", fontSize: "10.5px", letterSpacing: "0.28em", color: "var(--gris-calido)" }),
       })),
       tipo: {
         pagina: tMeta.pagina, nombre: tMeta.nombre, desc: tMeta.desc, ubic: tMeta.ubic,

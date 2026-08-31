@@ -276,10 +276,18 @@
       <h2 class="titulo-editorial t-seccion" style="margin-top:14px">Cuatro tipologías</h2>
       <p style="margin:18px 0 0;color:var(--gris-calido);font-size:16px;max-width:64ch;line-height:1.7">Del monoambiente al dormitorio en suite. Cada tipología con su lámina, su superficie y las unidades donde se repite.</p>
     </div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap;margin:28px 0 16px">
+    <!-- El carrusel de la referencia: tarjetas grandes con el render de cada
+         tipología, deslizables con el dedo y con snap. Tocar una la elige y
+         la lámina de abajo la sigue (mismo data-click de siempre). -->
+    <div class="riel-tipos" data-reveal="1">
       <template data-lista="tipos" data-alias="t">
         <button data-click="t.sel" data-estilo="t.st">
-          <span data-estilo="t.stN"><span data-txt="t.num"></span></span><span data-txt="t.nombre"></span>
+          <img data-src="t.foto" alt="" loading="lazy" style="width:100%;aspect-ratio:4/3;object-fit:cover;display:block">
+          <span style="display:block;padding:14px 16px 17px">
+            <span data-estilo="t.stN"><span data-txt="t.num"></span></span>
+            <span style="display:block;font-family:'Prata',serif;font-size:21px;color:var(--tinta);margin-top:5px"><span data-txt="t.nombre"></span></span>
+            <span style="display:block;font-size:12.5px;color:var(--gris-calido);margin-top:4px"><span data-txt="t.desc"></span></span>
+          </span>
         </button>
       </template>
     </div>

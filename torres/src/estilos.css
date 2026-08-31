@@ -94,3 +94,8 @@ body.paso-el-hero .header-torre .nav-link:hover{color:var(--terracota)}
 @media (prefers-reduced-motion: reduce){
   .ken-burns,.hero-entra,.hero-entra-2,.hero-entra-3,.scroll-cue{animation:none}
 }
+
+/* El carrusel de tipologías: una fila que se desliza con snap. Las tarjetas
+   traen su estilo inyectado desde app.js (cardBase/cardOn). */
+.riel-tipos{display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x proximity;padding:6px 4px 18px;margin:30px -4px 18px;scrollbar-width:thin}
+.riel-tipos button:hover{border-color:var(--terracota)}
