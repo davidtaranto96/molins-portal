@@ -243,7 +243,15 @@
       const s = st.sel === x.id;
       return {
         id: x.id, codigo: x.codigo, sub: x.tip + " · " + x.sup + " m²", estadoLabel: em.label,
-        sel: () => { st.sel = x.id; st.tipoActiva = x.tip; pintar(); },
+        sel: () => {
+          st.sel = x.id; st.tipoActiva = x.tip; pintar();
+          // En el celular la ficha vive abajo de la lista: sin este scroll,
+          // tocar una unidad no muestra ningún cambio en pantalla.
+          if (window.matchMedia && matchMedia("(max-width: 900px)").matches) {
+            const f = document.getElementById("ficha-unidad");
+            if (f) f.scrollIntoView({ behavior: "smooth", block: "start" });
+          }
+        },
         st: aEstilo(celda(x)),
         stCode: aEstilo({ fontFamily: "var(--serif)", fontSize: "16px", fontWeight: "400", color: s ? "var(--crema)" : x.estado === "vendida" ? "var(--gris-claro)" : "var(--tinta)" }),
         stSub: aEstilo({ fontSize: "12px", color: s ? "rgba(243,234,218,0.86)" : "var(--gris-calido)" }),

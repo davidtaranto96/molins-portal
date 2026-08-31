@@ -120,3 +120,55 @@ body.paso-el-hero .header-torre .nav-link:hover{color:var(--terracota)}
 .tipo-foto img{transition:transform 600ms cubic-bezier(0.22,1,0.36,1)}
 .tipo-foto:hover img{transform:scale(1.025)}
 @media (prefers-reduced-motion: reduce){.tipo-foto img{transition:none}.tipo-foto:hover img{transform:none}}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   Mobile first de verdad (QA 31/8). Los cuatro pecados que había en el
+   celular: la nav desplegada en tres filas sobre el hero, los interludios
+   16:9 reducidos a una franja lavada, la lámina del plano cortada al medio,
+   y elegir una unidad sin ver que la ficha cambió.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* El menú hamburguesa: la nav completa solo existe de 901px para arriba. */
+.nav-burger{display:none}
+@media (max-width:900px){
+  .header-torre > div{flex-wrap:nowrap;padding:13px 18px}
+  .nav-burger{display:grid;place-items:center;width:42px;height:42px;border:1px solid currentColor;border-radius:6px;background:none;color:var(--nav-fg);cursor:pointer;font-size:16px;flex:none}
+  .nav-menu{position:fixed;top:0;left:0;right:0;bottom:0;background:var(--hueso);display:none !important;flex-direction:column;align-items:flex-start;gap:0;padding:86px 26px 26px;z-index:110}
+  body.menu-abierto .nav-menu{display:flex !important;flex-direction:column !important;flex-wrap:nowrap !important;align-items:flex-start !important;gap:0 !important;overflow-y:auto}
+  .nav-menu .nav-link{font-family:var(--serif);font-size:26px;color:var(--tinta) !important;opacity:1;padding:13px 0;border-bottom:1px solid rgba(41,33,26,0.1);width:100%}
+  body.menu-abierto .header-torre{background:var(--hueso);border-bottom:1px solid rgba(41,33,26,0.12);--nav-fg:var(--tinta);--nav-sub:var(--gris-calido)}
+  body.menu-abierto{overflow:hidden}
+  .cta-header{display:none}
+  .cta-menu{display:block;width:100%;margin-top:22px;background:var(--terracota);color:var(--crema-claro) !important;border-radius:6px;padding:16px 18px;font-size:15.5px;font-weight:600;text-align:center;text-decoration:none;border-bottom:none !important;font-family:'Archivo',sans-serif !important}
+}
+
+/* El hero en el celular: menos tracking (se cortaba), sin los laterales. */
+@media (max-width:640px){
+  .eyebrow{letter-spacing:0.22em}
+  .lateral-hero{display:none}
+  .hero-pie{padding-bottom:56px !important}
+}
+
+/* Los interludios del brochure son apaisados: en pantalla vertical se
+   muestran ENTEROS con su proporción, no como franja recortada. */
+@media (max-width:820px){
+  .interludio{height:auto !important;min-height:0 !important;aspect-ratio:16/9}
+}
+
+/* La lámina de la ficha: entera y prolija, nunca cortada al medio. */
+.lamina-ficha{object-fit:contain !important;background:#fff;height:auto !important;aspect-ratio:16/9}
+
+/* Los botones de unidad, compactos en el celular (el estilo base lo inyecta
+   app.js; acá solo se achica el respiro para que la lista no sea infinita). */
+@media (max-width:640px){
+  .lista-unidades button{padding:10px 12px !important}
+  .panel-historia{width:84vw}
+  .t-manifiesto{font-size:clamp(22px,6.4vw,30px)}
+}
+
+/* Feedback al pulsar: todo lo apretable responde. Respeta reduced-motion. */
+.fx-tap-g{transition:transform 130ms ease}
+.fx-tap-g:active{transform:scale(0.97)}
+@media (prefers-reduced-motion: reduce){.fx-tap-g,.fx-tap-g:active{transition:none;transform:none}}
+/* El CTA del panel solo existe en el menú del celular. */
+@media (min-width:901px){.cta-menu{display:none}}

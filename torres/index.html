@@ -32,7 +32,7 @@
       <span class="marca" style="font-family:var(--serif);font-size:18px;letter-spacing:0.34em">LA TORRE</span>
       <span class="marca-sub" style="font-size:10.5px;letter-spacing:0.1em">BALCARCE Y ANICETO LATORRE · SALTA</span>
     </a>
-    <nav style="display:flex;align-items:center;gap:22px;flex-wrap:wrap">
+    <nav class="nav-menu" style="display:flex;align-items:center;gap:22px;flex-wrap:wrap">
       <a href="#historia" class="nav-link" style="font-size:13.5px;letter-spacing:0.04em;text-decoration:none;transition:color 200ms ease,opacity 200ms ease">La visita</a>
       <a href="#unidades" class="nav-link" style="font-size:13.5px;letter-spacing:0.04em;text-decoration:none;transition:color 200ms ease,opacity 200ms ease">Unidades</a>
       <span data-si="verPrecios" hidden><a href="#financiacion" class="nav-link" style="font-size:13.5px;letter-spacing:0.04em;text-decoration:none;transition:color 200ms ease,opacity 200ms ease">Financiación</a></span>
@@ -40,8 +40,10 @@
       <a href="#avance" class="nav-link" style="font-size:13.5px;letter-spacing:0.04em;text-decoration:none;transition:color 200ms ease,opacity 200ms ease">Avance de obra</a>
       <a href="#ubicacion" class="nav-link" style="font-size:13.5px;letter-spacing:0.04em;text-decoration:none;transition:color 200ms ease,opacity 200ms ease">Ubicación</a>
       <a href="#contacto" class="nav-link" style="font-size:13.5px;letter-spacing:0.04em;text-decoration:none;transition:color 200ms ease,opacity 200ms ease">Contacto</a>
+      <a href="#unidades" class="nav-link cta-menu fx-tap-g">Elegir la unidad</a>
     </nav>
-    <a href="#unidades" style="background:var(--terracota);color:var(--crema-claro);border-radius:4px;padding:10px 18px;font-size:13.5px;font-weight:600;text-decoration:none;transition:background 180ms ease" data-fx="fx-2">Elegir la unidad</a>
+    <a href="#unidades" class="cta-header fx-tap-g" style="background:var(--terracota);color:var(--crema-claro);border-radius:4px;padding:10px 18px;font-size:13.5px;font-weight:600;text-decoration:none;transition:background 180ms ease" data-fx="fx-2">Elegir la unidad</a>
+    <button class="nav-burger" type="button" aria-label="Abrir el menú" aria-expanded="false"><i class="fa-solid fa-bars" aria-hidden="true"></i></button>
   </div>
 </header>
 
@@ -53,7 +55,7 @@
   <img class="hero-img ken-burns" src="img/hero-cover.jpg" alt="Edificio La Torre sobre Balcarce y Aniceto Latorre, Salta" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 30%">
   <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(18,12,9,0.42) 0%,rgba(18,12,9,0.05) 30%,rgba(18,12,9,0.12) 58%,rgba(18,12,9,0.88) 100%)"></div>
 
-  <div style="position:absolute;left:0;right:0;bottom:0;padding:0 28px 74px">
+  <div class="hero-pie" style="position:absolute;left:0;right:0;bottom:0;padding:0 28px 74px">
     <div style="max-width:1280px;margin:0 auto;display:flex;align-items:flex-end;justify-content:space-between;gap:28px;flex-wrap:wrap">
       <div style="max-width:640px">
         <span class="eyebrow eyebrow--clara hero-entra" style="letter-spacing:0.42em">Venta en pozo · Salta Capital</span>
@@ -69,9 +71,9 @@
 
   <div style="position:absolute;left:0;right:0;bottom:0;padding:0 28px 26px">
     <div style="max-width:1280px;margin:0 auto;display:flex;align-items:flex-end;justify-content:space-between;gap:16px">
-      <span class="eyebrow eyebrow--clara" style="font-size:10.5px">Torre Norte</span>
+      <span class="eyebrow eyebrow--clara lateral-hero" style="font-size:10.5px">Torre Norte</span>
       <span class="scroll-cue" aria-hidden="true" style="color:rgba(243,234,218,0.8);font-size:18px"><i class="fa-solid fa-chevron-down"></i></span>
-      <span class="eyebrow eyebrow--clara" style="font-size:10.5px">Torre Sur</span>
+      <span class="eyebrow eyebrow--clara lateral-hero" style="font-size:10.5px">Torre Sur</span>
     </div>
   </div>
 </section>
@@ -164,7 +166,7 @@
   <p style="max-width:1280px;margin:0 auto;padding:0 24px clamp(50px,7vh,80px);color:rgba(243,234,218,0.55);font-size:12px;letter-spacing:0.08em">RENDERS ILUSTRATIVOS DEL PROYECTO · DESLIZÁ →</p>
 </section>
 
-<section style="position:relative;height:min(74vh,620px);min-height:380px;overflow:hidden;background:var(--tinta-oscura)">
+<section class="interludio" style="position:relative;height:min(74vh,620px);min-height:380px;overflow:hidden;background:var(--tinta-oscura)">
   <img loading="lazy" src="img/vida-crecer.jpg" alt="Un entorno que invita a crecer, transformarse y descubrir nuevas posibilidades" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:70% center">
 </section>
 
@@ -183,7 +185,7 @@
               <span style="font-family:var(--serif);font-size:18px">Torre Norte</span>
               <span style="font-size:12px;color:var(--gris-calido)">6 unidades</span>
             </div>
-            <div style="display:flex;flex-direction:column;gap:8px">
+            <div class="lista-unidades" style="display:flex;flex-direction:column;gap:8px">
               <template data-lista="unidadesNorte" data-alias="u">
                 <button data-click="u.sel" data-estilo="u.st" data-fx="fx-5">
                   <span style="display:flex;flex-direction:column;align-items:flex-start;text-align:left;gap:1px">
@@ -203,7 +205,7 @@
               <span style="font-family:var(--serif);font-size:18px">Torre Sur</span>
               <span style="font-size:12px;color:var(--gris-calido)">6 unidades</span>
             </div>
-            <div style="display:flex;flex-direction:column;gap:8px">
+            <div class="lista-unidades" style="display:flex;flex-direction:column;gap:8px">
               <template data-lista="unidadesSur" data-alias="u">
                 <button data-click="u.sel" data-estilo="u.st" data-fx="fx-5">
                   <span style="display:flex;flex-direction:column;align-items:flex-start;text-align:left;gap:1px">
@@ -233,7 +235,7 @@
           <button data-click="verCorte" style="background:none;border:none;padding:0;font-size:13px;color:var(--terracota);cursor:pointer;text-decoration:underline;text-underline-offset:3px" data-fx="fx-6">Ver el corte de las torres</button>
         </div>
       </div>
-      <div data-reveal="1" style="background:#fff;border:1px solid rgba(41,33,26,0.14);border-radius:6px;padding:26px">
+      <div id="ficha-unidad" data-reveal="1" style="background:#fff;border:1px solid rgba(41,33,26,0.14);border-radius:6px;padding:26px;scroll-margin-top:86px">
         <div style="display:flex;justify-content:space-between;gap:14px;align-items:flex-start;flex-wrap:wrap">
           <div>
             <div style="font-family:var(--serif);font-size:clamp(24px,2.6vw,32px);line-height:1.15;color:var(--tinta)"><span data-txt="ficha.titulo"></span></div>
@@ -242,7 +244,7 @@
           <span data-estilo="ficha.stChip"><span data-txt="ficha.estadoLabel"></span></span>
         </div>
         <button data-click="ficha.verPlano" style="margin-top:18px;display:block;width:100%;background:var(--hueso);border:1px solid rgba(41,33,26,0.14);border-radius:4px;padding:0;cursor:zoom-in;overflow:hidden">
-          <img loading="lazy" data-src="ficha.plano" alt="Plano de la unidad seleccionada" style="width:100%;height:250px;object-fit:cover;object-position:88% 45%;display:block">
+          <img loading="lazy" data-src="ficha.plano" alt="Plano de la unidad seleccionada" class="lamina-ficha" style="width:100%;display:block">
           <span style="display:block;padding:8px 12px;font-size:12px;color:var(--gris-calido);text-align:left;background:#fff;border-top:1px solid rgba(41,33,26,0.12)"><i class="fa-solid fa-magnifying-glass-plus" style="margin-right:7px"></i>Ver la lámina completa con el plano</span>
         </button>
         <div style="margin-top:14px">
@@ -446,7 +448,7 @@
   </div>
 </section>
 
-<section style="position:relative;height:min(74vh,620px);min-height:380px;overflow:hidden;background:var(--tinta-oscura)">
+<section class="interludio" style="position:relative;height:min(74vh,620px);min-height:380px;overflow:hidden;background:var(--tinta-oscura)">
   <img loading="lazy" src="img/vida-transformas.jpg" alt="Aquí, no solo vives: te transformas" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:70% center">
 </section>
 
@@ -547,6 +549,22 @@
     };
     window.addEventListener("scroll", marcar, { passive: true });
     marcar();
+
+    // El menú del celular: la hamburguesa abre el panel, cualquier enlace lo
+    // cierra, y Escape también.
+    var burger = document.querySelector(".nav-burger");
+    var cerrar = function () {
+      document.body.classList.remove("menu-abierto");
+      burger.setAttribute("aria-expanded", "false");
+      burger.querySelector("i").className = "fa-solid fa-bars";
+    };
+    burger.addEventListener("click", function () {
+      var abierto = document.body.classList.toggle("menu-abierto");
+      burger.setAttribute("aria-expanded", abierto ? "true" : "false");
+      burger.querySelector("i").className = abierto ? "fa-solid fa-xmark" : "fa-solid fa-bars";
+    });
+    document.querySelectorAll(".nav-menu a, .cta-header").forEach(function (a) { a.addEventListener("click", cerrar); });
+    document.addEventListener("keydown", function (e) { if (e.key === "Escape") cerrar(); });
   })();
 </script>
 <script src="src/pintor.js"></script>
