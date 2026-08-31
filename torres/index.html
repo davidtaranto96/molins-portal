@@ -7,7 +7,7 @@
   <title>Edificio La Torre — Balcarce y Aniceto Latorre, Salta</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
-  <link href="https://fonts.googleapis.com/css2?family=Prata&family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500&family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <style>
     html { scroll-behavior: smooth; }
@@ -29,12 +29,13 @@
 <header data-screen-label="Encabezado" class="header-torre">
   <div style="max-width:1280px;margin:0 auto;padding:16px 28px;display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap">
     <a href="#" style="display:flex;flex-direction:column;line-height:1.2;text-decoration:none">
-      <span class="marca" style="font-family:'Prata',serif;font-size:18px;letter-spacing:0.34em">LA TORRE</span>
+      <span class="marca" style="font-family:var(--serif);font-size:18px;letter-spacing:0.34em">LA TORRE</span>
       <span class="marca-sub" style="font-size:10.5px;letter-spacing:0.1em">BALCARCE Y ANICETO LATORRE · SALTA</span>
     </a>
     <nav style="display:flex;align-items:center;gap:22px;flex-wrap:wrap">
+      <a href="#historia" class="nav-link" style="font-size:13.5px;letter-spacing:0.04em;text-decoration:none;transition:color 200ms ease,opacity 200ms ease">La visita</a>
       <a href="#unidades" class="nav-link" style="font-size:13.5px;letter-spacing:0.04em;text-decoration:none;transition:color 200ms ease,opacity 200ms ease">Unidades</a>
-      <a href="#financiacion" class="nav-link" style="font-size:13.5px;letter-spacing:0.04em;text-decoration:none;transition:color 200ms ease,opacity 200ms ease">Financiación</a>
+      <span data-si="verPrecios" hidden><a href="#financiacion" class="nav-link" style="font-size:13.5px;letter-spacing:0.04em;text-decoration:none;transition:color 200ms ease,opacity 200ms ease">Financiación</a></span>
       <a href="#tipologias" class="nav-link" style="font-size:13.5px;letter-spacing:0.04em;text-decoration:none;transition:color 200ms ease,opacity 200ms ease">Tipologías</a>
       <a href="#avance" class="nav-link" style="font-size:13.5px;letter-spacing:0.04em;text-decoration:none;transition:color 200ms ease,opacity 200ms ease">Avance de obra</a>
       <a href="#ubicacion" class="nav-link" style="font-size:13.5px;letter-spacing:0.04em;text-decoration:none;transition:color 200ms ease,opacity 200ms ease">Ubicación</a>
@@ -60,8 +61,8 @@
         <p class="hero-entra-3" style="margin:12px 0 0;color:rgba(243,234,218,0.85);font-size:15.5px;max-width:52ch;line-height:1.6">Doce unidades en pozo entre Torre Norte y Torre Sur, sobre Balcarce y Aniceto Latorre.</p>
       </div>
       <div class="hero-entra-3" style="display:flex;gap:12px;flex-wrap:wrap">
-        <a href="#unidades" style="background:var(--terracota);color:var(--crema-claro);border-radius:4px;padding:14px 26px;font-size:14.5px;font-weight:600;text-decoration:none;transition:background 180ms ease,transform 180ms ease;display:inline-flex;align-items:center;gap:9px" data-fx="fx-3">Elegir la unidad</a>
-        <a href="#financiacion" style="border:1px solid rgba(243,234,218,0.55);color:var(--crema);background:rgba(18,12,9,0.28);backdrop-filter:blur(4px);border-radius:4px;padding:14px 26px;font-size:14.5px;font-weight:500;text-decoration:none;transition:background 180ms ease,border-color 180ms ease" data-fx="fx-4">Simular la financiación</a>
+        <a href="#historia" style="background:var(--terracota);color:var(--crema-claro);border-radius:4px;padding:14px 26px;font-size:14.5px;font-weight:600;text-decoration:none;transition:background 180ms ease,transform 180ms ease;display:inline-flex;align-items:center;gap:9px" data-fx="fx-3">Hacer la visita</a>
+        <a href="#unidades" style="border:1px solid rgba(243,234,218,0.55);color:var(--crema);background:rgba(18,12,9,0.28);backdrop-filter:blur(4px);border-radius:4px;padding:14px 26px;font-size:14.5px;font-weight:500;text-decoration:none;transition:background 180ms ease,border-color 180ms ease" data-fx="fx-4">Elegir la unidad</a>
       </div>
     </div>
   </div>
@@ -82,12 +83,89 @@
   </div>
   <div style="max-width:1280px;margin:0 auto;padding:0 24px clamp(70px,10vh,110px)">
     <div data-reveal="1" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:0 32px;border-top:1px solid rgba(41,33,26,0.16)">
-      <div style="padding:22px 0"><div style="font-family:'Prata',serif;font-size:clamp(26px,2.6vw,34px)">12</div><div class="eyebrow" style="margin-top:6px">unidades · dos torres</div></div>
-      <div style="padding:22px 0"><div style="font-family:'Prata',serif;font-size:clamp(26px,2.6vw,34px)">6</div><div class="eyebrow" style="margin-top:6px">plantas por torre</div></div>
-      <div style="padding:22px 0"><div style="font-family:'Prata',serif;font-size:clamp(26px,2.6vw,34px)">37–55</div><div class="eyebrow" style="margin-top:6px">m² por unidad</div></div>
-      <div style="padding:22px 0"><div style="font-family:'Prata',serif;font-size:clamp(26px,2.6vw,34px)">PB</div><div class="eyebrow" style="margin-top:6px">cocheras y acceso</div></div>
+      <div style="padding:22px 0"><div style="font-family:var(--serif);font-size:clamp(26px,2.6vw,34px)">12</div><div class="eyebrow" style="margin-top:6px">unidades · dos torres</div></div>
+      <div style="padding:22px 0"><div style="font-family:var(--serif);font-size:clamp(26px,2.6vw,34px)">6</div><div class="eyebrow" style="margin-top:6px">plantas por torre</div></div>
+      <div style="padding:22px 0"><div style="font-family:var(--serif);font-size:clamp(26px,2.6vw,34px)">37–55</div><div class="eyebrow" style="margin-top:6px">m² por unidad</div></div>
+      <div style="padding:22px 0"><div style="font-family:var(--serif);font-size:clamp(26px,2.6vw,34px)">PB</div><div class="eyebrow" style="margin-top:6px">cocheras y acceso</div></div>
     </div>
   </div>
+</section>
+
+<!-- ═══ La visita: el edificio contado como recorrido, en scroll horizontal.
+     Las fotos y las frases salen del brochure — la historia ya estaba escrita,
+     acá solo se camina. ═══ -->
+<section id="historia" data-screen-label="La visita" style="background:var(--tinta-oscura);overflow:hidden">
+  <div style="max-width:1280px;margin:0 auto;padding:clamp(84px,12vh,130px) 24px 0">
+    <div data-reveal="1">
+      <span class="eyebrow eyebrow--clara">La visita</span>
+      <h2 class="titulo-editorial" style="font-size:clamp(38px,6vw,80px);color:var(--crema);margin-top:14px">Eleva tu vida,<br><span style="color:var(--terracota-claro, #D98B6F)">un piso a la vez.</span></h2>
+      <p style="margin:18px 0 0;color:rgba(243,234,218,0.8);font-size:16px;max-width:56ch;line-height:1.7">Recorré el edificio como si ya vivieras acá. Deslizá para caminar el recorrido.</p>
+    </div>
+  </div>
+  <div class="riel-historia" data-reveal="1">
+    <article class="panel-historia">
+      <img src="img/render-interior.jpg" alt="El acceso peatonal, de noche" loading="lazy">
+      <div class="panel-pie">
+        <span class="panel-num">01</span>
+        <div>
+          <h3>La llegada</h3>
+          <p>Entrás por Balcarce. El acceso peatonal, iluminado y con verde, te recibe todos los días.</p>
+        </div>
+      </div>
+    </article>
+    <article class="panel-historia">
+      <img src="img/cocheras.jpg" alt="Las cocheras en planta baja" loading="lazy">
+      <div class="panel-pie">
+        <span class="panel-num">02</span>
+        <div>
+          <h3>Tu cochera</h3>
+          <p>En planta baja, a metros del ascensor. Llegás y ya estás en tu casa.</p>
+        </div>
+      </div>
+    </article>
+    <article class="panel-historia">
+      <img src="img/pasillo-verde.jpg" alt="Las circulaciones con muros verdes" loading="lazy">
+      <div class="panel-pie">
+        <span class="panel-num">03</span>
+        <div>
+          <h3>El ascenso</h3>
+          <p>Circulaciones con muros verdes que suben con vos, piso a piso.</p>
+        </div>
+      </div>
+    </article>
+    <article class="panel-historia">
+      <img src="img/area-cocina.jpg" alt="Los interiores, cálidos y equipados" loading="lazy">
+      <div class="panel-pie">
+        <span class="panel-num">04</span>
+        <div>
+          <h3>La vida diaria</h3>
+          <p>Interiores cálidos y luminosos, pensados para el día a día de verdad.</p>
+        </div>
+      </div>
+    </article>
+    <article class="panel-historia">
+      <img src="img/area-terraza.jpg" alt="La terraza propia" loading="lazy">
+      <div class="panel-pie">
+        <span class="panel-num">05</span>
+        <div>
+          <h3>Tu terraza</h3>
+          <p>El cielo de Salta desde tu propio piso. Sin compartirlo con nadie.</p>
+        </div>
+      </div>
+    </article>
+    <article class="panel-historia panel-cierre">
+      <div>
+        <span class="eyebrow eyebrow--clara">El final del recorrido</span>
+        <h3 style="font-family:var(--serif);font-size:clamp(28px,3.4vw,44px);color:var(--crema);margin:14px 0 0;line-height:1.1">¿En qué piso<br>te ves?</h3>
+        <a href="#unidades" style="display:inline-block;margin-top:26px;background:var(--crema);color:var(--terracota-oscuro);border-radius:4px;padding:14px 26px;font-size:14.5px;font-weight:600;text-decoration:none;transition:background 180ms ease" data-fx="fx-9">Elegir la unidad</a>
+      </div>
+    </article>
+  </div>
+  <p style="max-width:1280px;margin:0 auto;padding:0 24px clamp(50px,7vh,80px);color:rgba(243,234,218,0.55);font-size:12px;letter-spacing:0.08em">RENDERS ILUSTRATIVOS DEL PROYECTO · DESLIZÁ →</p>
+</section>
+
+<section style="position:relative;height:min(74vh,620px);min-height:380px;overflow:hidden;background:var(--tinta-oscura)">
+  <img loading="lazy" src="img/vida-crecer.jpg" alt="Un entorno que invita a crecer, transformarse y descubrir nuevas posibilidades" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:70% center">
 </section>
 
 <section id="unidades" data-screen-label="Unidades">
@@ -102,7 +180,7 @@
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:18px">
           <div>
             <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px;gap:10px">
-              <span style="font-family:'Prata',serif;font-size:18px">Torre Norte</span>
+              <span style="font-family:var(--serif);font-size:18px">Torre Norte</span>
               <span style="font-size:12px;color:var(--gris-calido)">6 unidades</span>
             </div>
             <div style="display:flex;flex-direction:column;gap:8px">
@@ -122,7 +200,7 @@
           </div>
           <div>
             <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px;gap:10px">
-              <span style="font-family:'Prata',serif;font-size:18px">Torre Sur</span>
+              <span style="font-family:var(--serif);font-size:18px">Torre Sur</span>
               <span style="font-size:12px;color:var(--gris-calido)">6 unidades</span>
             </div>
             <div style="display:flex;flex-direction:column;gap:8px">
@@ -143,7 +221,7 @@
         </div>
         <div style="margin-top:14px;border:1px dashed rgba(41,33,26,0.3);border-radius:4px;padding:10px 14px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:13px;color:var(--gris-calido)">
           <span>Planta baja — acceso peatonal, cocheras y circulación</span>
-          <span>Cochera +USD 12.000</span>
+          <span data-si="verPrecios" hidden><span>Cochera +USD 12.000</span></span>
         </div>
         <div style="text-align:center;font-size:12px;color:var(--gris-claro);letter-spacing:0.08em;margin-top:10px">Calle Aniceto Latorre</div>
         <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-top:16px;border-top:1px solid rgba(41,33,26,0.12);padding-top:14px">
@@ -158,7 +236,7 @@
       <div data-reveal="1" style="background:#fff;border:1px solid rgba(41,33,26,0.14);border-radius:6px;padding:26px">
         <div style="display:flex;justify-content:space-between;gap:14px;align-items:flex-start;flex-wrap:wrap">
           <div>
-            <div style="font-family:'Prata',serif;font-size:clamp(24px,2.6vw,32px);line-height:1.15;color:var(--tinta)"><span data-txt="ficha.titulo"></span></div>
+            <div style="font-family:var(--serif);font-size:clamp(24px,2.6vw,32px);line-height:1.15;color:var(--tinta)"><span data-txt="ficha.titulo"></span></div>
             <div style="font-size:14px;color:var(--gris-calido);margin-top:5px"><span data-txt="ficha.linea"></span></div>
           </div>
           <span data-estilo="ficha.stChip"><span data-txt="ficha.estadoLabel"></span></span>
@@ -177,13 +255,13 @@
         </div>
         <div style="margin-top:18px;display:flex;justify-content:space-between;align-items:flex-end;gap:18px;flex-wrap:wrap">
           <div>
-            <div style="font-size:12px;color:var(--gris-calido)">Valor de lista</div>
-            <div style="font-family:'Prata',serif;font-size:30px;color:var(--terracota);line-height:1.2"><span data-txt="ficha.precioFmt"></span></div>
-            <div style="font-size:12px;color:var(--gris-calido);margin-top:2px">Precios en USD · vigencia <span data-txt="vigencia"></span></div>
+            <div style="font-size:12px;color:var(--gris-calido)">Valor</div>
+            <div style="font-family:var(--serif);font-size:30px;color:var(--terracota);line-height:1.2"><span data-txt="ficha.precioFmt"></span></div>
+            <span data-si="verPrecios" hidden><div style="font-size:12px;color:var(--gris-calido);margin-top:2px">Precios en USD · vigencia <span data-txt="vigencia"></span></div></span><span data-si="verPrecios" hidden></span>
           </div>
           <div style="display:flex;gap:10px;flex-wrap:wrap">
             <button data-click="ficha.consultar" style="background:var(--terracota);color:var(--crema-claro);border:none;border-radius:4px;padding:13px 20px;font-size:14px;font-weight:600;cursor:pointer;transition:background 180ms ease,transform 180ms ease" data-fx="fx-3"><span data-txt="ficha.cta"></span></button>
-            <button data-click="ficha.simular" style="background:transparent;color:var(--tinta);border:1px solid rgba(41,33,26,0.28);border-radius:4px;padding:13px 20px;font-size:14px;font-weight:500;cursor:pointer;transition:color 180ms ease,border-color 180ms ease" data-fx="fx-7">Simular la financiación</button>
+            <span data-si="verPrecios" hidden><button data-click="ficha.simular" style="background:transparent;color:var(--tinta);border:1px solid rgba(41,33,26,0.28);border-radius:4px;padding:13px 20px;font-size:14px;font-weight:500;cursor:pointer;transition:color 180ms ease,border-color 180ms ease" data-fx="fx-7">Simular la financiación</button></span>
           </div>
         </div>
       </div>
@@ -192,13 +270,14 @@
       <img loading="lazy" src="img/cocheras.jpg" alt="Cocheras en planta baja" style="width:132px;height:76px;object-fit:cover;border-radius:4px;flex:none">
       <div style="flex:1;min-width:220px">
         <strong style="font-size:15px">Cochera en planta baja</strong>
-        <div style="font-size:13px;color:var(--gris-calido)">Se suma a cualquier unidad por USD 12.000 adicionales, sujeta a disponibilidad.</div>
+        <div style="font-size:13px;color:var(--gris-calido)"><span data-txt="cocheraLinea"></span></div>
       </div>
-      <button data-click="sumarCochera" style="background:transparent;color:var(--tinta);border:1px solid rgba(41,33,26,0.28);border-radius:4px;padding:11px 18px;font-size:14px;font-weight:500;cursor:pointer;transition:color 180ms ease,border-color 180ms ease" data-fx="fx-7">Sumarla en el simulador</button>
+      <span data-si="verPrecios" hidden><button data-click="sumarCochera" style="background:transparent;color:var(--tinta);border:1px solid rgba(41,33,26,0.28);border-radius:4px;padding:11px 18px;font-size:14px;font-weight:500;cursor:pointer;transition:color 180ms ease,border-color 180ms ease" data-fx="fx-7">Sumarla en el simulador</button></span>
     </div>
   </div>
 </section>
 
+<div data-si="verPrecios" hidden>
 <section id="financiacion" data-screen-label="Financiación" style="background:var(--terracota)">
   <div style="max-width:1200px;margin:0 auto;padding:clamp(84px,12vh,130px) 24px">
     <div data-reveal="1">
@@ -219,7 +298,7 @@
         <div style="margin-top:22px">
           <div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px;font-size:13px;color:var(--gris-calido)">
             <span>Anticipo al boleto</span>
-            <strong style="font-family:'Prata',serif;font-size:18px;color:var(--terracota)"><span data-txt="sim.pctFmt"></span></strong>
+            <strong style="font-family:var(--serif);font-size:18px;color:var(--terracota)"><span data-txt="sim.pctFmt"></span></strong>
           </div>
           <input type="range" min="30" max="60" step="5" data-valor="sim.pct" data-change="sim.setPct" style="width:100%;accent-color:var(--terracota);margin-top:8px">
           <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--gris-claro)"><span>30 %</span><span>60 %</span></div>
@@ -227,7 +306,7 @@
         <div style="margin-top:20px">
           <div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px;font-size:13px;color:var(--gris-calido)">
             <span>Plazo en cuotas de obra</span>
-            <strong style="font-family:'Prata',serif;font-size:18px;color:var(--terracota)"><span data-txt="sim.cuotasFmt"></span></strong>
+            <strong style="font-family:var(--serif);font-size:18px;color:var(--terracota)"><span data-txt="sim.cuotasFmt"></span></strong>
           </div>
           <input type="range" min="12" max="36" step="6" data-valor="sim.cuotas" data-change="sim.setCuotas" style="width:100%;accent-color:var(--terracota);margin-top:8px">
           <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--gris-claro)"><span>12 cuotas</span><span>36 cuotas</span></div>
@@ -243,20 +322,20 @@
       <div data-reveal="1" style="background:var(--terracota-oscuro);border-radius:6px;padding:26px;color:var(--crema);display:flex;flex-direction:column">
         <div style="display:flex;justify-content:space-between;gap:14px;padding:11px 0;border-bottom:1px solid rgba(243,234,218,0.18);font-size:14px;align-items:baseline">
           <span style="color:rgba(243,234,218,0.75)"><span data-txt="sim.valorLabel"></span></span>
-          <span style="font-family:'Prata',serif;font-size:20px"><span data-txt="sim.valorFmt"></span></span>
+          <span style="font-family:var(--serif);font-size:20px"><span data-txt="sim.valorFmt"></span></span>
         </div>
         <div style="display:flex;justify-content:space-between;gap:14px;padding:11px 0;border-bottom:1px solid rgba(243,234,218,0.18);font-size:14px;align-items:baseline">
           <span style="color:rgba(243,234,218,0.75)">Anticipo al boleto · <span data-txt="sim.pctFmt"></span></span>
-          <span style="font-family:'Prata',serif;font-size:20px"><span data-txt="sim.antFmt"></span></span>
+          <span style="font-family:var(--serif);font-size:20px"><span data-txt="sim.antFmt"></span></span>
         </div>
         <div style="display:flex;justify-content:space-between;gap:14px;padding:11px 0;border-bottom:1px solid rgba(243,234,218,0.18);font-size:14px;align-items:baseline">
           <span style="color:rgba(243,234,218,0.75)">Saldo financiado en obra</span>
-          <span style="font-family:'Prata',serif;font-size:20px"><span data-txt="sim.saldoFmt"></span></span>
+          <span style="font-family:var(--serif);font-size:20px"><span data-txt="sim.saldoFmt"></span></span>
         </div>
         <div style="padding:16px 0 4px">
           <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap">
             <span style="font-size:14px;color:rgba(243,234,218,0.75)">Cuota mensual estimada · <span data-txt="sim.cuotasFmt"></span></span>
-            <span style="font-family:'Prata',serif;font-size:32px"><span data-txt="sim.cuotaFmt"></span></span>
+            <span style="font-family:var(--serif);font-size:32px"><span data-txt="sim.cuotaFmt"></span></span>
           </div>
           <div style="font-size:12px;color:rgba(243,234,218,0.75);margin-top:6px">Más ajuste por índice CAC (Cámara Argentina de la Construcción) sobre las cuotas de obra.</div>
         </div>
@@ -268,6 +347,7 @@
     </div>
   </div>
 </section>
+</div>
 
 <section id="tipologias" data-screen-label="Tipologías">
   <div style="max-width:1200px;margin:0 auto;padding:clamp(84px,12vh,130px) 24px">
@@ -276,33 +356,28 @@
       <h2 class="titulo-editorial t-seccion" style="margin-top:14px">Cuatro tipologías</h2>
       <p style="margin:18px 0 0;color:var(--gris-calido);font-size:16px;max-width:64ch;line-height:1.7">Del monoambiente al dormitorio en suite. Cada tipología con su lámina, su superficie y las unidades donde se repite.</p>
     </div>
-    <!-- El carrusel de la referencia: tarjetas grandes con el render de cada
-         tipología, deslizables con el dedo y con snap. Tocar una la elige y
-         la lámina de abajo la sigue (mismo data-click de siempre). -->
-    <div class="riel-tipos" data-reveal="1">
-      <template data-lista="tipos" data-alias="t">
-        <button data-click="t.sel" data-estilo="t.st">
-          <img data-src="t.foto" alt="" loading="lazy" style="width:100%;aspect-ratio:4/3;object-fit:cover;display:block">
-          <span style="display:block;padding:14px 16px 17px">
-            <span data-estilo="t.stN"><span data-txt="t.num"></span></span>
-            <span style="display:block;font-family:'Prata',serif;font-size:21px;color:var(--tinta);margin-top:5px"><span data-txt="t.nombre"></span></span>
-            <span style="display:block;font-size:12.5px;color:var(--gris-calido);margin-top:4px"><span data-txt="t.desc"></span></span>
-          </span>
-        </button>
+    <!-- Una tipología por vez, como bloques editoriales alternados: la foto de
+         SU área (la misma página del brochure que la sigue) + el nombre grande.
+         Tocar la foto abre el ambiente; el plano y las unidades, en botones. -->
+    <div style="display:flex;flex-direction:column;gap:clamp(56px,9vh,100px);margin-top:48px">
+      <template data-lista="tiposFicha" data-alias="t">
+        <article class="tipo-bloque" data-reveal="1">
+          <button data-click="t.verAmbiente" class="tipo-foto" title="Ver el ambiente en grande" style="padding:0;border:none;background:none;cursor:zoom-in;display:block">
+            <img data-src="t.foto" alt="" loading="lazy" style="width:100%;aspect-ratio:16/10;object-fit:cover;display:block;border-radius:6px">
+          </button>
+          <div class="tipo-texto">
+            <span class="eyebrow">Tipología <span data-txt="t.num"></span></span>
+            <h3 style="font-family:var(--serif);font-size:clamp(36px,4.8vw,62px);font-weight:400;color:var(--tinta);margin:10px 0 0;line-height:1.02"><span data-txt="t.nombre"></span></h3>
+            <p style="font-size:15.5px;color:var(--tinta-suave);margin:16px 0 0;font-weight:500"><span data-txt="t.desc"></span></p>
+            <p style="font-size:13.5px;color:var(--gris-calido);margin:8px 0 0;line-height:1.7"><span data-txt="t.areas"></span></p>
+            <p class="eyebrow" style="margin:16px 0 0;font-size:10px"><span data-txt="t.ubic"></span></p>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:22px">
+              <button data-click="t.verPlano" style="background:var(--terracota);color:var(--crema-claro);border:none;border-radius:4px;padding:12px 18px;font-size:13.5px;font-weight:600;cursor:pointer;transition:background 180ms ease" data-fx="fx-2">Ver el plano</button>
+              <button data-click="t.verUnidades" style="background:transparent;color:var(--tinta);border:1px solid rgba(41,33,26,0.28);border-radius:4px;padding:12px 18px;font-size:13.5px;font-weight:500;cursor:pointer;transition:color 180ms ease,border-color 180ms ease" data-fx="fx-7">Ver sus unidades</button>
+            </div>
+          </div>
+        </article>
       </template>
-    </div>
-    <div data-reveal="1" style="background:#fff;border:1px solid rgba(41,33,26,0.14);border-radius:6px;overflow:hidden">
-      <img loading="lazy" data-src="tipo.pagina" alt="Lámina de la tipología seleccionada" data-click="tipo.verLamina" style="width:100%;aspect-ratio:16/9;object-fit:cover;display:block;cursor:zoom-in">
-      <div style="display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;padding:16px 20px;border-top:1px solid rgba(41,33,26,0.12)">
-        <div>
-          <div style="font-family:'Prata',serif;font-size:20px"><span data-txt="tipo.nombre"></span> — <span data-txt="tipo.desc"></span></div>
-          <div style="font-size:13px;color:var(--gris-calido);margin-top:3px"><span data-txt="tipo.ubic"></span> · <span data-txt="tipo.desde"></span> · vigencia <span data-txt="vigencia"></span></div>
-        </div>
-        <div style="display:flex;gap:10px;flex-wrap:wrap">
-          <button data-click="tipo.verUnidades" style="background:var(--terracota);color:var(--crema-claro);border:none;border-radius:4px;padding:12px 18px;font-size:14px;font-weight:600;cursor:pointer;transition:background 180ms ease" data-fx="fx-2">Ver las unidades de esta tipología</button>
-          <button data-click="tipo.verAmbiente" style="background:transparent;color:var(--tinta);border:1px solid rgba(41,33,26,0.28);border-radius:4px;padding:12px 18px;font-size:14px;font-weight:500;cursor:pointer;transition:color 180ms ease,border-color 180ms ease" data-fx="fx-7">Ver el ambiente</button>
-        </div>
-      </div>
     </div>
   </div>
 </section>
@@ -349,11 +424,11 @@
         <img loading="lazy" src="img/mapa-ubicacion.jpg" alt="El edificio y su entorno, sobre Balcarce y Aniceto Latorre" data-click="verMapa" style="width:100%;display:block;cursor:zoom-in">
       </div>
       <div data-reveal="1" style="color:var(--crema)">
-        <div class="fila-fina" style="border-top:none"><span style="font-family:'Prata',serif;font-size:19px">Portal Salta Shopping</span><span style="font-size:13px;color:rgba(243,234,218,0.75)">600 metros</span></div>
-        <div class="fila-fina"><span style="font-family:'Prata',serif;font-size:19px">Paseo Balcarce</span><span style="font-size:13px;color:rgba(243,234,218,0.75)">700 metros</span></div>
-        <div class="fila-fina"><span style="font-family:'Prata',serif;font-size:19px">Hospital Materno Infantil</span><span style="font-size:13px;color:rgba(243,234,218,0.75)">700 metros</span></div>
+        <div class="fila-fina" style="border-top:none"><span style="font-family:var(--serif);font-size:19px">Portal Salta Shopping</span><span style="font-size:13px;color:rgba(243,234,218,0.75)">600 metros</span></div>
+        <div class="fila-fina"><span style="font-family:var(--serif);font-size:19px">Paseo Balcarce</span><span style="font-size:13px;color:rgba(243,234,218,0.75)">700 metros</span></div>
+        <div class="fila-fina"><span style="font-family:var(--serif);font-size:19px">Hospital Materno Infantil</span><span style="font-size:13px;color:rgba(243,234,218,0.75)">700 metros</span></div>
         <a href="https://www.google.com/maps/search/?api=1&query=Aniceto+Latorre+y+Balcarce,+Salta,+Argentina" target="_blank" rel="noreferrer" class="fila-fina" style="color:var(--crema);text-decoration:none;transition:opacity 180ms ease" data-fx="fx-10">
-          <span style="font-family:'Prata',serif;font-size:19px"><i class="fa-solid fa-location-dot" style="margin-right:10px"></i>Abrir en Google Maps</span>
+          <span style="font-family:var(--serif);font-size:19px"><i class="fa-solid fa-location-dot" style="margin-right:10px"></i>Abrir en Google Maps</span>
           <span style="font-size:13px;color:rgba(243,234,218,0.75)">Aniceto Latorre y Balcarce</span>
         </a>
       </div>
@@ -366,9 +441,13 @@
   <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(18,12,9,0.15) 55%,rgba(18,12,9,0.6) 100%)"></div>
   <div data-reveal="1" style="position:absolute;left:0;right:0;bottom:34px;text-align:center;padding:0 24px">
     <span class="eyebrow eyebrow--clara">El acceso</span>
-    <div style="font-family:'Prata',serif;font-size:clamp(20px,2.6vw,30px);color:var(--crema);margin-top:10px">Acceso peatonal y circulaciones</div>
+    <div style="font-family:var(--serif);font-size:clamp(20px,2.6vw,30px);color:var(--crema);margin-top:10px">Acceso peatonal y circulaciones</div>
     <div style="font-size:12px;color:rgba(243,234,218,0.7);margin-top:6px">Render ilustrativo del proyecto</div>
   </div>
+</section>
+
+<section style="position:relative;height:min(74vh,620px);min-height:380px;overflow:hidden;background:var(--tinta-oscura)">
+  <img loading="lazy" src="img/vida-transformas.jpg" alt="Aquí, no solo vives: te transformas" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:70% center">
 </section>
 
 <section id="contacto" data-screen-label="Contacto">
@@ -378,7 +457,7 @@
       <h2 class="titulo-editorial t-seccion" style="margin-top:14px">Consultar por una unidad</h2>
       <p style="margin:18px 0 0;color:var(--gris-calido);font-size:16px;max-width:56ch;line-height:1.7">La consulta entra al sistema de Molins con la unidad que te interesa y el aviso del que saliste, y la sigue una persona. Acá no se reserva ni se seña online.</p>
       <div style="margin-top:26px;background:#fff;border:1px solid rgba(41,33,26,0.14);border-radius:6px;padding:20px;display:flex;gap:16px;align-items:center;flex-wrap:wrap">
-        <div style="width:56px;height:56px;background:var(--terracota);color:var(--crema);font-family:'Prata',serif;font-size:22px;display:flex;align-items:center;justify-content:center;border-radius:4px;flex:none">FM</div>
+        <div style="width:56px;height:56px;background:var(--terracota);color:var(--crema);font-family:var(--serif);font-size:22px;display:flex;align-items:center;justify-content:center;border-radius:4px;flex:none">FM</div>
         <div style="flex:1;min-width:210px">
           <div style="font-weight:600;font-size:16px">Francisco Molins</div>
           <div style="font-size:13px;color:var(--gris-calido)">Corredor inmobiliario matriculado · CUCIS MP 251</div>
@@ -425,11 +504,11 @@
 <footer data-screen-label="Pie" style="background:var(--tinta-oscura);color:rgba(243,234,218,0.75)">
   <div style="max-width:1200px;margin:0 auto;padding:46px 24px;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:28px">
     <div>
-      <div style="font-family:'Prata',serif;letter-spacing:0.34em;color:var(--crema);font-size:18px">LA TORRE</div>
+      <div style="font-family:var(--serif);letter-spacing:0.34em;color:var(--crema);font-size:18px">LA TORRE</div>
       <div style="font-size:13px;margin-top:8px">Balcarce y Aniceto Latorre · Salta Capital<br>Emprendimiento en pozo · Torre Norte y Torre Sur</div>
     </div>
     <div style="font-size:13px">Comercializa Molins Negocios Inmobiliarios<br>Francisco Molins · corredor matriculado CUCIS MP 251<br>LPZ Grupo y Molins</div>
-    <div style="font-size:13px">Precios en USD · vigencia <span data-txt="vigencia"></span><br>Cuadro de precios único, administrado desde el CRM<br>© 2026 Edificio La Torre</div>
+    <div style="font-size:13px"><span data-si="verPrecios" hidden>Precios en USD · vigencia <span data-txt="vigencia"></span><br></span>Cuadro de precios único, administrado desde el sistema de Molins<br>© 2026 Edificio La Torre</div>
   </div>
 </footer>
 
@@ -451,7 +530,7 @@
   <div data-click="modalCerrar" style="position:fixed;inset:0;background:rgba(18,12,9,0.92);z-index:200;display:flex;align-items:center;justify-content:center;padding:26px;cursor:zoom-out">
     <div style="max-width:1100px;width:100%">
       <div style="display:flex;justify-content:space-between;align-items:center;gap:14px;color:var(--crema);margin-bottom:10px">
-        <span style="font-family:'Prata',serif;font-size:18px"><span data-txt="modalTitulo"></span></span>
+        <span style="font-family:var(--serif);font-size:18px"><span data-txt="modalTitulo"></span></span>
         <button data-click="modalCerrar" style="background:rgba(243,234,218,0.12);border:1px solid rgba(243,234,218,0.3);color:var(--crema);width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:15px" data-fx="fx-12"><i class="fa-solid fa-xmark"></i></button>
       </div>
       <img loading="lazy" data-src="modalSrc" alt="Vista ampliada" style="width:100%;max-height:82vh;object-fit:contain;background:#fff;border-radius:4px;display:block">

@@ -32,6 +32,10 @@
       whatsapp: "5493874153669",
       vigenciaPrecios: "agosto 2026",
       campaniaPorDefecto: "organico",
+      // Los precios van tapados por decisión de David (31/8): primero se vende
+      // el negocio, el número se conversa. Volver a mostrarlos es
+      // window.TORRE_CONFIG = { mostrarPrecios: true } — nada más.
+      mostrarPrecios: false,
     },
     window.TORRE_CONFIG || {}
   );
@@ -59,10 +63,10 @@
   ];
 
   const TIPOS = [
-    { n: 1, nombre: "Horizonte", slug: "horizonte", desc: "Monoambiente · 37 m²", pagina: "img/plano-tipologia-1-horizonte.jpg", render: "img/render-tipologia-1.jpg", ambiente: "Kitchenette y estar — render ilustrativo", ubic: "Unidad 6.º A · Torre Norte" },
-    { n: 2, nombre: "Evolución", slug: "evolucion", desc: "Monoambiente con terraza · 42 m²", pagina: "img/plano-tipologia-2-evolucion.jpg", render: "img/render-tipologia-2.jpg", ambiente: "Terraza propia — render ilustrativo", ubic: "Unidad 5.º A · Torre Norte" },
-    { n: 3, nombre: "Esencia", slug: "esencia", desc: "1 dormitorio en suite · 55 m²", pagina: "img/plano-tipologia-3-esencia.jpg", render: "img/render-tipologia-3.jpg", ambiente: "Dormitorio en suite — render ilustrativo", ubic: "Unidades 1.º a 4.º A · Torre Norte" },
-    { n: 4, nombre: "Cúspide", slug: "cuspide", desc: "1 dormitorio en suite · 55 m²", pagina: "img/plano-tipologia-4-cuspide.jpg", render: "img/render-tipologia-4.jpg", ambiente: "Estar y comedor — render ilustrativo", ubic: "Unidades 1.º a 6.º B · Torre Sur" },
+    { n: 1, nombre: "Horizonte", slug: "horizonte", desc: "Monoambiente · 37 m²", pagina: "img/plano-tipologia-1-horizonte.jpg", render: "img/render-tipologia-1.jpg", ambiente: "Kitchenette y estar — render ilustrativo", ubic: "Unidad 6.º A · Torre Norte", areas: "Dormitorio · Kitchenette · Baño", fotoArea: "img/area-dormitorio.jpg" },
+    { n: 2, nombre: "Evolución", slug: "evolucion", desc: "Monoambiente con terraza · 42 m²", pagina: "img/plano-tipologia-2-evolucion.jpg", render: "img/render-tipologia-2.jpg", ambiente: "Terraza propia — render ilustrativo", ubic: "Unidad 5.º A · Torre Norte", areas: "Dormitorio · Kitchenette · Baño · Terraza propia", fotoArea: "img/area-terraza.jpg" },
+    { n: 3, nombre: "Esencia", slug: "esencia", desc: "1 dormitorio en suite · 55 m²", pagina: "img/plano-tipologia-3-esencia.jpg", render: "img/render-tipologia-3.jpg", ambiente: "Dormitorio en suite — render ilustrativo", ubic: "Unidades 1.º a 4.º A · Torre Norte", areas: "Cocina · Comedor-estar · Dormitorio en suite · 2 balcones", fotoArea: "img/area-suite.jpg" },
+    { n: 4, nombre: "Cúspide", slug: "cuspide", desc: "1 dormitorio en suite · 55 m²", pagina: "img/plano-tipologia-4-cuspide.jpg", render: "img/render-tipologia-4.jpg", ambiente: "Estar y comedor — render ilustrativo", ubic: "Unidades 1.º a 6.º B · Torre Sur", areas: "Cocina · Comedor-estar · Dormitorio en suite · 2 balcones", fotoArea: "img/area-estar.jpg" },
   ];
 
   const COCHERA = 12000;
@@ -241,7 +245,7 @@
         id: x.id, codigo: x.codigo, sub: x.tip + " · " + x.sup + " m²", estadoLabel: em.label,
         sel: () => { st.sel = x.id; st.tipoActiva = x.tip; pintar(); },
         st: aEstilo(celda(x)),
-        stCode: aEstilo({ fontFamily: "'Prata',serif", fontSize: "16px", fontWeight: "400", color: s ? "var(--crema)" : x.estado === "vendida" ? "var(--gris-claro)" : "var(--tinta)" }),
+        stCode: aEstilo({ fontFamily: "var(--serif)", fontSize: "16px", fontWeight: "400", color: s ? "var(--crema)" : x.estado === "vendida" ? "var(--gris-claro)" : "var(--tinta)" }),
         stSub: aEstilo({ fontSize: "12px", color: s ? "rgba(243,234,218,0.86)" : "var(--gris-calido)" }),
         stEstado: aEstilo({ fontSize: "11px", fontWeight: "600", letterSpacing: "0.02em", color: s ? "rgba(243,234,218,0.9)" : em.color }),
         stDot: aEstilo({ width: "8px", height: "8px", borderRadius: "50%", background: s ? "var(--crema)" : em.color, flex: "none" }),
@@ -275,6 +279,24 @@
 
     return {
       vigencia: CFG.vigenciaPrecios,
+      verPrecios: !!CFG.mostrarPrecios,
+      cocheraLinea: CFG.mostrarPrecios
+        ? "Se suma a cualquier unidad por USD 12.000 adicionales, sujeta a disponibilidad."
+        : "Se suma a cualquier unidad, sujeta a disponibilidad. El valor se conversa al consultar.",
+      // Las tipologías como bloques editoriales, una por una, con la foto de
+      // su área (las mismas páginas del brochure que siguen a cada tipología).
+      tiposFicha: TIPOS.map((t) => ({
+        num: "0" + t.n, nombre: t.nombre, desc: t.desc, ubic: t.ubic, areas: t.areas, foto: t.fotoArea,
+        verPlano: () => abrirModal(t.pagina, "Tipología " + t.n + " — " + t.nombre),
+        verAmbiente: () => abrirModal(t.render, t.nombre + " · " + t.ambiente),
+        verUnidades: () => {
+          const del = UN.filter((y) => y.tip === t.nombre);
+          const x = del.find((y) => y.estado === "libre") || del[0];
+          if (x) st.sel = x.id;
+          clic("ver_unidades_tipologia", t.slug);
+          pintar(); irA("unidades");
+        },
+      })),
       unidadesNorte: UN.filter((x) => x.id.endsWith("A")).map(cel),
       unidadesSur: UN.filter((x) => x.id.endsWith("B")).map(cel),
       ficha: {
@@ -284,7 +306,7 @@
         stChip: aEstilo({ fontSize: "12px", fontWeight: "600", color: emSel.color, border: "1px solid " + emSel.color, borderRadius: "999px", padding: "5px 14px", whiteSpace: "nowrap" }),
         plano: tSel.pagina,
         specs: specs(selU),
-        precioFmt: fmt(selU.precio),
+        precioFmt: CFG.mostrarPrecios ? fmt(selU.precio) : "A consultar",
         cta: selU.estado === "libre" ? "Consultar por el " + selU.codigo : "Consultar por disponibilidad",
         verPlano: () => abrirModal(tSel.pagina, "Plano — " + selU.codigo + " · " + selU.tip),
         consultar: () => {
@@ -297,7 +319,7 @@
       },
       sim: {
         uId: st.simU,
-        opciones: UN.map((x) => ({ id: x.id, label: x.codigo + " · " + x.tip + " · " + x.sup + " m² — " + fmt(x.precio) + (x.estado !== "libre" ? " · " + estadoMeta(x.estado).label.toLowerCase() : "") })),
+        opciones: UN.map((x) => ({ id: x.id, label: x.codigo + " · " + x.tip + " · " + x.sup + " m²" + (CFG.mostrarPrecios ? " — " + fmt(x.precio) : "") + (x.estado !== "libre" ? " · " + estadoMeta(x.estado).label.toLowerCase() : "") })),
         setU: (e) => { st.simU = e.target.value; pintar(); },
         pct: st.simPct, pctFmt: st.simPct + " %",
         setPct: (e) => { st.simPct = parseInt(e.target.value, 10); pintar(); },
