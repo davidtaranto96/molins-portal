@@ -414,7 +414,7 @@
           fp.barrio ? { k: "Barrio", v: fp.barrio } : null,
           { k: "Zona", v: fp.zona },
           { k: "Corredor a cargo", v: "Francisco Molins" },
-          { k: "Matrícula", v: "CUCIS MP 251" }
+          { k: "Matrícula", v: "CUCIS 251" }
         ].filter(Boolean),
         mDescParrafos: descripcionDe(fp),
         mSimilares: sim.map(function (x) {
