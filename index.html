@@ -37,6 +37,8 @@
   .chip-activo button{border:none;background:rgba(17,60,61,.1);color:var(--verde);width:20px;height:20px;border-radius:50%;cursor:pointer;display:grid;place-items:center;font-size:12px;line-height:1;transition:background .15s}
   .chip-activo button:hover{background:var(--verde);color:#fff}
   .segmento{transition:transform .15s,background .2s,color .2s,border-color .2s}
+  .filtros-btn{gap:7px;margin-left:auto}
+  .filtros-panel{animation:rise .3s cubic-bezier(.22,.61,.36,1) both}
   .segmento:active{transform:scale(.96)}
   .fila-reco{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;padding:4px 2px 10px;-webkit-overflow-scrolling:touch;scrollbar-width:thin}
   .fila-reco > *{scroll-snap-align:start;flex:0 0 240px}
@@ -60,27 +62,33 @@
   @keyframes tilde{0%{transform:scale(.4);opacity:0}60%{transform:scale(1.12);opacity:1}100%{transform:scale(1)}}
   .boton:active{transform:scale(.97)}
   @media (prefers-reduced-motion:reduce){.tarjeta,.tarjeta__foto,.reco,.reco img,.fav,.chip-activo,#fichaCaja,.foto-entra > [role=img],.tilde,.esqueleto::after{animation:none!important;transition:none!important}.tarjeta:hover{transform:none}}
-  /* ── el reel de la portada ── */
-  .reel{position:absolute;inset:0;overflow:hidden;background:var(--verde)}
+  /* ── la portada ── */
+  .portada{position:relative;height:min(66vh,660px);min-height:480px;background:var(--verde-noche);color:#fff;overflow:hidden}
+  .reel{position:absolute;inset:0;overflow:hidden}
   .reel__poster{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
-  .reel__capa{position:absolute;inset:0;opacity:0;transition:opacity 1.3s ease}
+  .reel__capa{position:absolute;inset:0;opacity:0;transition:opacity 1.4s ease}
   .reel__capa.es-visible{opacity:1}
-  .reel__capa img,.reel__capa video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
-  @keyframes kbA{from{transform:scale(1.04) translate3d(1.2%,.6%,0)}to{transform:scale(1.13) translate3d(-1.2%,-1%,0)}}
-  @keyframes kbB{from{transform:scale(1.12) translate3d(-1%,.8%,0)}to{transform:scale(1.04) translate3d(1%,-.6%,0)}}
-  .reel__kb--a{animation:kbA 9s linear both;will-change:transform}
-  .reel__kb--b{animation:kbB 9s linear both;will-change:transform}
-  .reel__pie{position:absolute;right:clamp(20px,4vw,56px);bottom:22px;max-width:300px;display:flex;flex-direction:column;align-items:flex-end;text-align:right;gap:3px;color:#fff;z-index:2}
+  .reel__capa img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+  .reel__velo{position:absolute;inset:0;background:linear-gradient(180deg,rgba(9,30,31,.42) 0%,rgba(9,30,31,0) 22%,rgba(9,30,31,0) 48%,rgba(9,30,31,.78) 100%);pointer-events:none}
+  @keyframes kbA{from{transform:scale(1.02) translate3d(.6%,.3%,0)}to{transform:scale(1.08) translate3d(-.6%,-.5%,0)}}
+  @keyframes kbB{from{transform:scale(1.08) translate3d(-.5%,.4%,0)}to{transform:scale(1.02) translate3d(.5%,-.3%,0)}}
+  .reel__kb--a{animation:kbA 8s linear both;will-change:transform}
+  .reel__kb--b{animation:kbB 8s linear both;will-change:transform}
+  .portada__marca{position:absolute;left:clamp(20px,4vw,56px);top:clamp(22px,3.5vw,40px);display:flex;align-items:center;gap:14px;animation:rise .7s cubic-bezier(.22,.61,.36,1) both;z-index:2}
+  .portada__marca img{width:clamp(44px,5vw,60px);height:clamp(44px,5vw,60px);border-radius:12px;object-fit:cover;box-shadow:0 10px 26px rgba(0,0,0,.35)}
+  .portada__marca h1{margin:0;font-family:'Libre Caslon Text',Georgia,serif;font-weight:700;font-size:clamp(22px,2.6vw,32px);line-height:1;letter-spacing:.01em;color:#fff;text-shadow:0 2px 14px rgba(0,0,0,.35)}
+  .portada__marca p{margin:5px 0 0;font-size:11.5px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,.8)}
+  .reel__pie{position:absolute;left:clamp(20px,4vw,56px);bottom:clamp(64px,8vh,84px);max-width:min(520px,70vw);display:flex;flex-direction:column;gap:3px;color:#fff;z-index:2}
   .reel__pie--entra .reel__t,.reel__pie--entra .reel__s,.reel__pie--entra .reel__cta{animation:rise .6s cubic-bezier(.22,.61,.36,1) both}
   .reel__pie--entra .reel__s{animation-delay:.08s}.reel__pie--entra .reel__cta{animation-delay:.16s}
   .reel__n{font-size:11px;font-weight:700;letter-spacing:.2em;color:rgba(255,255,255,.7)}
-  .reel__t{font-family:'Libre Caslon Text',Georgia,serif;font-size:clamp(18px,1.6vw,22px);font-weight:700;line-height:1.15;color:#fff}
-  .reel__s{font-size:13px;color:rgba(255,255,255,.82)}
-  .reel__cta{margin-top:4px;font-size:13px;font-weight:600;color:var(--naranja-palido);display:inline-flex;align-items:center;gap:6px;min-height:32px}
+  .reel__t{font-family:'Libre Caslon Text',Georgia,serif;font-size:clamp(22px,2.4vw,32px);font-weight:700;line-height:1.1;color:#fff;text-shadow:0 2px 16px rgba(0,0,0,.35)}
+  .reel__s{font-size:14px;color:rgba(255,255,255,.88);text-shadow:0 1px 8px rgba(0,0,0,.35)}
+  .reel__cta{margin-top:6px;font-size:13.5px;font-weight:600;color:var(--naranja-palido);display:inline-flex;align-items:center;gap:6px;min-height:32px;width:max-content}
   .reel__cta::after{content:"→";transition:transform .2s}
   .reel__cta:hover::after{transform:translateX(3px)}
-  .reel__mando{display:flex;align-items:center;gap:8px;margin-top:6px}
-  .reel__prev,.reel__next{width:34px;height:34px;border-radius:50%;border:1px solid rgba(255,255,255,.4);background:rgba(9,30,31,.35);color:#fff;cursor:pointer;display:grid;place-items:center;transition:background .2s,transform .15s}
+  .reel__mando{display:flex;align-items:center;gap:8px;margin-top:8px}
+  .reel__prev,.reel__next{width:34px;height:34px;border-radius:50%;border:1px solid rgba(255,255,255,.4);background:rgba(9,30,31,.35);color:#fff;cursor:pointer;display:grid;place-items:center;transition:background .2s,transform .15s;backdrop-filter:blur(6px)}
   .reel__prev:hover,.reel__next:hover{background:rgba(9,30,31,.7)}
   .reel__prev:active,.reel__next:active{transform:scale(.94)}
   .reel__puntos{display:flex;gap:5px;align-items:center}
@@ -88,10 +96,83 @@
   .reel__punto.es-activo{width:30px;background:rgba(255,255,255,.35)}
   .reel__punto::after{content:"";position:absolute;inset:0;background:#fff;transform-origin:left;transform:scaleX(0)}
   .reel__punto.es-activo.es-corriendo::after{transition:transform var(--dur,0ms) linear;transform:scaleX(1)}
-  .reel__punto:focus-visible,.reel__prev:focus-visible,.reel__next:focus-visible,.reel__cta:focus-visible{outline:2px solid var(--naranja);outline-offset:2px}
-  @media (max-width:899px){.reel__pie{position:static;align-items:flex-start;text-align:left;max-width:none;margin:22px 20px 0;padding-top:16px;border-top:1px solid rgba(255,255,255,.18)}}
-  @media (prefers-reduced-motion:reduce){.reel__kb--a,.reel__kb--b{animation:none}.reel__capa{transition:none}.reel__pie--entra *{animation:none!important}}
-    input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:6px;border-radius:6px;background:var(--borde-3);outline:none}
+  .portada__bajar{position:absolute;right:clamp(20px,4vw,56px);bottom:clamp(64px,8vh,84px);display:inline-flex;align-items:center;gap:10px;font-size:13px;color:rgba(255,255,255,.85);z-index:2;padding:10px 0}
+  .portada__bajar svg{animation:bajar 2.2s ease-in-out infinite}
+  .portada__bajar:hover{color:#fff}
+  @keyframes bajar{0%,100%{transform:translateY(0)}50%{transform:translateY(4px)}}
+  .reel__punto:focus-visible,.reel__prev:focus-visible,.reel__next:focus-visible,.reel__cta:focus-visible,.portada__bajar:focus-visible{outline:2px solid var(--naranja);outline-offset:2px}
+  @media (max-width:899px){.portada{height:min(72vh,640px);min-height:480px}.reel__pie{bottom:58px;max-width:calc(100vw - 40px)}.reel__t{font-size:22px}.portada__bajar{display:none}.portada__marca h1{font-size:22px}}
+  /* ── el buscador flotante ── */
+  .buscador{position:sticky;top:calc(var(--barra,84px) + 12px);z-index:90;max-width:980px;margin:-31px auto 0;padding:0 16px;transition:max-width .35s cubic-bezier(.22,.61,.36,1)}
+  .buscador__caja{display:flex;align-items:center;gap:4px;background:rgba(255,255,255,.9);backdrop-filter:blur(18px) saturate(1.5);-webkit-backdrop-filter:blur(18px) saturate(1.5);border:1px solid rgba(255,255,255,.7);border-radius:999px;padding:6px 6px 6px 18px;box-shadow:0 18px 50px rgba(9,30,31,.22),0 1px 0 rgba(255,255,255,.6) inset;min-height:62px;transition:box-shadow .3s,min-height .3s,padding .3s}
+  .buscador__texto{display:flex;align-items:center;gap:10px;flex:1 1 220px;min-width:0;color:var(--verde-claro)}
+  .buscador__texto input{flex:1;min-width:0;border:none;background:none;font-size:15.5px;color:var(--tinta);outline:none;padding:10px 0;-webkit-appearance:none}
+  .buscador__texto input::placeholder{color:var(--gris)}
+  .buscador__texto input::-webkit-search-cancel-button{display:none}
+  .buscador__borrar{border:none;background:var(--hueso-3);color:var(--tinta-suave);width:24px;height:24px;border-radius:50%;cursor:pointer;display:grid;place-items:center;flex:none}
+  .buscador__sep{width:1px;height:28px;background:var(--borde-2);flex:none;margin:0 6px}
+  .buscador__sel{appearance:none;-webkit-appearance:none;border:none;background:transparent url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23113c3d' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") no-repeat right 8px center/14px;padding:10px 28px 10px 10px;font-size:14.5px;font-weight:500;color:var(--tinta);cursor:pointer;border-radius:999px;min-height:44px;max-width:200px;transition:background-color .2s}
+  .buscador__sel:hover{background-color:var(--hueso-3)}
+  .buscador__sel:focus-visible{outline:none;box-shadow:0 0 0 3px var(--verde-suave)}
+  .buscador__ir{flex:none;display:inline-flex;align-items:center;gap:8px;background:var(--naranja);color:var(--verde-noche);border:none;border-radius:999px;font-weight:600;font-size:14.5px;min-height:48px;padding:0 20px;cursor:pointer;transition:transform .15s,background .2s,box-shadow .2s;box-shadow:0 6px 16px rgba(246,101,3,.3)}
+  .buscador__ir:hover{background:var(--naranja-claro)}
+  .buscador__ir:active{transform:scale(.97)}
+  .buscador.es-pegado{max-width:820px}
+  .buscador.es-pegado .buscador__caja{min-height:52px;padding:4px 4px 4px 16px;box-shadow:0 10px 30px rgba(9,30,31,.18);border-color:var(--borde)}
+  .buscador.es-pegado .buscador__ir{min-height:42px;padding:0 16px}
+  .buscador.es-pegado .buscador__sel{min-height:40px}
+  @media (max-width:899px){.buscador{top:calc(var(--barra,64px) + 8px);margin-top:-27px;padding:0 12px}.buscador__caja{min-height:54px;padding:5px 5px 5px 14px}.buscador__sep,.buscador__sel{display:none}.buscador__ir span{display:none}.buscador__ir{width:44px;min-height:44px;padding:0;justify-content:center;border-radius:50%}}
+  /* ── los bloques de La Torre y Aires ── */
+  .bloque{position:relative;overflow:hidden;color:#fff;margin-top:22px;isolation:isolate}
+  .bloque__fondo{position:absolute;inset:-8% 0;background-size:cover;background-position:center;transform:scale(1.14);will-change:transform;z-index:-2}
+  .bloque__velo{position:absolute;inset:0;z-index:-1}
+  .bloque--torre{background:var(--torre-noche)}
+  .bloque--torre .bloque__velo{background:linear-gradient(90deg,rgba(20,16,14,.94) 0%,rgba(20,16,14,.82) 45%,rgba(20,16,14,.35) 100%)}
+  .bloque--aires{background:var(--aires-noche)}
+  .bloque--aires .bloque__velo{background:linear-gradient(270deg,rgba(16,34,28,.94) 0%,rgba(16,34,28,.82) 45%,rgba(16,34,28,.35) 100%)}
+  .bloque__caja{max-width:1180px;margin:0 auto;padding:clamp(48px,6vw,84px) 20px;display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:clamp(24px,4vw,56px);align-items:center}
+  .bloque__caja--inversa .bloque__texto{order:2}.bloque__caja--inversa .bloque__galeria{order:1}
+  .bloque__texto > *{opacity:0;transform:translateY(16px);transition:opacity .7s cubic-bezier(.22,.61,.36,1),transform .7s cubic-bezier(.22,.61,.36,1)}
+  .bloque.es-visto .bloque__texto > *{opacity:1;transform:none}
+  .bloque.es-visto .bloque__texto > :nth-child(2){transition-delay:.08s}.bloque.es-visto .bloque__texto > :nth-child(3){transition-delay:.16s}.bloque.es-visto .bloque__texto > :nth-child(4){transition-delay:.24s}.bloque.es-visto .bloque__texto > :nth-child(5){transition-delay:.32s}
+  .bloque__etiqueta{display:inline-flex;align-items:center;gap:10px;font-size:11.5px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;padding:8px 14px;border-radius:999px;border:1px solid}
+  .bloque--torre .bloque__etiqueta{color:var(--torre-crema);border-color:var(--torre-terracota-claro);background:rgba(156,58,32,.28)}
+  .bloque--torre .bloque__etiqueta::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--torre-terracota-claro)}
+  .bloque--aires .bloque__etiqueta{color:var(--aires-crema);border-color:var(--aires-arena);background:rgba(217,201,163,.16)}
+  .bloque--aires .bloque__etiqueta::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--aires-arena)}
+  .bloque__titulo{margin:18px 0 10px;font-family:'Libre Caslon Text',Georgia,serif;font-weight:700;font-size:clamp(34px,4.6vw,60px);line-height:1.02;letter-spacing:-.01em}
+  .bloque--torre .bloque__titulo{color:var(--torre-crema)}
+  .bloque--aires .bloque__titulo{color:var(--aires-crema)}
+  .bloque__bajada{margin:0;font-size:clamp(15px,1.6vw,17px);line-height:1.6;max-width:50ch;color:rgba(255,255,255,.84)}
+  .bloque__dato{margin:20px 0 0;font-size:14px;font-weight:600;display:flex;align-items:center;gap:10px;flex-wrap:wrap;color:#fff}
+  .bloque__punto{width:8px;height:8px;border-radius:50%;background:var(--ok-claro);box-shadow:0 0 0 4px rgba(74,222,128,.22);flex:none}
+  .bloque__desde{font-family:'Libre Caslon Text',Georgia,serif;font-size:18px;font-weight:700;margin-left:4px}
+  .bloque--torre .bloque__desde{color:var(--torre-crema)}
+  .bloque__tipos{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+  .bloque__tipo{display:flex;flex-direction:column;gap:2px;padding:10px 14px;border-radius:12px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);min-width:92px;backdrop-filter:blur(6px);transition:background .2s,transform .2s}
+  .bloque__tipo:hover{background:rgba(255,255,255,.14);transform:translateY(-2px)}
+  .bloque__tipo b{font-family:'Libre Caslon Text',Georgia,serif;font-size:19px;font-weight:700;line-height:1.1}
+  .bloque__tipo small{font-size:11.5px;color:rgba(255,255,255,.72)}
+  .bloque__acciones{display:flex;gap:10px;flex-wrap:wrap;margin-top:24px}
+  .bloque__cta{display:inline-flex;align-items:center;gap:9px;font-weight:600;font-size:14.5px;padding:13px 22px;border-radius:12px;min-height:48px;cursor:pointer;border:1.5px solid transparent;transition:transform .15s,background .2s,border-color .2s,box-shadow .2s}
+  .bloque__cta svg{transition:transform .2s}.bloque__cta:hover svg{transform:translateX(3px)}
+  .bloque__cta:active{transform:scale(.97)}
+  .bloque--torre .bloque__cta{background:var(--torre-terracota);color:var(--torre-crema);box-shadow:0 10px 26px rgba(156,58,32,.35)}
+  .bloque--torre .bloque__cta:hover{background:var(--torre-terracota-claro);color:#fff}
+  .bloque--aires .bloque__cta{background:var(--aires-arena);color:var(--aires-verde-hondo);box-shadow:0 10px 26px rgba(217,201,163,.25)}
+  .bloque--aires .bloque__cta:hover{background:var(--aires-crema);color:var(--aires-verde-hondo)}
+  .bloque__cta--suave,.bloque--torre .bloque__cta--suave,.bloque--aires .bloque__cta--suave{background:rgba(255,255,255,.06);color:#fff;border-color:rgba(255,255,255,.35);box-shadow:none}
+  .bloque__cta--suave:hover,.bloque--torre .bloque__cta--suave:hover,.bloque--aires .bloque__cta--suave:hover{background:rgba(255,255,255,.14);color:#fff}
+  .bloque__foto{position:relative;display:block;border-radius:18px;overflow:hidden;box-shadow:0 30px 70px rgba(0,0,0,.45);aspect-ratio:16/10;background:rgba(255,255,255,.06);opacity:0;transform:translateY(22px) scale(.98);transition:opacity .8s cubic-bezier(.22,.61,.36,1) .15s,transform .8s cubic-bezier(.22,.61,.36,1) .15s}
+  .bloque.es-visto .bloque__foto{opacity:1;transform:none}
+  .bloque__foto img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .8s cubic-bezier(.22,.61,.36,1)}
+  .bloque__foto:hover img{transform:scale(1.04)}
+  .bloque__foto span{position:absolute;left:14px;bottom:12px;font-size:11.5px;font-weight:600;color:rgba(255,255,255,.9);background:rgba(0,0,0,.45);padding:5px 10px;border-radius:999px;backdrop-filter:blur(6px)}
+  .bloque__galeria{display:grid;gap:14px}
+  .bloque__galeria .bloque__foto:nth-child(2){transition-delay:.3s;aspect-ratio:16/8}
+  @media (max-width:899px){.bloque__caja{grid-template-columns:1fr;padding:44px 20px}.bloque__caja--inversa .bloque__texto{order:1}.bloque__caja--inversa .bloque__galeria{order:2}.bloque--torre .bloque__velo,.bloque--aires .bloque__velo{background:linear-gradient(180deg,rgba(14,12,10,.9) 0%,rgba(14,12,10,.86) 100%)}.bloque--aires .bloque__velo{background:linear-gradient(180deg,rgba(16,34,28,.9),rgba(16,34,28,.88))}}
+  @media (prefers-reduced-motion:reduce){.reel__kb--a,.reel__kb--b{animation:none}.reel__capa{transition:none}.reel__pie--entra *{animation:none!important}.portada__bajar svg{animation:none}.bloque__texto > *,.bloque__foto{opacity:1!important;transform:none!important;transition:none!important}.bloque__fondo{transform:none!important}.buscador,.buscador__caja{transition:none}}
+  input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:6px;border-radius:6px;background:var(--borde-3);outline:none}
   input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:var(--verde);cursor:pointer;border:3px solid #fff;box-shadow:0 2px 7px rgba(17,60,61,.35)}
   input[type=range]::-moz-range-thumb{width:19px;height:19px;border-radius:50%;background:var(--verde);cursor:pointer;border:3px solid #fff}
   @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
@@ -222,66 +303,63 @@
 
 <!-- ══ HERO A · Institucional: foto plena, marca grande abajo ══ -->
 <div data-si="heroInstitucional" hidden>
-<section data-screen-label="Hero institucional" style="position:relative;min-height:min(86vh,720px);display:flex;align-items:flex-end;color:#fff;overflow:hidden">
-  <div aria-hidden="true" style="position:absolute;inset:0;background:var(--verde)">
-    <!-- La portada es un reel (src/reel.js): Aires en video y render, la cartera propia,
-         los alquileres y La Torre, con fundido y paneo lento. El poster de abajo es lo que se
-         ve antes de que arranque, y lo único que se ve con reduced-motion. -->
-    <div id="reel" class="reel">
-      <picture>
-        <source media="(max-width:899px)" srcset="img/hero-valle-v.webp" />
-        <img src="img/hero-valle.webp" alt="" width="1920" height="1080" fetchpriority="high" class="reel__poster" />
-      </picture>
-      <div class="reel__capa reel__capa--a"></div>
-      <div class="reel__capa reel__capa--b"></div>
-    </div>
-    <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(11,32,33,.55) 0%,rgba(11,32,33,.18) 34%,rgba(9,30,31,.9) 100%)"></div>
+<!-- La portada (5/9, segunda vuelta de David): las propiedades de Fran a plena calidad y con
+     el texto corrido a un costado, para que la foto mande. Sólo fotos; los videos se fueron.
+     Debajo asoman las tarjetas, y entre las dos cosas flota el buscador (src/reel.js + app.js). -->
+<section class="portada" data-screen-label="Portada">
+  <div id="reel" class="reel" aria-hidden="true">
+    <img src="img/hero-204329.webp" alt="" width="1520" height="1140" fetchpriority="high" class="reel__poster" />
+    <div class="reel__capa reel__capa--a"></div>
+    <div class="reel__capa reel__capa--b"></div>
+    <div class="reel__velo"></div>
   </div>
-  <div style="position:relative;max-width:1180px;margin:0 auto;padding:150px 20px 54px;width:100%">
-    <div style="max-width:760px">
-      <div style="display:flex;align-items:center;gap:18px;animation:rise .7s cubic-bezier(.22,.61,.36,1) both">
-        <img loading="lazy" src="img/logo-molins.png" alt="Escudo de Molins" style="width:clamp(64px,8vw,88px);height:clamp(64px,8vw,88px);border-radius:14px;object-fit:cover;box-shadow:0 14px 34px rgba(0,0,0,.35)" />
-        <div>
-          <h1 style="margin:0;font-family:'Libre Caslon Text',Georgia,serif;font-weight:700;font-size:clamp(30px,4.8vw,58px);line-height:1.02;letter-spacing:.01em;color:#fff">Francisco Molins</h1>
-          <p style="margin:8px 0 0;font-size:clamp(12px,1.4vw,15px);font-weight:600;letter-spacing:.24em;color:rgba(255,255,255,.85)">REAL ESTATE · SALTA</p>
-        </div>
-      </div>
-      
-      <p style="font-size:clamp(16px,1.9vw,19px);color:rgba(255,255,255,.9);max-width:54ch;margin:16px 0 26px;animation:rise .7s cubic-bezier(.22,.61,.36,1) .2s both">Casas, departamentos, locales y terrenos en Salta. Cartera propia, atendida de forma directa por quien la conoce.</p>
-      <div style="background:#fff;border-radius:14px;padding:10px;display:flex;gap:8px;flex-wrap:wrap;box-shadow:0 24px 60px rgba(0,0,0,.3);max-width:640px;animation:rise .7s cubic-bezier(.22,.61,.36,1) .3s both">
-        <select data-valor="bOper" data-change="cambiarBOper" aria-label="Operación" style="flex:1 1 140px;min-height:48px;border:1.5px solid var(--borde);border-radius:9px;padding:10px 12px;font-size:14px;color:var(--tinta);background:var(--hueso);cursor:pointer">
-          <option value="todo">Comprar o alquilar</option>
-          <option value="venta">Comprar</option>
-          <option value="alquiler">Alquilar</option>
-          <option value="terreno">Terrenos</option>
-        </select>
-        <select data-valor="bZona" data-change="cambiarBZona" aria-label="Zona" style="flex:1 1 150px;min-height:48px;border:1.5px solid var(--borde);border-radius:9px;padding:10px 12px;font-size:14px;color:var(--tinta);background:var(--hueso);cursor:pointer">
-          <option value="">Todas las zonas</option>
-          <template data-lista="zonasSelect" data-alias="z">
-            <option data-valor="z.v"><span data-txt="z.t"></span></option>
-          </template>
-        </select>
-        <button data-click="buscarDesdeHero" style="flex:1 1 170px;background:var(--naranja);color:var(--verde-noche);border:none;border-radius:9px;font-weight:600;font-size:14.5px;min-height:48px;padding:0 18px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;transition:background .2s" data-fx="fx-2">
-          Buscar propiedades
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
-        </button>
-      </div>
-      <div style="margin-top:14px;font-size:13px;color:rgba(255,255,255,.75);animation:rise .7s cubic-bezier(.22,.61,.36,1) .4s both"><span data-txt="resumenCartera"></span> · <a href="#proyectos" style="color:var(--naranja-palido);font-weight:600">Ver los proyectos</a></div>
+  <div class="portada__marca">
+    <img src="img/logo-molins.png" alt="Escudo de Molins" width="64" height="64" />
+    <div>
+      <h1>Francisco Molins</h1>
+      <p>Real estate · Salta</p>
     </div>
+  </div>
   <div class="reel__pie" aria-live="polite">
-    <span class="reel__n">01 / 10</span>
-    <b class="reel__t">Aires de San Lorenzo</b>
-    <span class="reel__s">Etapa 1 en venta · San Lorenzo, Salta</span>
-    <a class="reel__cta" href="#proyectos">Ver el proyecto</a>
+    <span class="reel__n">01 / 09</span>
+    <b class="reel__t">Casa en Vaqueros</b>
+    <span class="reel__s">Cartera propia · En venta</span>
+    <a class="reel__cta" href="?ficha=MOL-204329">Ver la ficha</a>
     <div class="reel__mando">
       <button type="button" class="reel__prev" aria-label="Anterior"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px"><path d="m15 18-6-6 6-6"></path></svg></button>
       <div class="reel__puntos" role="tablist" aria-label="Diapositivas"></div>
       <button type="button" class="reel__next" aria-label="Siguiente"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px"><path d="m9 18 6-6-6-6"></path></svg></button>
     </div>
   </div>
-  </div>
-  </div>
+  <a class="portada__bajar" href="#propiedades" aria-label="Bajar a las propiedades"><span data-txt="resumenCartera"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px"><path d="M12 5v14M5 12l7 7 7-7"></path></svg></a>
 </section>
+</div>
+
+<!-- El buscador flota entre la portada y las tarjetas y se queda pegado bajo la barra al bajar. -->
+<div id="buscador" class="buscador" data-screen-label="Buscador">
+  <form class="buscador__caja" data-submit="buscarDesdeHero" role="search" aria-label="Buscar propiedades">
+    <label class="buscador__texto">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" style="width:19px;height:19px;flex:none"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
+      <input id="fTexto" type="search" placeholder="Zona, barrio, tipo o código" aria-label="Buscar propiedades" autocomplete="off" data-valor="fTexto" data-input="escribirTexto" />
+      <span data-si="hayTexto" hidden><button type="button" class="buscador__borrar" data-click="limpiarTexto" aria-label="Borrar la búsqueda"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" style="width:11px;height:11px"><path d="M18 6 6 18M6 6l12 12"></path></svg></button></span>
+    </label>
+    <span class="buscador__sep"></span>
+    <select class="buscador__sel" data-valor="bOper" data-change="cambiarBOper" aria-label="Operación">
+      <option value="todo">Comprar o alquilar</option>
+      <option value="venta">Comprar</option>
+      <option value="alquiler">Alquilar</option>
+      <option value="terreno">Terrenos</option>
+    </select>
+    <span class="buscador__sep"></span>
+    <select class="buscador__sel" data-valor="bZona" data-change="cambiarBZona" aria-label="Zona">
+      <option value="">Todas las zonas</option>
+      <template data-lista="zonasSelect" data-alias="z"><option data-valor="z.v"><span data-txt="z.t"></span></option></template>
+    </select>
+    <button type="submit" class="buscador__ir" aria-label="Buscar">
+      <span>Buscar</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:17px;height:17px"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
+    </button>
+  </form>
 </div>
 
 <!-- ══ HERO B · Panel verde: marca en bloque, foto al lado ══ -->
@@ -361,26 +439,21 @@
 </div>
 
 <!-- ══ PROPIEDADES · un solo listado, conteos reales ══ -->
-<section id="propiedades" data-screen-label="Propiedades" style="padding:clamp(52px,6.5vw,92px) 0 0">
+<section id="propiedades" data-screen-label="Propiedades" style="padding:26px 0 0">
   <div style="max-width:1180px;margin:0 auto;padding:0 20px">
-    <div style="max-width:680px;margin-bottom:30px">
-      <div style="width:44px;height:3px;background:var(--naranja);border-radius:3px;margin-bottom:18px"></div>
-      <h2 style="margin:0;font-family:'Libre Caslon Text',Georgia,serif;font-weight:700;font-size:clamp(28px,3.8vw,42px);line-height:1.14;letter-spacing:-.01em">La cartera, completa</h2>
-      <p style="margin:12px 0 0;font-size:clamp(15.5px,1.8vw,17.5px);color:var(--gris);max-width:62ch">Todo lo que Molins tiene hoy en venta y en alquiler, con la foto real de cada propiedad. El código de cada ficha es el mismo que se dice por teléfono y va en los carteles.</p>
-      <p style="margin:10px 0 0;font-size:13px;font-weight:600;color:var(--verde-claro);display:flex;align-items:center;gap:8px"><span style="width:8px;height:8px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 3px var(--ok-suave);flex:none"></span><span data-txt="disponibilidadTxt"></span></p>
+    <div style="display:flex;align-items:baseline;justify-content:space-between;gap:14px 24px;flex-wrap:wrap;margin-bottom:16px">
+      <h2 style="margin:0;font-family:'Libre Caslon Text',Georgia,serif;font-weight:700;font-size:clamp(24px,3vw,34px);line-height:1.14;letter-spacing:-.01em">La cartera, completa</h2>
+      <p style="margin:0;font-size:13px;font-weight:600;color:var(--verde-claro);display:flex;align-items:center;gap:8px"><span style="width:8px;height:8px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 3px var(--ok-suave);flex:none"></span><span data-txt="disponibilidadTxt"></span></p>
     </div>
 
-    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px" role="group" aria-label="Filtrar por operación">
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center" role="group" aria-label="Filtrar por operación">
       <template data-lista="segmentos" data-alias="s">
         <button class="segmento" data-click="s.elegir" data-estilo="s.estilo" data-attr-aria-pressed="s.activo"><span data-txt="s.t"></span><span style="font-size:11.5px;opacity:.72;font-weight:600;margin-left:7px"><span data-txt="s.n"></span></span></button>
       </template>
+      <button type="button" class="segmento filtros-btn" data-click="alternarFiltros" data-estilo="filtrosEstilo" data-attr-aria-expanded="filtrosAbiertos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px"><path d="M4 6h16M7 12h10M10 18h4"></path></svg><span data-txt="filtrosTxt"></span></button>
     </div>
-    <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px">
-      <label class="campo-busca">
-        <svg viewBox="0 0 24 24" fill="none" stroke="var(--verde-claro)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;flex:none"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
-        <input id="fTexto" type="search" placeholder="Buscar por zona, barrio, tipo o código" aria-label="Buscar propiedades" autocomplete="off" data-valor="fTexto" data-input="escribirTexto" />
-        <span data-si="hayTexto" hidden><button type="button" data-click="limpiarTexto" aria-label="Borrar la búsqueda"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" style="width:12px;height:12px"><path d="M18 6 6 18M6 6l12 12"></path></svg></button></span>
-      </label>
+    <div data-si="filtrosAbiertos" hidden>
+    <div class="filtros-panel" style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px">
       <select class="selector" data-valor="fTipo" data-change="cambiarTipo" aria-label="Tipo">
         <option value="">Todos los tipos</option>
         <template data-lista="tipos" data-alias="t"><option data-valor="t"><span data-txt="t"></span></option></template>
@@ -404,6 +477,8 @@
         <option value="d">Más de USD 200.000</option>
       </select>
     </div>
+    </div>
+
     <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:24px;min-height:30px">
       <template data-lista="chipsActivos" data-alias="c">
         <span class="chip-activo"><span data-txt="c.t"></span><button type="button" data-click="c.quitar" aria-label="Quitar este filtro">×</button></span>
@@ -524,61 +599,68 @@
 <!-- ══ EMPRENDIMIENTOS ══ -->
 <div id="emprendimientos"></div>
 <section id="proyectos" data-screen-label="Proyectos" style="padding:clamp(52px,6.5vw,92px) 0 0">
-  <div style="max-width:1180px;margin:0 auto;padding:0 20px">
-    <div style="max-width:680px;margin-bottom:30px">
-      <div style="width:44px;height:3px;background:var(--naranja);border-radius:3px;margin-bottom:18px"></div>
-      <h2 style="margin:0;font-family:'Libre Caslon Text',Georgia,serif;font-weight:700;font-size:clamp(28px,3.8vw,42px);line-height:1.14">Proyectos y oportunidades</h2>
-      <p style="margin:12px 0 0;font-size:clamp(15.5px,1.8vw,17.5px);color:var(--gris);max-width:62ch">Los desarrollos que Molins comercializa. Otra lógica que la cartera: se compra en pozo, con plan largo y directo con el desarrollo.</p>
-    </div>
+  <div style="max-width:1180px;margin:0 auto;padding:0 20px 8px">
+    <h2 style="margin:0;font-family:'Libre Caslon Text',Georgia,serif;font-weight:700;font-size:clamp(26px,3.4vw,38px);line-height:1.14">Los emprendimientos</h2>
+    <p style="margin:8px 0 22px;font-size:15.5px;color:var(--gris);max-width:62ch">Se compra en pozo, con plan largo y directo con el desarrollo. Los números salen del sistema en vivo.</p>
+  </div>
 
-    <!-- Aires de San Lorenzo -->
-    <div style="background:var(--verde);color:#fff;border-radius:20px;overflow:hidden;box-shadow:0 24px 60px rgba(17,60,61,.18)">
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));align-items:stretch">
-        <div style="padding:clamp(28px,4vw,52px)">
-          <span style="display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:700;letter-spacing:.04em;color:var(--verde);background:var(--naranja-claro);padding:6px 13px;border-radius:100px">Comercialización exclusiva · En marcha</span>
-          <h3 style="margin:18px 0 12px;font-family:'Libre Caslon Text',Georgia,serif;font-weight:700;font-size:clamp(27px,3.6vw,40px);line-height:1.1;color:#fff">Aires de San Lorenzo</h3>
-          <p style="margin:0;color:rgba(255,255,255,.82);font-size:15.5px;max-width:52ch">Para el que quiere vivir en la zona de San Lorenzo y hoy no le da para San Lorenzo Chico ni para Ciudad Oeste. Se compra en pozo y se entra a la zona antes de que termine de valer lo que va a valer.</p>
-          <ul style="list-style:none;margin:22px 0 26px;padding:0;display:flex;flex-direction:column;gap:11px">
-            <li style="display:flex;gap:11px;align-items:flex-start;font-size:14.5px;color:rgba(255,255,255,.9)">
-              <svg viewBox="0 0 24 24" fill="none" stroke="var(--naranja-claro)" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;margin-top:2px;flex-shrink:0"><rect x="2" y="5" width="20" height="14" rx="2"></rect><path d="M2 10h20"></path></svg>
-              Financiación directa del desarrollo, con planes de hasta 7 u 8 años.</li>
-            <li style="display:flex;gap:11px;align-items:flex-start;font-size:14.5px;color:rgba(255,255,255,.9)">
-              <svg viewBox="0 0 24 24" fill="none" stroke="var(--naranja-claro)" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;margin-top:2px;flex-shrink:0"><path d="M3 21h18M5 21V8l7-5 7 5v13M10 21v-6h4v6"></path></svg>
-              Pensado para primera vivienda, no para especular.</li>
-            <li style="display:flex;gap:11px;align-items:flex-start;font-size:14.5px;color:rgba(255,255,255,.9)">
-              <svg viewBox="0 0 24 24" fill="none" stroke="var(--naranja-claro)" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;margin-top:2px;flex-shrink:0"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path><circle cx="12" cy="10" r="3"></circle></svg>
-              En San Lorenzo, a pocos minutos del centro de Salta.</li>
-          </ul>
-          <div style="display:flex;gap:11px;flex-wrap:wrap">
-            <a href="https://wa.me/5493874153669?text=Hola%2C%20quiero%20informaci%C3%B3n%20de%20Aires%20de%20San%20Lorenzo." target="_blank" rel="noopener" style="background:var(--whatsapp);color:var(--verde-noche);font-weight:600;font-size:14.5px;padding:12px 20px;border-radius:10px;display:inline-flex;align-items:center;gap:9px;min-height:46px;transition:background .2s" data-fx="fx-4">
-              <svg viewBox="0 0 24 24" fill="currentColor" style="width:17px;height:17px"><path d="M.057 24l1.687-6.163a11.867 11.867 0 0 1-1.587-5.946C.16 5.335 5.495 0 12.05 0a11.817 11.817 0 0 1 8.413 3.488 11.824 11.824 0 0 1 3.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 0 1-5.688-1.448L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884a9.86 9.86 0 0 0 1.51 5.26l-.999 3.648 3.978-1.052z"></path></svg>
-              Consultar por Aires</a>
-            <button data-click="pedirPlanAires" style="background:rgba(255,255,255,.08);color:#fff;border:1.5px solid rgba(255,255,255,.4);font-weight:600;font-size:14.5px;padding:12px 20px;border-radius:10px;cursor:pointer;min-height:46px;transition:background .2s" data-fx="fx-6">Pedir el plan de pago</button>
-            <a href="https://airesdesanlorenzo.com/#etapa1" target="_blank" rel="noopener" style="color:#fff;font-weight:600;font-size:14.5px;padding:12px 6px;display:inline-flex;align-items:center;gap:8px;min-height:46px">Elegir una unidad en la web
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+  <!-- La Torre: el bloque con su paleta (terracota sobre noche, crema) -->
+  <article class="bloque bloque--torre" data-screen-label="Bloque La Torre">
+    <div class="bloque__fondo" style="background-image:url('img/torre-frente.webp')"></div>
+    <div class="bloque__velo"></div>
+    <div class="bloque__caja">
+      <div class="bloque__texto">
+        <span class="bloque__etiqueta">Edificio · Balcarce y Aniceto Latorre</span>
+        <h3 class="bloque__titulo">La Torre</h3>
+        <p class="bloque__bajada">Doce unidades en dos torres, en el centro de Salta. Un edificio con la escala justa, para vivir o para renta.</p>
+        <div data-si="hayTorre" hidden>
+          <p class="bloque__dato"><span class="bloque__punto"></span><span data-txt="torreLinea"></span><span class="bloque__desde" data-txt="torreDesde"></span></p>
+          <div class="bloque__tipos">
+            <template data-lista="torreTipos" data-alias="t">
+              <span class="bloque__tipo"><b data-txt="t.k"></b><small data-txt="t.n"></small></span>
+            </template>
           </div>
         </div>
-        <div style="position:relative;min-height:320px">
-          <img src="img/aires-conjunto.webp" alt="Render aéreo de Aires de San Lorenzo" loading="lazy" width="1400" height="788" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" />
-          <div style="position:absolute;bottom:0;left:0;right:0;padding:26px 16px 12px;font-size:11.5px;color:rgba(255,255,255,.78);background:linear-gradient(180deg,transparent,rgba(9,30,31,.85))">Render del masterplan. Etapa 1 en comercialización.</div>
+        <div class="bloque__acciones">
+          <a class="bloque__cta" href="https://edificiolatorre.com/" target="_blank" rel="noopener">Ver unidades y planos<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+          <button type="button" class="bloque__cta bloque__cta--suave" data-click="consultarTorre">Consultar</button>
         </div>
       </div>
+      <a class="bloque__foto" href="https://edificiolatorre.com/" target="_blank" rel="noopener" aria-label="La Torre, la llegada de noche">
+        <img src="img/torre-llegada.webp" alt="" loading="lazy" width="2000" height="1125" />
+        <span>La llegada, de noche · render</span>
+      </a>
     </div>
+  </article>
 
-    <!-- La Torre: el conector -->
-    <a href="https://edificiolatorre.com/" target="_blank" rel="noopener" data-screen-label="Card La Torre" style="margin-top:20px;display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));background:#fff;border:1px solid var(--borde);border-radius:20px;overflow:hidden;color:var(--tinta);transition:transform .22s cubic-bezier(.22,.61,.36,1),box-shadow .22s cubic-bezier(.22,.61,.36,1)" data-fx="fx-3">
-      <div style="position:relative;min-height:260px;background:var(--verde-suave)">
-        <img src="img/torre-hero.jpg" alt="Fachada del Edificio La Torre sobre calle Balcarce" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" />
+  <!-- Aires: el bloque con la paleta de su web (verde hondo, crema, arena) -->
+  <article class="bloque bloque--aires" data-screen-label="Bloque Aires">
+    <div class="bloque__fondo" style="background-image:url('img/aires-laguna.webp')"></div>
+    <div class="bloque__velo"></div>
+    <div class="bloque__caja bloque__caja--inversa">
+      <div class="bloque__texto">
+        <span class="bloque__etiqueta">Etapa 1 · San Lorenzo, Salta</span>
+        <h3 class="bloque__titulo">Aires de San Lorenzo</h3>
+        <p class="bloque__bajada">Un barrio nuevo en la zona verde de Salta: dúplex, oficinas y locales alrededor de la laguna, con financiación directa del desarrollo.</p>
+        <div data-si="hayAires" hidden>
+          <p class="bloque__dato"><span class="bloque__punto"></span><span data-txt="airesLinea"></span></p>
+          <div class="bloque__tipos">
+            <template data-lista="airesTipos" data-alias="t">
+              <span class="bloque__tipo"><b data-txt="t.n"></b><small><span data-txt="t.k"></span> <span data-txt="t.de"></span></small></span>
+            </template>
+          </div>
+        </div>
+        <div class="bloque__acciones">
+          <a class="bloque__cta" href="https://airesdesanlorenzo.com/#etapa1" target="_blank" rel="noopener">Elegir una unidad<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+          <button type="button" class="bloque__cta bloque__cta--suave" data-click="pedirPlanAires">Pedir el plan de pago</button>
+        </div>
       </div>
-      <div style="padding:clamp(26px,3.5vw,44px);display:flex;flex-direction:column;justify-content:center">
-        <span style="display:inline-flex;align-self:flex-start;align-items:center;gap:8px;font-size:12px;font-weight:700;letter-spacing:.04em;color:var(--naranja-oscuro);background:var(--naranja-suave);border:1px solid var(--naranja-borde);padding:6px 13px;border-radius:100px">Por lanzarse</span>
-        <h3 style="margin:16px 0 10px;font-family:'Libre Caslon Text',Georgia,serif;font-weight:700;font-size:clamp(24px,3vw,34px);line-height:1.12">Edificio La Torre</h3>
-        <p style="margin:0;font-size:15px;color:var(--tinta-suave);max-width:50ch">Doce unidades sobre calle Balcarce, en el centro de Salta. El proyecto tiene su propia página, con la torre en 3D, las tipologías y las unidades disponibles.</p>
-        <span style="margin-top:20px;display:inline-flex;align-items:center;gap:8px;font-size:14.5px;font-weight:600;color:var(--verde-claro)">Conocer el proyecto
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></span>
+      <div class="bloque__galeria">
+        <a class="bloque__foto" href="https://airesdesanlorenzo.com/" target="_blank" rel="noopener" aria-label="Aires de San Lorenzo, el masterplan"><img src="img/aires-conjunto.webp" alt="" loading="lazy" width="1400" height="788" /><span>El masterplan · render</span></a>
+        <a class="bloque__foto" href="https://airesdesanlorenzo.com/#etapa1" target="_blank" rel="noopener" aria-label="Aires de San Lorenzo, los dúplex"><img src="img/aires-duplex.webp" alt="" loading="lazy" width="1400" height="788" /><span>Los dúplex · render</span></a>
       </div>
-    </a>
-  </div>
+    </div>
+  </article>
 </section>
 
 <!-- ══ ZONAS ══ -->
@@ -960,9 +1042,9 @@
 </div>
 
 
-<script src="src/pintor.js?v=20260905b"></script>
-<script src="src/medicion.js?v=20260905b"></script>
-<script src="src/app.js?v=20260905b"></script>
-<script src="src/reel.js?v=20260905b"></script>
+<script src="src/pintor.js?v=20260905d"></script>
+<script src="src/medicion.js?v=20260905d"></script>
+<script src="src/app.js?v=20260905d"></script>
+<script src="src/reel.js?v=20260905d"></script>
 </body>
 </html>

@@ -31,6 +31,17 @@
   --borde-3: #DCE0D6;
   --borde-4: #DCE5E2;
   --borde-5: #EDEEE7;
+  /* los dos emprendimientos, con su propia paleta (de sus webs) */
+  --torre-terracota: #9C3A20;
+  --torre-terracota-claro: #C9542F;
+  --torre-crema: #F3EBDD;
+  --torre-tinta: #1F1A17;
+  --torre-noche: #14100E;
+  --aires-verde: #204136;
+  --aires-verde-hondo: #1A362E;
+  --aires-crema: #E8E4D8;
+  --aires-arena: #D9C9A3;
+  --aires-noche: #10221C;
 }
 
 /* `sc-if` en el editor NO crea un nodo: rinde como fragmento. El envase que

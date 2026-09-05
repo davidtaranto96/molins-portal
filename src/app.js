@@ -68,7 +68,8 @@
     ficha: null, fotoN: 1,
     formNombre: "", formWa: "", formMail: "", formBusca: "Para vivir",
     formError: "", enviado: false, enviando: false, okMsg: "", ctx: "", ctxProp: null,
-    calcPrecio: 75000, calcAnt: 30, calcCuotas: 60
+    calcPrecio: 75000, calcAnt: 30, calcCuotas: 60,
+    torre: null, aires: null, filtros: false
   };
   var mapa = null;
 
@@ -140,11 +141,49 @@
         set({ props: lista, cargando: false, muestra: false });
         estructurados(lista);
         abrirDesdeUrl();
+        avisarReel(lista);
       })
       .catch(function (e) {
         if (window.console) console.warn("portal: no se pudo cargar", e);
         set({ props: muestra(), cargando: false, muestra: true });
       });
+  }
+
+  /* El reel de la portada rotula cada foto con lo que el sistema dice hoy. */
+  function avisarReel(lista) {
+    try {
+      document.dispatchEvent(new CustomEvent("molins:propiedades", { detail: lista.map(function (p) {
+        return { codigo: p.codigo, titulo: p.titulo, ubicacion: ubicCorta(p), operacion: p.operacion, precioTxt: p.precio > 0 ? money(p.moneda, p.precio) : "Consultar" };
+      }) }));
+    } catch (e) {}
+  }
+
+  /* Los dos emprendimientos, con lo que el sistema publica: cuántas unidades
+     hay, cuántas quedan y desde cuánto. Si el CRM no contesta, el bloque se
+     muestra igual, sin números. */
+  function cargarProyectos() {
+    function traer(slug) {
+      return fetch(API + "/api/publico/propiedades?cartera=" + slug).then(function (r) { return r.ok ? r.json() : null; }).then(function (j) { return j && j.propiedades ? j.propiedades : null; }).catch(function () { return null; });
+    }
+    traer("torre").then(function (u) {
+      if (!u || !u.length) return;
+      var libres = u.filter(function (x) { return x.estado === "ACTIVA"; });
+      var precios = libres.map(function (x) { return x.precio; }).filter(function (n) { return n > 0; });
+      var tipos = {};
+      u.forEach(function (x) { var k = x.tipologia || "Unidad"; tipos[k] = tipos[k] || { n: 0, libres: 0 }; tipos[k].n++; if (x.estado === "ACTIVA") tipos[k].libres++; });
+      set({ torre: { total: u.length, libres: libres.length, reservadas: u.length - libres.length, desde: precios.length ? Math.min.apply(null, precios) : 0, moneda: (u[0] || {}).moneda || "USD",
+        tipos: Object.keys(tipos).map(function (k) { return { k: k, n: tipos[k].n, libres: tipos[k].libres }; }) } });
+    });
+    traer("aires").then(function (u) {
+      if (!u || !u.length) return;
+      var NOMBRE = { OFICINA: ["Oficina", "Oficinas"], LOCAL: ["Local", "Locales"], DUPLEX: ["Dúplex", "Dúplex"], COCHERA: ["Cochera", "Cocheras"] };
+      var ORDEN = ["DUPLEX", "OFICINA", "LOCAL", "COCHERA"];
+      var tipos = {};
+      u.forEach(function (x) { tipos[x.tipo] = tipos[x.tipo] || { n: 0, libres: 0 }; tipos[x.tipo].n++; if (x.estado === "ACTIVA") tipos[x.tipo].libres++; });
+      var libres = u.filter(function (x) { return x.estado === "ACTIVA"; }).length;
+      set({ aires: { total: u.length, libres: libres,
+        tipos: ORDEN.filter(function (k) { return tipos[k]; }).map(function (k) { return { k: (NOMBRE[k] || [k, k])[tipos[k].n === 1 ? 0 : 1], n: tipos[k].n, libres: tipos[k].libres }; }) } });
+    });
   }
 
   /* Respaldo para cuando el CRM no contesta: seis fichas con las fotos que ya
@@ -536,7 +575,7 @@
       bOper: S.bOper, bZona: S.bZona,
       cambiarBOper: function (ev) { set({ bOper: ev.target.value }); },
       cambiarBZona: function (ev) { set({ bZona: ev.target.value }); },
-      buscarDesdeHero: function () { set({ seg: S.bOper, fZona: S.bZona }); scrollA("propiedades"); },
+      buscarDesdeHero: function (ev) { if (ev && ev.preventDefault) ev.preventDefault(); set({ seg: S.bOper, fZona: S.bZona }); scrollA("propiedades"); if (window.VISITAS) VISITAS.anotar("buscar", (S.fTexto || "") + "|" + S.bOper + "|" + S.bZona); },
       zonasSelect: zonasSelect, tipos: tipos,
 
       segmentos: segmentos,
@@ -547,6 +586,10 @@
       cambiarPrecio: function (ev) { set({ fPrecio: ev.target.value }); },
       limpiarFiltros: function () { vaciarTexto(); set({ seg: "todo", fTipo: "", fZona: "", fDorm: "", fPrecio: "" }); },
       hayFiltros: hayFiltros,
+      filtrosAbiertos: S.filtros || !!(S.fTipo || S.fZona || S.fDorm || S.fPrecio),
+      filtrosTxt: (S.fTipo || S.fZona || S.fDorm || S.fPrecio) ? "Filtros · " + [S.fTipo, S.fZona, S.fDorm, S.fPrecio].filter(Boolean).length : "Filtros",
+      filtrosEstilo: (S.filtros || S.fTipo || S.fZona || S.fDorm || S.fPrecio) ? chipOn : chipBase,
+      alternarFiltros: function () { set({ filtros: !(S.filtros || !!(S.fTipo || S.fZona || S.fDorm || S.fPrecio)) }); if (S.filtros) return; if (S.fTipo || S.fZona || S.fDorm || S.fPrecio) set({ fTipo: "", fZona: "", fDorm: "", fPrecio: "" }); },
       chipsActivos: chipsActivos, hayChips: chipsActivos.length > 0,
       fTexto: S.fTexto, escribirTexto: escribirTexto, hayTexto: !!S.fTexto,
       limpiarTexto: function () { vaciarTexto(); var c = document.getElementById("fTexto"); if (c) c.focus(); },
@@ -570,6 +613,14 @@
       avisarmeZona: function () { irAConsultar("Alerta de nueva propiedad." + (S.fZona ? " Zona: " + S.fZona + "." : ""), "Avisame cuando entre algo en mi zona"); },
       frenarBurbuja: function (ev) { ev.stopPropagation(); },
 
+      torre: S.torre, hayTorre: !!S.torre,
+      torreLinea: S.torre ? (S.torre.libres + " de " + S.torre.total + " unidades disponibles" + (S.torre.reservadas ? " · " + S.torre.reservadas + (S.torre.reservadas === 1 ? " reservada" : " reservadas") : "")) : "",
+      torreDesde: S.torre && S.torre.desde ? "Desde " + money(S.torre.moneda, S.torre.desde) : "",
+      torreTipos: S.torre ? S.torre.tipos.map(function (t) { return { k: t.k, n: t.libres + " de " + t.n }; }) : [],
+      aires: S.aires, hayAires: !!S.aires,
+      airesLinea: S.aires ? S.aires.libres + " de " + S.aires.total + " unidades disponibles en la Etapa 1" : "",
+      airesTipos: S.aires ? S.aires.tipos.map(function (t) { return { k: t.k, n: String(t.libres), de: t.libres === t.n ? "disponibles" : "de " + t.n }; }) : [],
+      consultarTorre: function () { irAConsultar("Consulta por Edificio La Torre — unidades y plan de pago", "Para invertir"); },
       pedirPlanAires: function () { irAConsultar("Consulta por Aires de San Lorenzo — plan de pago y unidades disponibles", "Aires de San Lorenzo"); },
 
       zonasGrilla: zonasGrilla,
@@ -644,8 +695,53 @@
     S.ancho = window.innerWidth;
     pintar();
     cargar();
+    cargarProyectos();
+
+    /* El reel pide abrir una ficha. */
+    document.addEventListener("molins:ficha", function (ev) { if (prop(ev.detail)) abrirFicha(ev.detail); });
+
+    /* El buscador flotante: cuando queda pegado bajo la barra se achica y
+       toma fondo. La altura de la barra manda dónde se pega. */
+    var busc = document.getElementById("buscador"), cab = document.querySelector("header");
+    function medirBarra() { if (cab) document.documentElement.style.setProperty("--barra", cab.offsetHeight + "px"); }
+    medirBarra();
+    if (busc) {
+      var pegadoAntes = null;
+      function mirarBuscador() {
+        var top = busc.getBoundingClientRect().top, lim = (cab ? cab.offsetHeight : 0) + 14;
+        var pegado = top <= lim + 1 && window.scrollY > 120;
+        if (pegado !== pegadoAntes) { pegadoAntes = pegado; busc.classList.toggle("es-pegado", pegado); }
+      }
+      var enCola = false;
+      addEventListener("scroll", function () { if (enCola) return; enCola = true; requestAnimationFrame(function () { enCola = false; mirarBuscador(); }); }, { passive: true });
+      mirarBuscador();
+    }
+
+    /* Los bloques de La Torre y Aires entran cuando aparecen, y su foto se
+       mueve apenas con el scroll (no con reduced-motion). */
+    var quieto = matchMedia("(prefers-reduced-motion:reduce)").matches;
+    var bloques = document.querySelectorAll(".bloque");
+    if (bloques.length && "IntersectionObserver" in window) {
+      var obsB = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add("es-visto"); obsB.unobserve(e.target); } }); }, { threshold: 0.18 });
+      bloques.forEach(function (b) { obsB.observe(b); });
+    } else bloques.forEach(function (b) { b.classList.add("es-visto"); });
+    if (!quieto && bloques.length) {
+      var enColaP = false;
+      function paralaje() {
+        bloques.forEach(function (b) {
+          var f = b.querySelector(".bloque__fondo"); if (!f) return;
+          var r = b.getBoundingClientRect();
+          if (r.bottom < 0 || r.top > innerHeight) return;
+          var t = (r.top + r.height / 2 - innerHeight / 2) / innerHeight; // -1..1
+          f.style.transform = "translate3d(0," + (t * -6).toFixed(2) + "%,0) scale(1.14)";
+        });
+      }
+      addEventListener("scroll", function () { if (enColaP) return; enColaP = true; requestAnimationFrame(function () { enColaP = false; paralaje(); }); }, { passive: true });
+      paralaje();
+    }
 
     window.addEventListener("resize", function () {
+      medirBarra();
       set({ ancho: window.innerWidth, menuOpen: window.innerWidth > 1060 ? false : S.menuOpen });
     });
     /* Deslizar la foto de la ficha con el dedo. */
