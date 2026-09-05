@@ -1,0 +1,102 @@
+<!-- Secciones que David sacó del portal el 5/9/2026 para dejarlas como extra a futuro:
+     Zonas (la grilla por zona), Financiación (la calculadora de cuotas) y Cómo es comprar
+     (los cuatro tramos). El HTML se pega de vuelta en index.html; la lógica sigue en
+     src/app.js (zonasGrilla, calc*, tramos). -->
+<!-- ══ ZONAS ══ -->
+<section id="zonas" data-screen-label="Zonas" style="padding:clamp(52px,6.5vw,92px) 0 0">
+  <div style="max-width:1180px;margin:0 auto;padding:0 20px">
+    <div style="max-width:680px;margin-bottom:30px">
+      <div style="width:44px;height:3px;background:var(--naranja);border-radius:3px;margin-bottom:18px"></div>
+      <h2 style="margin:0;font-family:'Libre Caslon Text',Georgia,serif;font-weight:700;font-size:clamp(28px,3.8vw,42px);line-height:1.14">Dónde hay propiedades</h2>
+      <p style="margin:12px 0 0;font-size:clamp(15.5px,1.8vw,17.5px);color:var(--gris);max-width:62ch">La cartera se concentra en el centro de Salta y se abre hacia el valle. Cada número es lo que hay publicado hoy, contado sobre el listado de arriba.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px">
+      <template data-lista="zonasGrilla" data-alias="z">
+        <button data-click="z.elegir" style="display:flex;gap:16px;background:#fff;border:1px solid var(--borde);border-radius:14px;padding:18px;align-items:flex-start;cursor:pointer;text-align:left;transition:border-color .2s,transform .2s,box-shadow .2s" data-fx="fx-7">
+          <span style="font-family:'Libre Caslon Text',Georgia,serif;font-size:30px;font-weight:700;color:var(--verde);line-height:1;min-width:34px"><span data-txt="z.n"></span></span>
+          <span style="min-width:0">
+            <b style="font-size:15px;display:block;font-family:'Libre Caslon Text',Georgia,serif;font-weight:700"><span data-txt="z.nombre"></span></b>
+            <span style="display:block;font-size:12.5px;color:var(--gris);margin-top:4px;line-height:1.5"><span data-txt="z.desc"></span></span>
+          </span>
+        </button>
+      </template>
+    </div>
+    <p style="margin:22px 0 0;font-size:13px;color:var(--gris);display:flex;gap:9px;align-items:flex-start;max-width:74ch">
+      <svg viewBox="0 0 24 24" fill="none" stroke="var(--verde-claro)" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;margin-top:3px;flex-shrink:0"><circle cx="12" cy="12" r="9"></circle><path d="M12 16v-4M12 8h.01"></path></svg>
+      No vas a encontrar acá porcentajes de plusvalía: no hay una fuente seria para Salta y preferimos no inventarla. Lo que sí podemos es contarte cómo se movió cada zona en las operaciones que hicimos.</p>
+  </div>
+</section>
+
+<!-- ══ FINANCIACIÓN ══ -->
+<section id="financiacion" data-screen-label="Financiación" style="padding:clamp(52px,6.5vw,92px) 0 0">
+  <div style="max-width:1180px;margin:0 auto;padding:0 20px">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:38px;align-items:center">
+      <div>
+        <div style="width:44px;height:3px;background:var(--naranja);border-radius:3px;margin-bottom:18px"></div>
+        <h2 style="margin:0;font-family:'Libre Caslon Text',Georgia,serif;font-weight:700;font-size:clamp(27px,3.6vw,40px);line-height:1.14">Cuánto te queda por mes</h2>
+        <p style="margin:12px 0 0;font-size:clamp(15.5px,1.8vw,17px);color:var(--gris)">Movés el precio, el anticipo y la cantidad de cuotas, y ves qué te queda por mes. Sirve para saber si el número te cierra antes de sentarte a conversar.</p>
+        <div style="background:#fff;border:1px solid var(--borde);border-radius:14px;padding:26px;margin-top:22px;box-shadow:0 1px 2px rgba(17,60,61,.04),0 4px 14px rgba(17,60,61,.05)">
+          <div style="margin-bottom:22px">
+            <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px;gap:12px">
+              <label for="cPrecio" style="font-size:13.5px;font-weight:600">Precio de la propiedad</label>
+              <span style="font-family:'Libre Caslon Text',Georgia,serif;font-weight:700;color:var(--verde);font-size:16px"><span data-txt="calcPrecioTxt"></span></span>
+            </div>
+            <input type="range" id="cPrecio" min="20000" max="700000" step="5000" data-valor="calcPrecio" data-change="cambiarCalcPrecio" data-input="cambiarCalcPrecio" />
+          </div>
+          <div style="margin-bottom:22px">
+            <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px;gap:12px">
+              <label for="cAnt" style="font-size:13.5px;font-weight:600">Anticipo</label>
+              <span style="font-family:'Libre Caslon Text',Georgia,serif;font-weight:700;color:var(--verde);font-size:16px"><span data-txt="calcAntTxt"></span></span>
+            </div>
+            <input type="range" id="cAnt" min="10" max="70" step="5" data-valor="calcAnt" data-change="cambiarCalcAnt" data-input="cambiarCalcAnt" />
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px;gap:12px">
+              <label for="cCuotas" style="font-size:13.5px;font-weight:600">Cantidad de cuotas</label>
+              <span style="font-family:'Libre Caslon Text',Georgia,serif;font-weight:700;color:var(--verde);font-size:16px"><span data-txt="calcCuotasTxt"></span></span>
+            </div>
+            <input type="range" id="cCuotas" min="12" max="120" step="6" data-valor="calcCuotas" data-change="cambiarCalcCuotas" data-input="cambiarCalcCuotas" />
+          </div>
+        </div>
+      </div>
+      <div style="background:var(--verde);color:#fff;border-radius:14px;padding:30px;box-shadow:0 24px 60px rgba(17,60,61,.2)">
+        <div style="font-size:13px;color:rgba(255,255,255,.78);margin-bottom:6px">Cuota mensual estimada</div>
+        <div style="font-family:'Libre Caslon Text',Georgia,serif;font-size:clamp(36px,5vw,48px);font-weight:700;line-height:1">USD <span data-txt="calcCuotaMes"></span> <small style="font-size:18px;color:var(--naranja-claro);font-weight:700">/mes</small></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:24px;border-top:1px solid rgba(255,255,255,.14);padding-top:20px">
+          <div><b style="display:block;font-family:'Libre Caslon Text',Georgia,serif;font-size:22px;font-weight:700">USD <span data-txt="calcAnticipoTxt"></span></b><span style="font-size:12px;color:rgba(255,255,255,.64)"><span data-txt="calcLblAnt"></span></span></div>
+          <div><b style="display:block;font-family:'Libre Caslon Text',Georgia,serif;font-size:22px;font-weight:700">USD <span data-txt="calcSaldoTxt"></span></b><span style="font-size:12px;color:rgba(255,255,255,.64)"><span data-txt="calcLblSaldo"></span></span></div>
+        </div>
+        <p style="font-size:12px;color:rgba(255,255,255,.64);margin:18px 0 0;line-height:1.55;border-top:1px solid rgba(255,255,255,.14);padding-top:14px">Son números de referencia, calculados sin interés sobre el saldo, para que veas el orden de magnitud. El plan real se arma en cada caso: depende de la propiedad, del vendedor y de tu situación. Esto no es una cotización ni una oferta.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ CÓMO ES COMPRAR ══ -->
+<section id="proceso" data-screen-label="Cómo es comprar" style="padding:clamp(52px,6.5vw,92px) 0;margin-top:clamp(52px,6.5vw,92px);background:var(--hueso-4);border-top:1px solid var(--borde);border-bottom:1px solid var(--borde)">
+  <div style="max-width:1180px;margin:0 auto;padding:0 20px">
+    <div style="max-width:680px;margin-bottom:30px">
+      <div style="width:44px;height:3px;background:var(--naranja);border-radius:3px;margin-bottom:18px"></div>
+      <h2 style="margin:0;font-family:'Libre Caslon Text',Georgia,serif;font-weight:700;font-size:clamp(28px,3.8vw,42px);line-height:1.14">Qué se firma, y cuándo</h2>
+      <p style="margin:12px 0 0;font-size:clamp(15.5px,1.8vw,17.5px);color:var(--gris);max-width:62ch">Comprar una propiedad es una cadena de papeles. Esta es la cadena completa, en orden, y qué te queda en la mano después de cada uno.</p>
+    </div>
+    <ol style="list-style:none;margin:0;padding:0;border-top:1px solid var(--borde-fuerte)">
+      <template data-lista="tramos" data-alias="t">
+        <li style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px 32px;padding:24px 0;border-bottom:1px solid var(--borde-fuerte);align-items:start">
+          <div style="position:relative;padding-left:46px">
+            <span style="position:absolute;left:0;top:-4px;font-family:'Libre Caslon Text',Georgia,serif;font-size:28px;font-weight:700;color:var(--numeral);line-height:1"><span data-txt="t.n"></span></span>
+            <h3 style="margin:0 0 6px;font-family:'Libre Caslon Text',Georgia,serif;font-size:21px;font-weight:700;color:var(--verde);letter-spacing:-.01em"><span data-txt="t.titulo"></span></h3>
+            <p style="margin:0;color:var(--gris);font-size:14.5px;line-height:1.6;max-width:60ch"><span data-txt="t.texto"></span></p>
+          </div>
+          <div style="background:#fff;border:1px solid var(--borde);border-radius:12px;padding:14px 16px">
+            <span style="display:block;font-size:10.5px;font-weight:700;letter-spacing:.08em;color:var(--naranja-oscuro)"><span data-txt="t.etiqueta"></span></span>
+            <span style="display:block;font-weight:600;font-size:13.5px;color:var(--tinta);margin-top:4px"><span data-txt="t.papel"></span></span>
+            <span style="display:block;font-size:12.5px;color:var(--gris);line-height:1.5;margin-top:4px"><span data-txt="t.detalle"></span></span>
+          </div>
+        </li>
+      </template>
+    </ol>
+    <p style="margin:26px 0 0;font-size:14px;color:var(--gris);max-width:74ch;line-height:1.65">Todo el recorrido con corredor matriculado —matrícula CUCIS 251— y con escribano en la escritura. Si en algún punto querés que te expliquemos un papel antes de firmarlo, es exactamente para eso que estamos.</p>
+  </div>
+</section>
+

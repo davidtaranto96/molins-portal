@@ -66,10 +66,10 @@
     bOper: "todo", bZona: "",
     menuOpen: false, ancho: 1200,
     ficha: null, fotoN: 1,
-    formNombre: "", formWa: "", formMail: "", formBusca: "Para vivir",
+    formNombre: "", formWa: "", formMail: "", formBusca: "Para vivir", formZona: "", formMensaje: "",
     formError: "", enviado: false, enviando: false, okMsg: "", ctx: "", ctxProp: null,
     calcPrecio: 75000, calcAnt: 30, calcCuotas: 60,
-    torre: null, aires: null, filtros: false
+    torre: null, aires: null, filtros: false, descLarga: false
   };
   var mapa = null;
 
@@ -109,6 +109,15 @@
     /* Sin el código: lo sella el manejador de clic para TODOS los enlaces por
        igual, incluidos los estáticos de la barra y el pie. Una sola fuente. */
     return "https://wa.me/" + TEL + "?text=" + encodeURIComponent("Hola, quiero consultar por " + p.titulo + " (" + p.codigo + ")");
+  }
+
+  /* Hasta cuatro fotos por tarjeta: al pasar el mouse van rotando. */
+  function fotosMini(p) { return p.fotos.slice(0, 4).map(function (src, i) { return { src: src, srcAhora: i === 0 ? src : "", clase: "minigal__foto" + (i === 0 ? " es-activa" : ""), punto: "minigal__punto" + (i === 0 ? " es-activa" : "") }; }); }
+  function tarjetaMini(x) {
+    return { codigo: x.codigo, foto: x.fotos[0] || "", sinFoto: !x.fotos.length, fotos: fotosMini(x), variasFotos: x.fotos.length > 1, zona: zonaCorta(x), ubicacion: ubicCorta(x), titulo: x.titulo,
+      tipo: x.tipo + " · " + x.operacion, specs: [x.dorm > 0 ? x.dorm + " dorm." : null, x.m2 > 0 ? num(x.m2) + " m²" : null].filter(Boolean).join(" · "),
+      precio: x.precio > 0 ? money(x.moneda, x.precio) + (x.operacion === "Alquiler" ? " /mes" : "") : "Consultar",
+      reservada: x.estado === "reservada", abrir: function () { abrirFicha(x.codigo); } };
   }
 
   function desdeApi(x, i) {
@@ -171,8 +180,16 @@
       var precios = libres.map(function (x) { return x.precio; }).filter(function (n) { return n > 0; });
       var tipos = {};
       u.forEach(function (x) { var k = x.tipologia || "Unidad"; tipos[k] = tipos[k] || { n: 0, libres: 0 }; tipos[k].n++; if (x.estado === "ACTIVA") tipos[k].libres++; });
+      /* La grilla: pisos de arriba a abajo, y en cada piso las dos torres. */
+      var pisos = {};
+      u.forEach(function (x) { var pi = x.piso || 0; pisos[pi] = pisos[pi] || []; pisos[pi].push(x); });
+      var grilla = Object.keys(pisos).map(Number).sort(function (a, b) { return b - a; }).map(function (pi) {
+        return { piso: pi + "º", unidades: pisos[pi].sort(function (a, b) { return String(a.unidad).localeCompare(String(b.unidad)); }).map(function (x) {
+          return { k: (x.piso || "") + (x.unidad || ""), libre: x.estado === "ACTIVA", titulo: (x.tipologia ? x.tipologia + " · " : "") + (x.precio > 0 ? money(x.moneda, x.precio) : "consultar") + (x.estado === "ACTIVA" ? " · disponible" : " · reservada") };
+        }) };
+      });
       set({ torre: { total: u.length, libres: libres.length, reservadas: u.length - libres.length, desde: precios.length ? Math.min.apply(null, precios) : 0, moneda: (u[0] || {}).moneda || "USD",
-        tipos: Object.keys(tipos).map(function (k) { return { k: k, n: tipos[k].n, libres: tipos[k].libres }; }) } });
+        tipos: Object.keys(tipos).map(function (k) { return { k: k, n: tipos[k].n, libres: tipos[k].libres }; }), grilla: grilla } });
     });
     traer("aires").then(function (u) {
       if (!u || !u.length) return;
@@ -272,7 +289,7 @@
   /* ── ficha ───────────────────────────────────────────────────────────── */
   function abrirFicha(codigo) {
     anotarVista(codigo);
-    set({ ficha: codigo, fotoN: 1 });
+    set({ ficha: codigo, fotoN: 1, descLarga: false });
     document.body.style.overflow = "hidden";
     precargarFotos(codigo, 1);
     urlFicha(codigo);
@@ -338,8 +355,18 @@
   }
 
   function descripcionDe(p) {
-    if (p.descripcion && p.descripcion.trim().length >= 40)
-      return p.descripcion.trim().split(/\n{2,}|\r\n\r\n/).map(function (t) { return t.trim().replace(/\n/g, " "); });
+    if (p.descripcion && p.descripcion.trim().length >= 40) {
+      /* La coletilla «Comercializa Molins…» ya está en la ficha; y un bloque
+         de diez oraciones se parte en párrafos de a tres para que se lea. */
+      var t = p.descripcion.trim().replace(/\s*Comercializa\s+Molins[^.]*\.?\s*$/i, "").trim();
+      var parrafos = t.split(/\n{2,}|\r\n\r\n/).map(function (x) { return x.trim().replace(/\n/g, " "); }).filter(Boolean);
+      if (parrafos.length === 1) {
+        var oraciones = parrafos[0].match(/[^.!?]+[.!?]+(\s|$)/g) || [parrafos[0]];
+        parrafos = [];
+        for (var i = 0; i < oraciones.length; i += 3) parrafos.push(oraciones.slice(i, i + 3).join("").trim());
+      }
+      return parrafos;
+    }
     var comp = [];
     if (p.m2 > 0) comp.push(num(p.m2) + " m²");
     if (p.dorm > 0) comp.push(p.dorm + (p.dorm === 1 ? " dormitorio" : " dormitorios"));
@@ -362,6 +389,8 @@
     }).sort(function (a, b) { return b.s - a.s; }).slice(0, 3).map(function (o) { return o.p; });
   }
 
+  var relojSuave = null;
+  function pintarSuave() { clearTimeout(relojSuave); relojSuave = setTimeout(pintar, 220); }
   var relojTexto = null;
   /* El pintor no toca un campo que tiene el foco (le movería el cursor), así
      que al vaciar el texto desde un chip hay que vaciar el campo a mano. */
@@ -392,7 +421,7 @@
       email: S.formMail.trim() || null,
       interes: p ? p.codigo + " · " + p.tipo + " en " + p.zona : (S.ctx || S.formBusca),
       propiedadCodigo: p ? p.codigo : null,
-      mensaje: "Busca: " + S.formBusca + (p ? ". Consultó por la ficha " + p.codigo + "." : ""),
+      mensaje: "Busca: " + S.formBusca + (S.formZona ? " · Zona: " + S.formZona : "") + (p ? ". Consultó por la ficha " + p.codigo + "." : "") + (S.formMensaje.trim() ? "\n" + S.formMensaje.trim() : ""),
       canal: "PORTAL",
       codigo: window.codigoCorto ? window.codigoCorto() : null,
       empresa: trampa ? trampa.value : ""
@@ -444,6 +473,7 @@
       var b = badgeDe(p), cuota = cuotaRef(p), fav = esFav(p.codigo);
       return {
         codigo: p.codigo, titulo: p.titulo, ubicacion: ubicCorta(p),
+        fotos: fotosMini(p), variasFotos: p.fotos.length > 1,
         nueva: p.nueva && p.estado !== "reservada", nFotos: p.fotos.length > 1 ? p.fotos.length + " fotos" : "",
         reservada: p.estado === "reservada",
         fotoEstilo: "width:100%;height:100%;object-fit:cover;display:block;transition:transform .7s cubic-bezier(.22,.61,.36,1)" + (p.estado === "reservada" ? ";filter:saturate(.55)" : ""),
@@ -496,7 +526,22 @@
     var ficha = {};
     if (fp) {
       var b = badgeDe(fp), geo = ZONA_GEO[fp.zona], cuota = cuotaRef(fp), sim = similaresDe(fp);
+      /* Para moverse sin cerrar: la lista es la que está filtrada en pantalla
+         (o toda la cartera si la ficha vino por enlace y no está en ella). */
+      var lista = visibles.some(function (x) { return x.codigo === fp.codigo; }) ? visibles : S.props;
+      var pos = lista.findIndex(function (x) { return x.codigo === fp.codigo; });
+      var vecinas = S.props.filter(function (x) { return x.codigo !== fp.codigo && x.zona === fp.zona && x.estado !== "reservada"; }).slice(0, 4);
+      var desc = descripcionDe(fp), largo = desc.join(" ").length > 520;
       ficha = {
+        mPos: pos >= 0 ? (pos + 1) + " de " + lista.length : "",
+        mHayNav: lista.length > 1,
+        mAnterior: function () { if (pos < 0) return; abrirFicha(lista[(pos - 1 + lista.length) % lista.length].codigo); },
+        mSiguiente: function () { if (pos < 0) return; abrirFicha(lista[(pos + 1) % lista.length].codigo); },
+        mVecinas: vecinas.map(tarjetaMini), mHayVecinas: vecinas.length > 0,
+        mVecinasTitulo: "Más en " + zonaCorta(fp),
+        mVerZona: function () { cerrarFicha(); set({ fZona: fp.zona, seg: "todo", fTexto: "" }); scrollA("propiedades"); },
+        mDescLead: desc[0] || "", mDescResto: desc.slice(1), mDescLarga: largo && !S.descLarga, mDescAbierta: !largo || S.descLarga,
+        mLeerMas: function () { set({ descLarga: true }); },
         mFoto: fp.fotos[S.fotoN - 1] || "", mSinFoto: !fp.fotos.length,
         mVariasFotos: fp.fotos.length > 1, mFotoCuenta: S.fotoN + " de " + fp.fotos.length,
         mThumbs: fp.fotos.map(function (src, i) {
@@ -544,20 +589,15 @@
           { k: "Matrícula", v: "CUCIS 251" }
         ].filter(Boolean),
         mDescParrafos: descripcionDe(fp),
-        mSimilares: sim.map(function (x) {
-          return {
-            foto: x.fotos[0] || "", zona: zonaCorta(x), titulo: x.titulo,
-            precio: x.precio > 0 ? money(x.moneda, x.precio) : "Consultar",
-            abrir: function () { abrirFicha(x.codigo); }
-          };
-        }),
+        mSimilares: sim.map(tarjetaMini),
         mHaySimilares: sim.length > 0,
         compartirFicha: compartir
       };
     }
 
-    var campoBase = "width:100%;box-sizing:border-box;padding:12px 13px;border:1.5px solid var(--borde-fuerte);border-radius:10px;font-size:15px;color:var(--tinta);background:var(--hueso);min-height:47px";
-    var campoErr = campoBase.replace("var(--borde-fuerte)", "var(--alerta)");
+    /* El estilo de los campos vive en el CSS (.campo-f); acá sólo va el borde rojo cuando falta algo. */
+    var campoBase = "";
+    var campoErr = "border-color:var(--alerta);box-shadow:0 0 0 4px rgba(220,60,60,.12)";
     var faltaNombre = S.formError && !S.formNombre.trim();
     var faltaWa = S.formError && !S.formWa.trim();
 
@@ -595,11 +635,7 @@
       limpiarTexto: function () { vaciarTexto(); var c = document.getElementById("fTexto"); if (c) c.focus(); },
       fOrden: S.fOrden, cambiarOrden: function (ev) { set({ fOrden: ev.target.value }); },
       disponibilidadTxt: S.cargando ? "" : (S.props.length - nReservadas) + " disponibles hoy" + (nReservadas ? " · " + nReservadas + (nReservadas === 1 ? " reservada" : " reservadas") : "") + " · actualizado desde el sistema",
-      recomendadas: recomendadas.map(function (x) {
-        return { foto: x.fotos[0] || "", zona: zonaCorta(x), titulo: x.titulo, tipo: x.tipo + " · " + x.operacion,
-          precio: x.precio > 0 ? money(x.moneda, x.precio) + (x.operacion === "Alquiler" ? " /mes" : "") : "Consultar",
-          abrir: function () { abrirFicha(x.codigo); } };
-      }),
+      recomendadas: recomendadas.map(tarjetaMini),
       hayRecomendadas: !S.cargando && recomendadas.length > 0 && visibles.length > 0,
       recomendadasTxt: recomendadasTxt,
       resultadoTxt: S.cargando ? "" : (visibles.length === 1 ? "1 propiedad" : visibles.length + " propiedades"),
@@ -617,6 +653,7 @@
       torreLinea: S.torre ? (S.torre.libres + " de " + S.torre.total + " unidades disponibles" + (S.torre.reservadas ? " · " + S.torre.reservadas + (S.torre.reservadas === 1 ? " reservada" : " reservadas") : "")) : "",
       torreDesde: S.torre && S.torre.desde ? "Desde " + money(S.torre.moneda, S.torre.desde) : "",
       torreTipos: S.torre ? S.torre.tipos.map(function (t) { return { k: t.k, n: t.libres + " de " + t.n }; }) : [],
+      torreGrilla: S.torre ? S.torre.grilla.map(function (f) { return { piso: f.piso, unidades: f.unidades.map(function (x) { return { k: x.k, titulo: x.titulo, clase: "torre-u" + (x.libre ? "" : " es-reservada") }; }) }; }) : [],
       aires: S.aires, hayAires: !!S.aires,
       airesLinea: S.aires ? S.aires.libres + " de " + S.aires.total + " unidades disponibles en la Etapa 1" : "",
       airesTipos: S.aires ? S.aires.tipos.map(function (t) { return { k: t.k, n: String(t.libres), de: t.libres === t.n ? "disponibles" : "de " + t.n }; }) : [],
@@ -641,10 +678,20 @@
 
       formPendiente: !S.enviado, formEnviado: S.enviado,
       formNombre: S.formNombre, formWa: S.formWa, formMail: S.formMail, formBusca: S.formBusca,
-      escribirNombre: function (ev) { S.formNombre = ev.target.value; },
-      escribirWa: function (ev) { S.formWa = ev.target.value; },
-      escribirMail: function (ev) { S.formMail = ev.target.value; },
+      /* Repinta de a poco (los tildes de «bien» al lado del campo) sin mover el cursor: el pintor no toca el campo con foco. */
+      escribirNombre: function (ev) { S.formNombre = ev.target.value; pintarSuave(); },
+      escribirWa: function (ev) { S.formWa = ev.target.value; pintarSuave(); },
+      escribirMail: function (ev) { S.formMail = ev.target.value; pintarSuave(); },
       escribirBusca: function (ev) { set({ formBusca: ev.target.value }); },
+      buscaOpciones: ["Para vivir", "Para invertir", "Alquilar", "Un terreno", "Aires de San Lorenzo", "Edificio La Torre", "Vender mi propiedad", "Todavía estoy viendo"].map(function (t) {
+        return { t: t, activa: S.formBusca === t ? "true" : "false", clase: "chip-busca" + (S.formBusca === t ? " es-activa" : ""), elegir: function () { set({ formBusca: t }); } };
+      }),
+      formZona: S.formZona, escribirZona: function (ev) { set({ formZona: ev.target.value }); },
+      formMensaje: S.formMensaje, escribirMensaje: function (ev) { S.formMensaje = ev.target.value; },
+      nombreOk: S.formNombre.trim().length >= 2 ? "true" : "false",
+      waOk: /\d{6,}/.test(S.formWa.replace(/\D/g, "")) ? "true" : "false",
+      mailOk: S.formMail.trim() && S.formMail.indexOf("@") > 0 ? "true" : "false",
+      enviarTxt: S.enviando ? "Enviando…" : "Enviar la consulta",
       estiloCampoNombre: faltaNombre ? campoErr : campoBase,
       estiloCampoWa: faltaWa ? campoErr : campoBase,
       enviarConsulta: enviarForm,
@@ -682,12 +729,14 @@
   ];
 
   var FAQ = [
-    { q: "Cuánto se paga de seña y qué pasa si me arrepiento", a: "La reserva suele ser un porcentaje chico del precio, se firma un recibo con plazo, y si el vendedor no cumple se devuelve. Si el que se arrepiente es el comprador, la seña se pierde. Cada operación lo deja por escrito antes de pagar." },
-    { q: "Quién paga los honorarios del corredor", a: "En una venta, cada parte paga los de su corredor. El porcentaje se acuerda antes y figura en la autorización y en el boleto. No hay sorpresas al final." },
-    { q: "Qué es el informe de dominio y por qué importa", a: "Es el certificado del Registro que dice quién es el dueño y si la propiedad tiene hipotecas, embargos o inhibiciones. Se pide antes del boleto. Una propiedad sin informe no se firma." },
-    { q: "Puedo pagar en cuotas", a: "En terrenos y en Aires de San Lorenzo, sí: anticipo y cuotas en pesos ajustadas por el índice de la construcción (CAC). En casas y departamentos de la cartera, depende del vendedor." },
-    { q: "Cuánto tarda una escritura", a: "Entre el boleto y la escritura pasan normalmente de 30 a 60 días: el escribano pide certificados, se liquidan impuestos y se coordina la firma. Si hay hipoteca bancaria, un poco más." },
-    { q: "La dirección exacta de una propiedad", a: "Algunas fichas muestran solo el barrio, por pedido del propietario. La dirección se pasa al coordinar la visita." }
+    { n: "01", q: "¿Cómo coordino una visita?", a: "Escribinos por WhatsApp con el código de la ficha (el MOL-… que ves en cada propiedad) y proponé dos o tres horarios. Las visitas son con turno y las hace Francisco o Luis en persona. Si la propiedad no es la indicada, seguimos con otra: no hay compromiso hasta que hay algo firmado." },
+    { n: "02", q: "¿Cuánto se paga de seña y qué pasa si me arrepiento?", a: "La reserva es un porcentaje chico del precio y se firma un recibo con plazo. Si el propietario no acepta la oferta, se devuelve. Si el que se arrepiente es el comprador, la seña se pierde. Todo queda por escrito antes de pagar." },
+    { n: "03", q: "¿Quién paga los honorarios del corredor?", a: "En una venta, cada parte paga los honorarios de su corredor. El porcentaje se acuerda antes y figura en la autorización y en el boleto. No hay sorpresas al final." },
+    { n: "04", q: "¿Qué es el informe de dominio y por qué importa?", a: "Es el certificado del Registro de la Propiedad que dice quién es el dueño y si hay hipotecas, embargos o inhibiciones. Se pide antes del boleto. Una propiedad sin informe no se firma." },
+    { n: "05", q: "¿Puedo pagar en cuotas?", a: "En terrenos, en Aires de San Lorenzo y en La Torre, sí: anticipo y cuotas, con el detalle de cada plan en la consulta. En casas y departamentos de la cartera depende del propietario, y lo averiguamos antes de la visita." },
+    { n: "06", q: "¿Cuánto tarda una escritura?", a: "Entre el boleto y la escritura pasan normalmente de 30 a 60 días: el escribano pide los certificados, se liquidan los impuestos y se coordina la firma. Con hipoteca bancaria, algo más." },
+    { n: "07", q: "¿Por qué algunas fichas no muestran la dirección exacta?", a: "Por pedido del propietario. La ficha muestra el barrio y la zona; la dirección se pasa al coordinar la visita." },
+    { n: "08", q: "Quiero vender o alquilar mi propiedad. ¿Cómo empiezo?", a: "Escribinos y coordinamos una tasación sin cargo. Después se firma la autorización de venta o de alquiler, se toman las fotos y la propiedad sale publicada acá y en los portales, con las consultas entrando al mismo sistema que ves en este sitio." }
   ];
 
   /* ── arranque y medición ─────────────────────────────────────────────── */
@@ -696,6 +745,30 @@
     pintar();
     cargar();
     cargarProyectos();
+
+    /* Las tarjetas con varias fotos: al apoyar el mouse van pasando. Delegado,
+       porque el pintor rehace las tarjetas en cada cambio. */
+    var relojGal = null, galActiva = null;
+    function galIr(g, n) {
+      var fotos = g.querySelectorAll(".minigal__foto"), puntos = g.querySelectorAll(".minigal__punto");
+      if (!fotos.length) return;
+      n = ((n % fotos.length) + fotos.length) % fotos.length;
+      fotos.forEach(function (f, i) { f.classList.toggle("es-activa", i === n); if (i === n && f.dataset.lazy && !f.getAttribute("src")) f.setAttribute("src", f.dataset.lazy); });
+      puntos.forEach(function (p, i) { p.classList.toggle("es-activa", i === n); });
+      g.dataset.n = n;
+    }
+    function galParar() { clearTimeout(relojGal); relojGal = null; if (galActiva) { galIr(galActiva, 0); galActiva = null; } }
+    document.addEventListener("mouseover", function (ev) {
+      var g = ev.target.closest && ev.target.closest(".minigal");
+      if (!g || g === galActiva || g.querySelectorAll(".minigal__foto").length < 2) return;
+      galParar(); galActiva = g;
+      (function tic() { relojGal = setTimeout(function () { if (galActiva !== g) return; galIr(g, (+g.dataset.n || 0) + 1); tic(); }, 1100); })();
+    });
+    document.addEventListener("mouseout", function (ev) {
+      if (!galActiva) return;
+      var a = ev.relatedTarget;
+      if (!a || !(a.closest && a.closest(".minigal") === galActiva)) galParar();
+    });
 
     /* El reel pide abrir una ficha. */
     document.addEventListener("molins:ficha", function (ev) { if (prop(ev.detail)) abrirFicha(ev.detail); });

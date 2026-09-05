@@ -11,6 +11,7 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <style>
   html{scroll-behavior:smooth}
+  [hidden]{display:none!important}
   body{margin:0;font-family:'Archivo',-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;background:var(--hueso);color:var(--tinta);line-height:1.6;-webkit-font-smoothing:antialiased}
   a{color:var(--verde-claro);text-decoration:none}
   a:hover{color:var(--naranja)}
@@ -169,9 +170,168 @@
   .bloque__foto:hover img{transform:scale(1.04)}
   .bloque__foto span{position:absolute;left:14px;bottom:12px;font-size:11.5px;font-weight:600;color:rgba(255,255,255,.9);background:rgba(0,0,0,.45);padding:5px 10px;border-radius:999px;backdrop-filter:blur(6px)}
   .bloque__galeria{display:grid;gap:14px}
+  .bloque__enlace{display:grid;grid-template-columns:1fr 26px;align-items:center;gap:8px 12px;text-align:left;padding:14px 16px;border-radius:14px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);color:#fff;cursor:pointer;font-family:inherit;min-width:min(100%,320px);transition:background .2s,border-color .2s,transform .2s}
+  .bloque__enlace span{font-weight:600;font-size:15px}
+  .bloque__enlace small{grid-column:1;font-size:12px;color:rgba(255,255,255,.66)}
+  .bloque__enlace i{grid-column:2;grid-row:1 / span 2;font-style:normal;font-size:20px;transition:transform .25s}
+  .bloque__enlace:hover{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.4);transform:translateY(-2px);color:#fff}
+  .bloque__enlace:hover i{transform:translate(3px,-3px)}
+  .bloque--torre .bloque__enlace:not(.bloque__enlace--suave){background:var(--torre-terracota);border-color:transparent;box-shadow:0 12px 30px rgba(156,58,32,.35)}
+  .bloque--torre .bloque__enlace:not(.bloque__enlace--suave):hover{background:var(--torre-terracota-claro)}
+  .bloque--torre .bloque__enlace:not(.bloque__enlace--suave) small{color:rgba(243,235,221,.8)}
+  .bloque--aires .bloque__enlace:not(.bloque__enlace--suave){background:var(--aires-arena);border-color:transparent;color:var(--aires-verde-hondo)}
+  .bloque--aires .bloque__enlace:not(.bloque__enlace--suave) small{color:rgba(26,54,46,.75)}
+  .bloque--aires .bloque__enlace:not(.bloque__enlace--suave):hover{background:var(--aires-crema);color:var(--aires-verde-hondo)}
+  .bloque__tipo--link{color:#fff;position:relative;padding-right:26px}
+  .bloque__tipo--link i{position:absolute;right:9px;top:8px;font-style:normal;font-size:13px;opacity:.6;transition:transform .2s,opacity .2s}
+  .bloque__tipo--link:hover i{opacity:1;transform:translate(2px,-2px)}
+  .torre-grilla{margin-top:16px;display:flex;flex-direction:column;gap:6px;max-width:300px}
+  .torre-fila{display:grid;grid-template-columns:32px 1fr 1fr;gap:6px;align-items:center}
+  .torre-piso{font-size:11px;font-weight:700;letter-spacing:.06em;color:rgba(255,255,255,.55)}
+  .torre-u{display:flex;align-items:center;justify-content:center;min-height:38px;border-radius:9px;border:1px solid rgba(243,235,221,.45);color:var(--torre-crema);font-weight:700;font-size:13.5px;letter-spacing:.04em;background:rgba(243,235,221,.06);transition:background .2s,transform .15s,border-color .2s}
+  .torre-u:hover{background:rgba(243,235,221,.2);transform:translateY(-2px);border-color:var(--torre-crema);color:#fff}
+  .torre-u.es-reservada{background:var(--torre-terracota);border-color:transparent;color:var(--torre-crema);opacity:.9}
+  .torre-leyenda{margin-top:6px;font-size:11.5px;color:rgba(255,255,255,.6);display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+  .torre-leyenda i{width:10px;height:10px;border-radius:3px;border:1px solid rgba(243,235,221,.5);display:inline-block}
+  .torre-leyenda i.es-reservada{background:var(--torre-terracota);border-color:transparent}
   .bloque__galeria .bloque__foto:nth-child(2){transition-delay:.3s;aspect-ratio:16/8}
   @media (max-width:899px){.bloque__caja{grid-template-columns:1fr;padding:44px 20px}.bloque__caja--inversa .bloque__texto{order:1}.bloque__caja--inversa .bloque__galeria{order:2}.bloque--torre .bloque__velo,.bloque--aires .bloque__velo{background:linear-gradient(180deg,rgba(14,12,10,.9) 0%,rgba(14,12,10,.86) 100%)}.bloque--aires .bloque__velo{background:linear-gradient(180deg,rgba(16,34,28,.9),rgba(16,34,28,.88))}}
   @media (prefers-reduced-motion:reduce){.reel__kb--a,.reel__kb--b{animation:none}.reel__capa{transition:none}.reel__pie--entra *{animation:none!important}.portada__bajar svg{animation:none}.bloque__texto > *,.bloque__foto{opacity:1!important;transform:none!important;transition:none!important}.bloque__fondo{transform:none!important}.buscador,.buscador__caja{transition:none}}
+  .reel__tinte{position:absolute;inset:0;background:linear-gradient(118deg,rgba(17,60,61,.55) 0%,rgba(17,60,61,.12) 38%,rgba(246,101,3,0) 62%,rgba(246,101,3,.2) 100%);mix-blend-mode:multiply;pointer-events:none}
+  .portada::after{content:"";position:absolute;left:0;right:0;bottom:0;height:120px;background:linear-gradient(180deg,rgba(250,249,245,0),rgba(250,249,245,.35));pointer-events:none;z-index:1}
+  /* ── mini galería en las tarjetas ── */
+  .minigal{position:absolute;inset:0;display:block;overflow:hidden}
+  .minigal__foto{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;opacity:0;transition:opacity .55s ease,transform .7s cubic-bezier(.22,.61,.36,1)}
+  .minigal__foto.es-activa{opacity:1}
+  .tarjeta:hover .minigal__foto.es-activa,.reco:hover .minigal__foto.es-activa{transform:scale(1.04)}
+  .minigal__puntos{position:absolute;left:50%;bottom:9px;transform:translateX(-50%);display:flex;gap:4px;padding:4px 7px;border-radius:999px;background:rgba(9,30,31,.42);backdrop-filter:blur(4px);opacity:0;transition:opacity .25s}
+  .tarjeta:hover .minigal__puntos,.reco:hover .minigal__puntos{opacity:1}
+  .minigal__punto{width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.5);display:block;transition:background .2s,transform .2s}
+  .minigal__punto.es-activa{background:#fff;transform:scale(1.25)}
+  /* ── tarjeta mini (recomendadas, similares) ── */
+  .reco{display:flex;flex-direction:column;text-align:left;background:#fff;border:1px solid var(--borde);border-radius:16px;overflow:hidden;padding:0;cursor:pointer;color:var(--tinta);transition:transform .25s cubic-bezier(.22,.61,.36,1),box-shadow .25s,border-color .2s;font-family:inherit}
+  .reco:hover{transform:translateY(-4px);box-shadow:0 16px 36px rgba(17,60,61,.14);border-color:var(--borde-fuerte)}
+  .reco__foto{display:block;position:relative;aspect-ratio:4/3;overflow:hidden;background:var(--verde-suave);width:100%}
+  .reco__sinfoto{position:absolute;inset:0;display:grid;place-items:center;font-family:monospace;font-size:11px;color:var(--tinta-suave);background:repeating-linear-gradient(45deg,var(--verde-suave),var(--verde-suave) 12px,var(--verde-palido) 12px,var(--verde-palido) 24px)}
+  .reco__texto{display:block;padding:12px 14px 14px}
+  .reco__zona{display:block;font-size:11px;font-weight:600;color:var(--verde-claro);letter-spacing:.02em}
+  .reco__titulo{display:block;font-family:'Libre Caslon Text',Georgia,serif;font-size:16px;font-weight:700;line-height:1.25;margin:4px 0 3px}
+  .reco__specs{display:block;font-size:12px;color:var(--gris)}
+  .reco__precio{display:block;font-family:'Libre Caslon Text',Georgia,serif;font-size:17px;font-weight:700;margin-top:8px}
+  .fila-reco > .reco{flex:0 0 250px}
+  .fila-reco--grilla{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));overflow:visible;scroll-snap-type:none}
+  .fila-reco--grilla > .reco{flex:none}
+  /* ── la ficha en dos columnas ── */
+  #fichaCaja{max-width:1180px}
+  .ficha__cuerpo{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:0 34px;padding:22px 26px 30px;align-items:start}
+  .ficha__principal{min-width:0}
+  .ficha__lado{position:sticky;top:14px;display:flex;flex-direction:column;gap:14px}
+  .ficha__nav{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:12.5px;font-weight:600;color:var(--gris)}
+  .ficha__nav button{width:38px;height:38px;border-radius:50%;border:1px solid var(--borde-fuerte);background:#fff;color:var(--verde);cursor:pointer;display:grid;place-items:center;transition:background .2s,transform .15s}
+  .ficha__nav button:hover{background:var(--verde-suave)}.ficha__nav button:active{transform:scale(.94)}
+  .ficha__contacto{background:var(--hueso);border:1px solid var(--borde);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:10px}
+  .ficha__corredor{display:flex;align-items:center;gap:11px;margin-bottom:4px}
+  .ficha__corredor img{width:44px;height:44px;border-radius:10px;object-fit:cover}
+  .ficha__corredor b{display:block;font-size:14.5px}.ficha__corredor small{display:block;font-size:11.5px;color:var(--gris)}
+  .ficha__wa{display:inline-flex;align-items:center;justify-content:center;gap:9px;background:var(--whatsapp);color:var(--verde-noche);font-weight:600;font-size:14.5px;min-height:48px;border-radius:12px;transition:transform .15s,filter .2s}
+  .ficha__wa:hover{filter:brightness(1.05);color:var(--verde-noche)}.ficha__wa:active{transform:scale(.98)}
+  .ficha__datos{background:#fff;color:var(--verde);border:1.5px solid var(--borde-fuerte);font-weight:600;font-size:14px;min-height:46px;border-radius:12px;cursor:pointer;transition:border-color .2s,background .2s}
+  .ficha__datos:hover{border-color:var(--verde);background:var(--verde-palido)}
+  .ficha__contacto p{margin:2px 0 0;font-size:12px;color:var(--gris);text-align:center}
+  .ficha__vecinas{display:flex;flex-direction:column;gap:8px}
+  .ficha__vecinas-cab{display:flex;align-items:baseline;justify-content:space-between;gap:10px;padding:4px 2px}
+  .ficha__vecinas-cab b{font-family:'Libre Caslon Text',Georgia,serif;font-size:16px}
+  .ficha__vecinas-cab button{border:none;background:none;color:var(--naranja-oscuro);font-weight:600;font-size:12.5px;cursor:pointer;padding:4px 0}
+  .vecina{display:flex;gap:11px;align-items:center;text-align:left;background:#fff;border:1px solid var(--borde);border-radius:12px;padding:8px;cursor:pointer;color:var(--tinta);font-family:inherit;transition:transform .2s,box-shadow .2s,border-color .2s}
+  .vecina:hover{transform:translateX(3px);border-color:var(--borde-fuerte);box-shadow:0 8px 20px rgba(17,60,61,.1)}
+  .vecina__foto{width:78px;height:58px;border-radius:8px;overflow:hidden;background:var(--verde-suave);flex:none;display:block}
+  .vecina__foto img{width:100%;height:100%;object-fit:cover;display:block}
+  .vecina__texto{display:flex;flex-direction:column;min-width:0}
+  .vecina__texto b{font-size:13.5px;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .vecina__texto small{font-size:11.5px;color:var(--gris)}
+  .vecina__precio{font-family:'Libre Caslon Text',Georgia,serif;font-size:14px;font-weight:700;margin-top:2px}
+  .ficha__lead{font-size:16.5px;line-height:1.65;color:var(--tinta);max-width:66ch;margin:0 0 14px;font-weight:500}
+  .ficha__leermas{border:none;background:none;color:var(--naranja-oscuro);font-weight:600;font-size:14px;cursor:pointer;padding:6px 0;display:inline-flex;align-items:center;gap:6px}
+  .ficha__leermas::after{content:"↓"}
+  @media (max-width:999px){.ficha__cuerpo{grid-template-columns:1fr;padding:18px 18px 24px}.ficha__lado{position:static}}
+  /* ── etiqueta de sección ── */
+  .etiqueta-seccion{display:inline-flex;align-items:center;gap:8px;font-size:11.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--naranja-oscuro)}
+  .etiqueta-seccion::before{content:"";width:22px;height:2px;background:var(--naranja);border-radius:2px}
+  .etiqueta-seccion--clara{color:var(--naranja-palido)}
+  /* ── preguntas ── */
+  .preguntas{padding:clamp(56px,7vw,100px) 0 0}
+  .preguntas__caja{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.4fr);gap:clamp(28px,5vw,72px);align-items:start}
+  .preguntas__intro{position:sticky;top:calc(var(--barra,84px) + 84px)}
+  .preguntas__intro h2{margin:14px 0 10px;font-family:'Libre Caslon Text',Georgia,serif;font-weight:700;font-size:clamp(28px,3.6vw,42px);line-height:1.1;letter-spacing:-.01em}
+  .preguntas__intro p{margin:0;font-size:16px;color:var(--gris);max-width:36ch}
+  .preguntas__wa{margin-top:22px;display:inline-flex;align-items:center;gap:12px;padding:12px 16px 12px 14px;border-radius:14px;background:#fff;border:1px solid var(--borde);color:var(--tinta);box-shadow:0 8px 24px rgba(17,60,61,.06);transition:transform .2s,box-shadow .2s}
+  .preguntas__wa:hover{transform:translateY(-2px);box-shadow:0 14px 30px rgba(17,60,61,.12);color:var(--tinta)}
+  .preguntas__wa svg{color:var(--whatsapp);flex:none}
+  .preguntas__wa b{display:block;font-size:14px}.preguntas__wa small{display:block;font-size:12px;color:var(--gris)}
+  .preguntas__lista{display:flex;flex-direction:column;gap:10px}
+  .pregunta{background:#fff;border:1px solid var(--borde);border-radius:16px;overflow:hidden;transition:border-color .2s,box-shadow .25s}
+  .pregunta:hover{border-color:var(--borde-fuerte)}
+  .pregunta[open]{border-color:var(--borde-fuerte);box-shadow:0 14px 34px rgba(17,60,61,.08)}
+  .pregunta summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:34px 1fr 30px;align-items:center;gap:12px;padding:18px 18px 18px 20px;font-family:'Libre Caslon Text',Georgia,serif;font-size:17.5px;font-weight:700;line-height:1.3;color:var(--tinta)}
+  .pregunta summary::-webkit-details-marker{display:none}
+  .pregunta__n{font-family:'Archivo',sans-serif;font-size:12px;font-weight:700;letter-spacing:.08em;color:var(--naranja-oscuro)}
+  .pregunta__mas{position:relative;width:30px;height:30px;border-radius:50%;background:var(--hueso-3);transition:background .2s,transform .3s cubic-bezier(.22,.61,.36,1)}
+  .pregunta__mas::before,.pregunta__mas::after{content:"";position:absolute;left:50%;top:50%;width:12px;height:2px;background:var(--verde);border-radius:2px;transform:translate(-50%,-50%)}
+  .pregunta__mas::after{transform:translate(-50%,-50%) rotate(90deg)}
+  .pregunta[open] .pregunta__mas{background:var(--verde);transform:rotate(45deg)}
+  .pregunta[open] .pregunta__mas::before,.pregunta[open] .pregunta__mas::after{background:#fff}
+  .pregunta__a{padding:0 20px 20px 66px;animation:rise .35s cubic-bezier(.22,.61,.36,1) both}
+  .pregunta__a p{margin:0;font-size:15px;line-height:1.7;color:var(--tinta-suave);max-width:62ch}
+  @media (max-width:899px){.preguntas__caja{grid-template-columns:1fr}.preguntas__intro{position:static}.pregunta summary{grid-template-columns:28px 1fr 28px;padding:15px 14px 15px 16px;font-size:16px}.pregunta__a{padding:0 16px 18px 56px}}
+  /* ── contacto ── */
+  .contacto{padding:clamp(56px,7vw,100px) 0 0;margin-top:clamp(56px,7vw,100px)}
+  .contacto__caja{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:0;border-radius:24px;overflow:hidden;box-shadow:0 30px 80px rgba(9,30,31,.22);background:#fff}
+  .contacto__izq{background:radial-gradient(120% 90% at 100% 0%,rgba(246,101,3,.22),transparent 55%),linear-gradient(160deg,var(--verde-hondo),var(--verde-noche));color:#fff;padding:clamp(28px,4.5vw,56px)}
+  .contacto__izq h2{margin:16px 0 12px;font-family:'Libre Caslon Text',Georgia,serif;font-weight:700;font-size:clamp(26px,3.2vw,38px);line-height:1.12;color:#fff}
+  .contacto__izq > p{margin:0 0 24px;font-size:15.5px;line-height:1.6;color:rgba(255,255,255,.78);max-width:46ch}
+  .canales{display:flex;flex-direction:column;gap:10px}
+  .canal{display:grid;grid-template-columns:44px 1fr 22px;align-items:center;gap:14px;padding:12px 14px;border-radius:14px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:#fff;transition:background .2s,transform .2s,border-color .2s}
+  .canal:hover{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.28);transform:translateX(4px);color:#fff}
+  .canal__icono{width:44px;height:44px;border-radius:12px;background:rgba(255,255,255,.1);display:grid;place-items:center;color:#fff}
+  .canal--wa .canal__icono{background:var(--whatsapp);color:var(--verde-noche)}
+  .canal__texto{display:flex;flex-direction:column;min-width:0}
+  .canal__texto b{font-size:14.5px}.canal__texto span{font-size:14px;color:rgba(255,255,255,.9)}.canal__texto small{font-size:12px;color:rgba(255,255,255,.6);margin-top:2px}
+  .canal i{font-style:normal;color:rgba(255,255,255,.6);transition:transform .2s}
+  .canal:hover i{transform:translateX(3px);color:#fff}
+  .contacto__matricula{margin:24px 0 0;font-size:12px;color:rgba(255,255,255,.55)}
+  .contacto__form{padding:clamp(28px,4.5vw,56px);background:#fff}
+  .contacto__form h3{margin:0;font-family:'Libre Caslon Text',Georgia,serif;font-size:24px;font-weight:700}
+  .contacto__sub{margin:4px 0 20px;font-size:14px;color:var(--gris)}
+  .contacto__ctx{display:flex;gap:9px;align-items:center;margin:-8px 0 18px;font-size:13px;color:var(--verde-claro);background:var(--verde-suave);border:1px solid var(--borde-4);border-radius:10px;padding:9px 12px}
+  .chips-busca{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 18px}
+  .chip-busca{border:1.5px solid var(--borde-fuerte);background:#fff;color:var(--tinta-suave);font-size:13.5px;font-weight:600;padding:9px 14px;border-radius:999px;cursor:pointer;min-height:40px;transition:background .2s,color .2s,border-color .2s,transform .15s;font-family:inherit}
+  .chip-busca:hover{border-color:var(--verde)}
+  .chip-busca:active{transform:scale(.96)}
+  .chip-busca.es-activa{background:var(--verde);border-color:var(--verde);color:#fff}
+  .campos-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .campo-f{position:relative;display:block;margin-bottom:12px}
+  .campo-f input,.campo-f textarea,.campo-f select{width:100%;box-sizing:border-box;padding:24px 40px 10px 14px;border:1.5px solid var(--borde-fuerte);border-radius:12px;font-size:15px;color:var(--tinta);background:var(--hueso);min-height:58px;font-family:inherit;transition:border-color .2s,box-shadow .2s,background .2s;-webkit-appearance:none;appearance:none}
+  .campo-f textarea{resize:vertical;min-height:96px;padding-top:26px}
+  .campo-f select{padding-right:36px;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23113c3d' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;background-size:15px}
+  .campo-f input:focus,.campo-f textarea:focus,.campo-f select:focus{outline:none;border-color:var(--verde);background:#fff;box-shadow:0 0 0 4px var(--verde-suave)}
+  .campo-f__rotulo{position:absolute;left:14px;top:19px;font-size:14.5px;color:var(--gris);pointer-events:none;transition:top .18s cubic-bezier(.22,.61,.36,1),font-size .18s,color .18s}
+  .campo-f__rotulo em{font-style:normal;color:var(--gris);opacity:.8}
+  .campo-f input:focus ~ .campo-f__rotulo,.campo-f input:not(:placeholder-shown) ~ .campo-f__rotulo,.campo-f textarea:focus ~ .campo-f__rotulo,.campo-f textarea:not(:placeholder-shown) ~ .campo-f__rotulo,.campo-f__rotulo--fijo{top:9px;font-size:11.5px;color:var(--verde-claro);font-weight:600;letter-spacing:.02em}
+  .campo-f > .campo-f__rotulo:only-child{position:static;display:block;font-size:13px;font-weight:600;color:var(--tinta);margin-bottom:2px}
+  .campo-f__ok{position:absolute;right:13px;top:50%;transform:translateY(-50%) scale(.6);width:22px;height:22px;border-radius:50%;background:var(--ok-suave);color:var(--ok);display:grid;place-items:center;opacity:0;animation:okEntra .35s cubic-bezier(.22,.61,.36,1) forwards}
+  .campo-f__ok svg{width:13px;height:13px}
+  @keyframes okEntra{to{opacity:1;transform:translateY(-50%) scale(1)}}
+  .contacto__enviar{width:100%;margin-top:4px;display:inline-flex;align-items:center;justify-content:center;gap:10px;background:var(--naranja);color:var(--verde-noche);border:none;border-radius:12px;font-weight:600;font-size:15.5px;min-height:54px;cursor:pointer;transition:transform .15s,background .2s,box-shadow .2s;box-shadow:0 10px 26px rgba(246,101,3,.28);font-family:inherit}
+  .contacto__enviar:hover{background:var(--naranja-claro)}
+  .contacto__enviar:active{transform:scale(.98)}
+  .contacto__enviar[disabled]{opacity:.7;cursor:progress}
+  .contacto__enviar svg{transition:transform .2s}.contacto__enviar:hover svg{transform:translateX(3px)}
+  .contacto__ok{text-align:center;padding:24px 6px}
+  .contacto__ok .tilde{width:64px;height:64px;border-radius:50%;background:var(--ok-suave);color:var(--ok);display:grid;place-items:center;margin:0 auto 16px}
+  .contacto__ok h3{margin:0 0 6px}.contacto__ok > p{margin:0;color:var(--gris);font-size:14.5px}
+  .contacto__pasos{text-align:left;margin:22px auto 0;padding:0 0 0 22px;max-width:40ch;color:var(--tinta-suave);font-size:14px;line-height:1.6;display:flex;flex-direction:column;gap:8px}
+  .contacto__urgente{display:inline-block;margin-top:18px;font-size:13.5px;font-weight:600;color:var(--verde-claro)}
+  @media (max-width:899px){.contacto__caja{grid-template-columns:1fr;border-radius:18px}.campos-2{grid-template-columns:1fr;gap:0}}
   input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:6px;border-radius:6px;background:var(--borde-3);outline:none}
   input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:var(--verde);cursor:pointer;border:3px solid #fff;box-shadow:0 2px 7px rgba(17,60,61,.35)}
   input[type=range]::-moz-range-thumb{width:19px;height:19px;border-radius:50%;background:var(--verde);cursor:pointer;border:3px solid #fff}
@@ -215,7 +375,7 @@
     document.head.appendChild(cf);
   }
 </script>
-<link rel="stylesheet" href="src/estilos.css">
+<link rel="stylesheet" href="src/estilos.css?v=20260905g">
 </head>
 <body>
 
@@ -258,8 +418,7 @@
       <nav style="display:flex;align-items:center;gap:26px">
         <a href="#propiedades" style="font-size:14px;font-weight:500;color:var(--tinta-suave)">Propiedades</a>
         <a href="#proyectos" style="font-size:14px;font-weight:500;color:var(--tinta-suave)">Proyectos</a>
-        <a href="#zonas" style="font-size:14px;font-weight:500;color:var(--tinta-suave)">Zonas</a>
-        <a href="#financiacion" style="font-size:14px;font-weight:500;color:var(--tinta-suave)">Financiación</a>
+        <a href="#preguntas" style="font-size:14px;font-weight:500;color:var(--tinta-suave)">Preguntas</a>
         <a href="#contacto" style="font-size:14px;font-weight:500;color:var(--tinta-suave)">Contacto</a>
       </nav>
       <a href="#contacto" style="background:var(--naranja);color:var(--verde-noche);font-weight:600;font-size:14.5px;padding:12px 20px;border-radius:10px;display:inline-flex;align-items:center;min-height:46px;white-space:nowrap;box-shadow:0 6px 16px rgba(246,101,3,.24);transition:background .2s,transform .2s" data-fx="fx-1">Reservar una visita</a>
@@ -288,8 +447,7 @@
     <nav style="display:flex;flex-direction:column;margin-top:26px">
       <a href="#propiedades" data-click="cerrarMenu" style="font-family:'Libre Caslon Text',Georgia,serif;font-size:22px;font-weight:700;color:var(--tinta);padding:15px 4px;border-bottom:1px solid var(--borde)">Propiedades</a>
       <a href="#proyectos" data-click="cerrarMenu" style="font-family:'Libre Caslon Text',Georgia,serif;font-size:22px;font-weight:700;color:var(--tinta);padding:15px 4px;border-bottom:1px solid var(--borde)">Proyectos</a>
-      <a href="#zonas" data-click="cerrarMenu" style="font-family:'Libre Caslon Text',Georgia,serif;font-size:22px;font-weight:700;color:var(--tinta);padding:15px 4px;border-bottom:1px solid var(--borde)">Zonas</a>
-      <a href="#financiacion" data-click="cerrarMenu" style="font-family:'Libre Caslon Text',Georgia,serif;font-size:22px;font-weight:700;color:var(--tinta);padding:15px 4px;border-bottom:1px solid var(--borde)">Financiación</a>
+      <a href="#preguntas" data-click="cerrarMenu" style="font-family:'Libre Caslon Text',Georgia,serif;font-size:22px;font-weight:700;color:var(--tinta);padding:15px 4px;border-bottom:1px solid var(--borde)">Preguntas</a>
       <a href="#contacto" data-click="cerrarMenu" style="font-family:'Libre Caslon Text',Georgia,serif;font-size:22px;font-weight:700;color:var(--tinta);padding:15px 4px;border-bottom:1px solid var(--borde)">Contacto</a>
     </nav>
     <div style="margin-top:auto;display:flex;flex-direction:column;gap:12px;padding-bottom:10px">
@@ -312,9 +470,9 @@
     <div class="reel__capa reel__capa--a"></div>
     <div class="reel__capa reel__capa--b"></div>
     <div class="reel__velo"></div>
+    <div class="reel__tinte"></div>
   </div>
   <div class="portada__marca">
-    <img src="img/logo-molins.png" alt="Escudo de Molins" width="64" height="64" />
     <div>
       <h1>Francisco Molins</h1>
       <p>Real estate · Salta</p>
@@ -514,7 +672,10 @@
         <article class="tarjeta" data-click="p.abrir" tabindex="0" role="button" data-attr-aria-label="p.aria" data-tpl-style="background:#fff;border:1px solid var(--borde);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;cursor:pointer;transition:transform .22s cubic-bezier(.22,.61,.36,1),box-shadow .22s cubic-bezier(.22,.61,.36,1);animation:rise .4s cubic-bezier(.22,.61,.36,1) both;animation-delay:{p.delay}" data-fx="fx-3">
           <div style="position:relative;aspect-ratio:4/3;overflow:hidden;background:var(--verde-suave)">
             <div data-si="p.foto" hidden>
-              <img class="tarjeta__foto" data-src="p.foto" data-attr-alt="p.aria" loading="lazy" data-estilo="p.fotoEstilo" />
+              <span class="minigal" data-n="0">
+                <template data-lista="p.fotos" data-alias="f"><img class="tarjeta__foto" data-attr-class="f.clase" data-src="f.srcAhora" data-attr-data-lazy="f.src" alt="" loading="lazy" /></template>
+                <span data-si="p.variasFotos" hidden><span class="minigal__puntos"><template data-lista="p.fotos" data-alias="f"><i data-attr-class="f.punto"></i></template></span></span>
+              </span>
             </div>
             <div data-si="p.sinFoto" hidden>
               <div style="position:absolute;inset:0;display:grid;place-items:center;background:repeating-linear-gradient(45deg,var(--verde-suave),var(--verde-suave) 12px,var(--verde-palido) 12px,var(--verde-palido) 24px)"><span style="font-family:monospace;font-size:12px;color:var(--tinta-suave)">fotos en la consulta</span></div>
@@ -577,14 +738,18 @@
         <div class="fila-reco">
           <template data-lista="recomendadas" data-alias="r">
             <button type="button" class="reco" data-click="r.abrir">
-              <span style="display:block;aspect-ratio:16/10;overflow:hidden;background:var(--verde-suave);width:100%">
-                <span data-si="r.foto" hidden><img data-src="r.foto" data-attr-alt="r.titulo" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block" /></span>
+              <span class="reco__foto">
+                <span data-si="r.foto" hidden><span class="minigal" data-n="0">
+                <template data-lista="r.fotos" data-alias="f"><img data-attr-class="f.clase" data-src="f.srcAhora" data-attr-data-lazy="f.src" alt="" loading="lazy" /></template>
+                <span data-si="r.variasFotos" hidden><span class="minigal__puntos"><template data-lista="r.fotos" data-alias="f"><i data-attr-class="f.punto"></i></template></span></span>
+              </span></span>
+                <span data-si="r.sinFoto" hidden><span class="reco__sinfoto">fotos en la consulta</span></span>
               </span>
-              <span style="display:block;padding:11px 13px 13px">
-                <span style="display:block;font-size:11px;font-weight:600;color:var(--verde-claro)"><span data-txt="r.zona"></span></span>
-                <span style="display:block;font-size:14px;font-weight:600;line-height:1.3;margin:4px 0 2px"><span data-txt="r.titulo"></span></span>
-                <span style="display:block;font-size:12px;color:var(--gris)"><span data-txt="r.tipo"></span></span>
-                <span style="display:block;font-family:'Libre Caslon Text',Georgia,serif;font-size:16.5px;font-weight:700;margin-top:6px"><span data-txt="r.precio"></span></span>
+              <span class="reco__texto">
+                <span class="reco__zona"><span data-txt="r.ubicacion"></span></span>
+                <span class="reco__titulo"><span data-txt="r.titulo"></span></span>
+                <span class="reco__specs"><span data-txt="r.tipo"></span><span data-si="r.specs" hidden> · <span data-txt="r.specs"></span></span></span>
+                <span class="reco__precio"><span data-txt="r.precio"></span></span>
               </span>
             </button>
           </template>
@@ -615,15 +780,21 @@
         <p class="bloque__bajada">Doce unidades en dos torres, en el centro de Salta. Un edificio con la escala justa, para vivir o para renta.</p>
         <div data-si="hayTorre" hidden>
           <p class="bloque__dato"><span class="bloque__punto"></span><span data-txt="torreLinea"></span><span class="bloque__desde" data-txt="torreDesde"></span></p>
-          <div class="bloque__tipos">
-            <template data-lista="torreTipos" data-alias="t">
-              <span class="bloque__tipo"><b data-txt="t.k"></b><small data-txt="t.n"></small></span>
+          <div class="torre-grilla" aria-label="Las doce unidades, por piso">
+            <template data-lista="torreGrilla" data-alias="f">
+              <div class="torre-fila">
+                <span class="torre-piso" data-txt="f.piso"></span>
+                <template data-lista="f.unidades" data-alias="u">
+                  <a data-attr-class="u.clase" href="https://edificiolatorre.com/#unidades" target="_blank" rel="noopener" data-attr-title="u.titulo"><span data-txt="u.k"></span></a>
+                </template>
+              </div>
             </template>
+            <div class="torre-leyenda"><i></i> Disponible <i class="es-reservada"></i> Reservada · tocá una unidad para verla en la web</div>
           </div>
         </div>
         <div class="bloque__acciones">
-          <a class="bloque__cta" href="https://edificiolatorre.com/" target="_blank" rel="noopener">Ver unidades y planos<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
-          <button type="button" class="bloque__cta bloque__cta--suave" data-click="consultarTorre">Consultar</button>
+          <a class="bloque__enlace" href="https://edificiolatorre.com/" target="_blank" rel="noopener"><span>Entrar a edificiolatorre.com</span><small>La torre en 3D, cada departamento con su plano y las unidades en vivo</small><i>↗</i></a>
+          <button type="button" class="bloque__enlace bloque__enlace--suave" data-click="consultarTorre"><span>Consultar por La Torre</span><small>Te contestamos por WhatsApp</small><i>→</i></button>
         </div>
       </div>
       <a class="bloque__foto" href="https://edificiolatorre.com/" target="_blank" rel="noopener" aria-label="La Torre, la llegada de noche">
@@ -646,13 +817,13 @@
           <p class="bloque__dato"><span class="bloque__punto"></span><span data-txt="airesLinea"></span></p>
           <div class="bloque__tipos">
             <template data-lista="airesTipos" data-alias="t">
-              <span class="bloque__tipo"><b data-txt="t.n"></b><small><span data-txt="t.k"></span> <span data-txt="t.de"></span></small></span>
+              <a class="bloque__tipo bloque__tipo--link" href="https://airesdesanlorenzo.com/#etapa1" target="_blank" rel="noopener"><b data-txt="t.n"></b><small><span data-txt="t.k"></span> <span data-txt="t.de"></span></small><i>↗</i></a>
             </template>
           </div>
         </div>
         <div class="bloque__acciones">
-          <a class="bloque__cta" href="https://airesdesanlorenzo.com/#etapa1" target="_blank" rel="noopener">Elegir una unidad<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
-          <button type="button" class="bloque__cta bloque__cta--suave" data-click="pedirPlanAires">Pedir el plan de pago</button>
+          <a class="bloque__enlace" href="https://airesdesanlorenzo.com/#etapa1" target="_blank" rel="noopener"><span>Recorrer la Etapa 1 en airesdesanlorenzo.com</span><small>El plano interactivo: elegís la unidad y consultás desde ahí</small><i>↗</i></a>
+          <button type="button" class="bloque__enlace bloque__enlace--suave" data-click="pedirPlanAires"><span>Pedir el plan de pago</span><small>Anticipo y cuotas, por WhatsApp</small><i>→</i></button>
         </div>
       </div>
       <div class="bloque__galeria">
@@ -663,197 +834,119 @@
   </article>
 </section>
 
-<!-- ══ ZONAS ══ -->
-<section id="zonas" data-screen-label="Zonas" style="padding:clamp(52px,6.5vw,92px) 0 0">
-  <div style="max-width:1180px;margin:0 auto;padding:0 20px">
-    <div style="max-width:680px;margin-bottom:30px">
-      <div style="width:44px;height:3px;background:var(--naranja);border-radius:3px;margin-bottom:18px"></div>
-      <h2 style="margin:0;font-family:'Libre Caslon Text',Georgia,serif;font-weight:700;font-size:clamp(28px,3.8vw,42px);line-height:1.14">Dónde hay propiedades</h2>
-      <p style="margin:12px 0 0;font-size:clamp(15.5px,1.8vw,17.5px);color:var(--gris);max-width:62ch">La cartera se concentra en el centro de Salta y se abre hacia el valle. Cada número es lo que hay publicado hoy, contado sobre el listado de arriba.</p>
-    </div>
-    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px">
-      <template data-lista="zonasGrilla" data-alias="z">
-        <button data-click="z.elegir" style="display:flex;gap:16px;background:#fff;border:1px solid var(--borde);border-radius:14px;padding:18px;align-items:flex-start;cursor:pointer;text-align:left;transition:border-color .2s,transform .2s,box-shadow .2s" data-fx="fx-7">
-          <span style="font-family:'Libre Caslon Text',Georgia,serif;font-size:30px;font-weight:700;color:var(--verde);line-height:1;min-width:34px"><span data-txt="z.n"></span></span>
-          <span style="min-width:0">
-            <b style="font-size:15px;display:block;font-family:'Libre Caslon Text',Georgia,serif;font-weight:700"><span data-txt="z.nombre"></span></b>
-            <span style="display:block;font-size:12.5px;color:var(--gris);margin-top:4px;line-height:1.5"><span data-txt="z.desc"></span></span>
-          </span>
-        </button>
-      </template>
-    </div>
-    <p style="margin:22px 0 0;font-size:13px;color:var(--gris);display:flex;gap:9px;align-items:flex-start;max-width:74ch">
-      <svg viewBox="0 0 24 24" fill="none" stroke="var(--verde-claro)" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;margin-top:3px;flex-shrink:0"><circle cx="12" cy="12" r="9"></circle><path d="M12 16v-4M12 8h.01"></path></svg>
-      No vas a encontrar acá porcentajes de plusvalía: no hay una fuente seria para Salta y preferimos no inventarla. Lo que sí podemos es contarte cómo se movió cada zona en las operaciones que hicimos.</p>
-  </div>
-</section>
-
-<!-- ══ FINANCIACIÓN ══ -->
-<section id="financiacion" data-screen-label="Financiación" style="padding:clamp(52px,6.5vw,92px) 0 0">
-  <div style="max-width:1180px;margin:0 auto;padding:0 20px">
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:38px;align-items:center">
-      <div>
-        <div style="width:44px;height:3px;background:var(--naranja);border-radius:3px;margin-bottom:18px"></div>
-        <h2 style="margin:0;font-family:'Libre Caslon Text',Georgia,serif;font-weight:700;font-size:clamp(27px,3.6vw,40px);line-height:1.14">Cuánto te queda por mes</h2>
-        <p style="margin:12px 0 0;font-size:clamp(15.5px,1.8vw,17px);color:var(--gris)">Movés el precio, el anticipo y la cantidad de cuotas, y ves qué te queda por mes. Sirve para saber si el número te cierra antes de sentarte a conversar.</p>
-        <div style="background:#fff;border:1px solid var(--borde);border-radius:14px;padding:26px;margin-top:22px;box-shadow:0 1px 2px rgba(17,60,61,.04),0 4px 14px rgba(17,60,61,.05)">
-          <div style="margin-bottom:22px">
-            <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px;gap:12px">
-              <label for="cPrecio" style="font-size:13.5px;font-weight:600">Precio de la propiedad</label>
-              <span style="font-family:'Libre Caslon Text',Georgia,serif;font-weight:700;color:var(--verde);font-size:16px"><span data-txt="calcPrecioTxt"></span></span>
-            </div>
-            <input type="range" id="cPrecio" min="20000" max="700000" step="5000" data-valor="calcPrecio" data-change="cambiarCalcPrecio" data-input="cambiarCalcPrecio" />
-          </div>
-          <div style="margin-bottom:22px">
-            <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px;gap:12px">
-              <label for="cAnt" style="font-size:13.5px;font-weight:600">Anticipo</label>
-              <span style="font-family:'Libre Caslon Text',Georgia,serif;font-weight:700;color:var(--verde);font-size:16px"><span data-txt="calcAntTxt"></span></span>
-            </div>
-            <input type="range" id="cAnt" min="10" max="70" step="5" data-valor="calcAnt" data-change="cambiarCalcAnt" data-input="cambiarCalcAnt" />
-          </div>
-          <div>
-            <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px;gap:12px">
-              <label for="cCuotas" style="font-size:13.5px;font-weight:600">Cantidad de cuotas</label>
-              <span style="font-family:'Libre Caslon Text',Georgia,serif;font-weight:700;color:var(--verde);font-size:16px"><span data-txt="calcCuotasTxt"></span></span>
-            </div>
-            <input type="range" id="cCuotas" min="12" max="120" step="6" data-valor="calcCuotas" data-change="cambiarCalcCuotas" data-input="cambiarCalcCuotas" />
-          </div>
-        </div>
-      </div>
-      <div style="background:var(--verde);color:#fff;border-radius:14px;padding:30px;box-shadow:0 24px 60px rgba(17,60,61,.2)">
-        <div style="font-size:13px;color:rgba(255,255,255,.78);margin-bottom:6px">Cuota mensual estimada</div>
-        <div style="font-family:'Libre Caslon Text',Georgia,serif;font-size:clamp(36px,5vw,48px);font-weight:700;line-height:1">USD <span data-txt="calcCuotaMes"></span> <small style="font-size:18px;color:var(--naranja-claro);font-weight:700">/mes</small></div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:24px;border-top:1px solid rgba(255,255,255,.14);padding-top:20px">
-          <div><b style="display:block;font-family:'Libre Caslon Text',Georgia,serif;font-size:22px;font-weight:700">USD <span data-txt="calcAnticipoTxt"></span></b><span style="font-size:12px;color:rgba(255,255,255,.64)"><span data-txt="calcLblAnt"></span></span></div>
-          <div><b style="display:block;font-family:'Libre Caslon Text',Georgia,serif;font-size:22px;font-weight:700">USD <span data-txt="calcSaldoTxt"></span></b><span style="font-size:12px;color:rgba(255,255,255,.64)"><span data-txt="calcLblSaldo"></span></span></div>
-        </div>
-        <p style="font-size:12px;color:rgba(255,255,255,.64);margin:18px 0 0;line-height:1.55;border-top:1px solid rgba(255,255,255,.14);padding-top:14px">Son números de referencia, calculados sin interés sobre el saldo, para que veas el orden de magnitud. El plan real se arma en cada caso: depende de la propiedad, del vendedor y de tu situación. Esto no es una cotización ni una oferta.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ══ CÓMO ES COMPRAR ══ -->
-<section id="proceso" data-screen-label="Cómo es comprar" style="padding:clamp(52px,6.5vw,92px) 0;margin-top:clamp(52px,6.5vw,92px);background:var(--hueso-4);border-top:1px solid var(--borde);border-bottom:1px solid var(--borde)">
-  <div style="max-width:1180px;margin:0 auto;padding:0 20px">
-    <div style="max-width:680px;margin-bottom:30px">
-      <div style="width:44px;height:3px;background:var(--naranja);border-radius:3px;margin-bottom:18px"></div>
-      <h2 style="margin:0;font-family:'Libre Caslon Text',Georgia,serif;font-weight:700;font-size:clamp(28px,3.8vw,42px);line-height:1.14">Qué se firma, y cuándo</h2>
-      <p style="margin:12px 0 0;font-size:clamp(15.5px,1.8vw,17.5px);color:var(--gris);max-width:62ch">Comprar una propiedad es una cadena de papeles. Esta es la cadena completa, en orden, y qué te queda en la mano después de cada uno.</p>
-    </div>
-    <ol style="list-style:none;margin:0;padding:0;border-top:1px solid var(--borde-fuerte)">
-      <template data-lista="tramos" data-alias="t">
-        <li style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px 32px;padding:24px 0;border-bottom:1px solid var(--borde-fuerte);align-items:start">
-          <div style="position:relative;padding-left:46px">
-            <span style="position:absolute;left:0;top:-4px;font-family:'Libre Caslon Text',Georgia,serif;font-size:28px;font-weight:700;color:var(--numeral);line-height:1"><span data-txt="t.n"></span></span>
-            <h3 style="margin:0 0 6px;font-family:'Libre Caslon Text',Georgia,serif;font-size:21px;font-weight:700;color:var(--verde);letter-spacing:-.01em"><span data-txt="t.titulo"></span></h3>
-            <p style="margin:0;color:var(--gris);font-size:14.5px;line-height:1.6;max-width:60ch"><span data-txt="t.texto"></span></p>
-          </div>
-          <div style="background:#fff;border:1px solid var(--borde);border-radius:12px;padding:14px 16px">
-            <span style="display:block;font-size:10.5px;font-weight:700;letter-spacing:.08em;color:var(--naranja-oscuro)"><span data-txt="t.etiqueta"></span></span>
-            <span style="display:block;font-weight:600;font-size:13.5px;color:var(--tinta);margin-top:4px"><span data-txt="t.papel"></span></span>
-            <span style="display:block;font-size:12.5px;color:var(--gris);line-height:1.5;margin-top:4px"><span data-txt="t.detalle"></span></span>
-          </div>
-        </li>
-      </template>
-    </ol>
-    <p style="margin:26px 0 0;font-size:14px;color:var(--gris);max-width:74ch;line-height:1.65">Todo el recorrido con corredor matriculado —matrícula CUCIS 251— y con escribano en la escritura. Si en algún punto querés que te expliquemos un papel antes de firmarlo, es exactamente para eso que estamos.</p>
-  </div>
-</section>
-
 <!-- ══ PREGUNTAS ══ -->
-<section id="preguntas" data-screen-label="Preguntas frecuentes" style="padding:clamp(52px,6.5vw,92px) 0 0">
+<section id="preguntas" data-screen-label="Preguntas frecuentes" class="preguntas">
   <div style="max-width:1180px;margin:0 auto;padding:0 20px">
-    <div style="max-width:680px;margin-bottom:26px">
-      <h2 style="margin:0;font-family:'Libre Caslon Text',Georgia,serif;font-weight:700;font-size:clamp(26px,3.4vw,38px);line-height:1.14">Lo que siempre preguntan</h2>
-      <p style="margin:10px 0 0;font-size:clamp(15px,1.7vw,17px);color:var(--gris)">Las respuestas cortas. Lo largo, con Francisco, por WhatsApp.</p>
-    </div>
-    <div style="max-width:820px">
-      <template data-lista="faq" data-alias="f">
-        <details style="border-top:1px solid var(--borde)">
-          <summary style="cursor:pointer;padding:17px 30px 17px 0;font-family:'Libre Caslon Text',Georgia,serif;font-size:18px;font-weight:700;line-height:1.3;color:var(--tinta)"><span data-txt="f.q"></span></summary>
-          <p style="margin:0;padding:0 0 20px;color:var(--tinta-suave);line-height:1.65;max-width:64ch;font-size:14.5px"><span data-txt="f.a"></span></p>
-        </details>
-      </template>
-      <div style="border-top:1px solid var(--borde)"></div>
+    <div class="preguntas__caja">
+      <div class="preguntas__intro">
+        <span class="etiqueta-seccion">Antes de escribir</span>
+        <h2>Lo que siempre preguntan</h2>
+        <p>Las respuestas cortas y honestas. Lo largo, con Francisco, por WhatsApp.</p>
+        <a class="preguntas__wa" href="https://wa.me/5493874153669?text=Hola%2C%20tengo%20una%20consulta%20que%20no%20est%C3%A1%20en%20las%20preguntas%20del%20sitio." target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor" style="width:18px;height:18px"><path d="M.057 24l1.687-6.163a11.867 11.867 0 0 1-1.587-5.946C.16 5.335 5.495 0 12.05 0a11.817 11.817 0 0 1 8.413 3.488 11.824 11.824 0 0 1 3.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 0 1-5.688-1.448L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884a9.86 9.86 0 0 0 1.51 5.26l-.999 3.648 3.978-1.052z"></path></svg>
+          <span><b>¿Otra duda?</b><small>Escribinos, sin compromiso</small></span></a>
+      </div>
+      <div class="preguntas__lista">
+        <template data-lista="faq" data-alias="f">
+          <details class="pregunta">
+            <summary><span class="pregunta__n" data-txt="f.n"></span><span class="pregunta__q" data-txt="f.q"></span><span class="pregunta__mas" aria-hidden="true"></span></summary>
+            <div class="pregunta__a"><p><span data-txt="f.a"></span></p></div>
+          </details>
+        </template>
+      </div>
     </div>
   </div>
 </section>
 
 <!-- ══ CONTACTO ══ -->
-<section id="contacto" data-screen-label="Contacto" style="padding:clamp(52px,6.5vw,92px) 0">
+<section id="contacto" data-screen-label="Contacto" class="contacto">
   <div style="max-width:1180px;margin:0 auto;padding:0 20px">
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:40px;align-items:start">
-      <div>
-        <div style="width:44px;height:3px;background:var(--naranja);border-radius:3px;margin-bottom:18px"></div>
-        <h2 style="margin:0;font-family:'Libre Caslon Text',Georgia,serif;font-weight:700;font-size:clamp(26px,3.4vw,38px);line-height:1.14">Escribinos y te respondemos</h2>
-        <p style="margin:12px 0 0;font-size:clamp(15px,1.7vw,17px);color:var(--gris)">Contanos qué buscás y con qué presupuesto. Si no lo tenemos, lo salimos a buscar.</p>
-        <div style="display:flex;flex-direction:column;margin-top:22px">
-          <div style="display:flex;gap:14px;align-items:center;padding:14px 0;border-bottom:1px solid var(--borde)">
-            <span style="width:42px;height:42px;border-radius:11px;background:var(--verde-suave);display:grid;place-items:center;flex:none">
-              <svg viewBox="0 0 24 24" fill="none" stroke="var(--verde-claro)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:19px;height:19px"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92"></path></svg></span>
-            <div><b style="font-size:11px;letter-spacing:.06em;color:var(--gris);font-weight:700">TELÉFONO Y WHATSAPP</b><p style="margin:1px 0 0;font-size:15.5px;font-weight:500"><a href="tel:+543874153669" style="color:var(--tinta)">387 415 3669</a></p></div>
-          </div>
-          <div style="display:flex;gap:14px;align-items:center;padding:14px 0;border-bottom:1px solid var(--borde)">
-            <span style="width:42px;height:42px;border-radius:11px;background:var(--verde-suave);display:grid;place-items:center;flex:none">
-              <svg viewBox="0 0 24 24" fill="none" stroke="var(--verde-claro)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:19px;height:19px"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path><circle cx="12" cy="10" r="3"></circle></svg></span>
-            <div><b style="font-size:11px;letter-spacing:.06em;color:var(--gris);font-weight:700">OFICINA</b><p style="margin:1px 0 0;font-size:15.5px;font-weight:500">20 de Febrero 1705, Oficina 7 — Salta</p></div>
-          </div>
-          <div style="display:flex;gap:14px;align-items:center;padding:14px 0;border-bottom:1px solid var(--borde)">
-            <span style="width:42px;height:42px;border-radius:11px;background:var(--verde-suave);display:grid;place-items:center;flex:none">
-              <svg viewBox="0 0 24 24" fill="none" stroke="var(--verde-claro)" stroke-width="1.8" style="width:19px;height:19px"><rect x="3" y="3" width="18" height="18" rx="5"></rect><circle cx="12" cy="12" r="4"></circle><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"></circle></svg></span>
-            <div><b style="font-size:11px;letter-spacing:.06em;color:var(--gris);font-weight:700">INSTAGRAM</b><p style="margin:1px 0 0;font-size:15.5px;font-weight:500"><a href="https://instagram.com/molins.negociosinmobilarios" target="_blank" rel="noopener" style="color:var(--tinta)">@molins.negociosinmobilarios</a></p></div>
-          </div>
-          <div style="display:flex;gap:14px;align-items:center;padding:14px 0;border-bottom:1px solid var(--borde)">
-            <span style="width:42px;height:42px;border-radius:11px;background:var(--verde-suave);display:grid;place-items:center;flex:none">
-              <svg viewBox="0 0 24 24" fill="none" stroke="var(--verde-claro)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:19px;height:19px"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"></path><path d="m9 12 2 2 4-4"></path></svg></span>
-            <div><b style="font-size:11px;letter-spacing:.06em;color:var(--gris);font-weight:700">MATRÍCULA</b><p style="margin:1px 0 0;font-size:15.5px;font-weight:500">CUCIS 251 — Grupo LPZ-Molins</p></div>
-          </div>
+    <div class="contacto__caja">
+      <div class="contacto__izq">
+        <span class="etiqueta-seccion etiqueta-seccion--clara">Hablemos</span>
+        <h2>Contanos qué buscás.<br>Si no lo tenemos, lo salimos a buscar.</h2>
+        <p>Una persona te contesta, no un bot. Las consultas entran directo al sistema y las ve Francisco en el momento.</p>
+        <div class="canales">
+          <a class="canal canal--wa" href="https://wa.me/5493874153669?text=Hola%2C%20vi%20el%20sitio%20y%20quiero%20consultar." target="_blank" rel="noopener">
+            <span class="canal__icono"><svg viewBox="0 0 24 24" fill="currentColor" style="width:22px;height:22px"><path d="M.057 24l1.687-6.163a11.867 11.867 0 0 1-1.587-5.946C.16 5.335 5.495 0 12.05 0a11.817 11.817 0 0 1 8.413 3.488 11.824 11.824 0 0 1 3.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 0 1-5.688-1.448L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884a9.86 9.86 0 0 0 1.51 5.26l-.999 3.648 3.978-1.052z"></path></svg></span>
+            <span class="canal__texto"><b>WhatsApp</b><span>387 415 3669</span><small>Lo más rápido. Mandá el código de la ficha.</small></span>
+            <i>→</i></a>
+          <a class="canal" href="tel:+543874153669">
+            <span class="canal__icono"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style="width:21px;height:21px"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"></path></svg></span>
+            <span class="canal__texto"><b>Llamar</b><span>387 415 3669</span><small>Si preferís hablar.</small></span>
+            <i>→</i></a>
+          <a class="canal" href="https://maps.google.com/?q=20+de+Febrero+1705+Salta" target="_blank" rel="noopener">
+            <span class="canal__icono"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style="width:21px;height:21px"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path><circle cx="12" cy="10" r="3"></circle></svg></span>
+            <span class="canal__texto"><b>La oficina</b><span>20 de Febrero 1705, Of. 7 · Salta</span><small>Con cita. Cómo llegar en el mapa.</small></span>
+            <i>→</i></a>
+          <a class="canal" href="https://instagram.com/molins.negociosinmobilarios" target="_blank" rel="noopener">
+            <span class="canal__icono"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" style="width:21px;height:21px"><rect x="3" y="3" width="18" height="18" rx="5"></rect><circle cx="12" cy="12" r="4"></circle><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"></circle></svg></span>
+            <span class="canal__texto"><b>Instagram</b><span>@molins.negociosinmobilarios</span><small>Las propiedades nuevas salen primero ahí.</small></span>
+            <i>→</i></a>
         </div>
+        <p class="contacto__matricula">Francisco Molins · Corredor inmobiliario matriculado · CUCIS 251 · Grupo LPZ-Molins</p>
       </div>
-      <div style="background:#fff;border:1px solid var(--borde);border-radius:14px;padding:28px;box-shadow:0 1px 2px rgba(17,60,61,.04),0 4px 14px rgba(17,60,61,.05)">
+
+      <div class="contacto__form">
         <div data-si="formPendiente" hidden>
-          <h3 style="margin:0;font-family:'Libre Caslon Text',Georgia,serif;font-size:21px;font-weight:700">Dejanos tu consulta</h3>
-          <p style="margin:3px 0 0;font-size:13.5px;color:var(--gris)">Entra directo al sistema y te contestamos por WhatsApp o por mail, como prefieras.</p>
+          <h3>Dejanos tu consulta</h3>
+          <p class="contacto__sub">Te contestamos por WhatsApp o por mail, como prefieras.</p>
           <div data-si="ctxConsulta" hidden>
-            <div style="margin-top:14px;font-size:12.5px;color:var(--verde-claro);background:var(--verde-suave);border:1px solid var(--borde-4);border-radius:10px;padding:9px 12px"><span data-txt="ctxConsulta"></span></div>
+            <div class="contacto__ctx"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px;flex:none"><path d="M3 21h18M5 21V8l7-5 7 5v13M10 21v-6h4v6"></path></svg><span data-txt="ctxConsulta"></span></div>
           </div>
-          <div style="margin:15px 0">
-            <label for="fNombre" style="display:block;font-size:13px;font-weight:600;margin-bottom:6px">Nombre</label>
-            <input id="fNombre" type="text" placeholder="Cómo te llamás" autocomplete="name" data-valor="formNombre" data-change="escribirNombre" data-estilo="estiloCampoNombre" />
+
+          <label class="campo-f"><span class="campo-f__rotulo">¿Qué estás buscando?</span></label>
+          <div class="chips-busca" role="group" aria-label="Qué estás buscando">
+            <template data-lista="buscaOpciones" data-alias="o">
+              <button type="button" data-attr-class="o.clase" data-attr-aria-pressed="o.activa" data-click="o.elegir"><span data-txt="o.t"></span></button>
+            </template>
           </div>
-          <div style="margin:15px 0">
-            <label for="fWa" style="display:block;font-size:13px;font-weight:600;margin-bottom:6px">WhatsApp</label>
-            <input id="fWa" type="tel" placeholder="387 000 0000" autocomplete="tel" data-valor="formWa" data-change="escribirWa" data-estilo="estiloCampoWa" />
+
+          <div class="campos-2">
+            <label class="campo-f" for="fNombre">
+              <input id="fNombre" type="text" placeholder=" " autocomplete="name" autocapitalize="words" data-valor="formNombre" data-change="escribirNombre" data-estilo="estiloCampoNombre" />
+              <span class="campo-f__rotulo">Nombre</span>
+              <span data-si="nombreOk" hidden><span class="campo-f__ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span></span>
+            </label>
+            <label class="campo-f" for="fWa">
+              <input id="fWa" type="tel" inputmode="tel" placeholder=" " autocomplete="tel-national" data-valor="formWa" data-change="escribirWa" data-estilo="estiloCampoWa" />
+              <span class="campo-f__rotulo">WhatsApp</span>
+              <span data-si="waOk" hidden><span class="campo-f__ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span></span>
+            </label>
           </div>
-          <div style="margin:15px 0">
-            <label for="fMail" style="display:block;font-size:13px;font-weight:600;margin-bottom:6px">Email <span style="font-weight:400;color:var(--gris)">(opcional)</span></label>
-            <input id="fMail" type="email" placeholder="tu@correo.com" autocomplete="email" data-valor="formMail" data-change="escribirMail" style="width:100%;box-sizing:border-box;padding:12px 13px;border:1.5px solid var(--borde-fuerte);border-radius:10px;font-size:15px;color:var(--tinta);background:var(--hueso);min-height:47px" />
+          <div class="campos-2">
+            <label class="campo-f" for="fMail">
+              <input id="fMail" type="email" inputmode="email" placeholder=" " autocomplete="email" data-valor="formMail" data-change="escribirMail" />
+              <span class="campo-f__rotulo">Email <em>(opcional)</em></span>
+              <span data-si="mailOk" hidden><span class="campo-f__ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span></span>
+            </label>
+            <label class="campo-f campo-f--select" for="fZona">
+              <select id="fZona" data-valor="formZona" data-change="escribirZona">
+                <option value="">Cualquier zona</option>
+                <template data-lista="zonasSelect" data-alias="z"><option data-valor="z.v"><span data-txt="z.v"></span></option></template>
+              </select>
+              <span class="campo-f__rotulo campo-f__rotulo--fijo">Zona que te interesa <em>(opcional)</em></span>
+            </label>
           </div>
-          <div style="margin:15px 0">
-            <label for="fBusca" style="display:block;font-size:13px;font-weight:600;margin-bottom:6px">¿Qué estás buscando?</label>
-            <select id="fBusca" data-valor="formBusca" data-change="escribirBusca" style="width:100%;box-sizing:border-box;padding:12px 13px;border:1.5px solid var(--borde-fuerte);border-radius:10px;font-size:15px;color:var(--tinta);background:var(--hueso);min-height:47px;cursor:pointer">
-              <option>Para vivir</option>
-              <option>Para invertir</option>
-              <option>Alquilar</option>
-              <option>Un terreno</option>
-              <option>Aires de San Lorenzo</option>
-              <option>Todavía estoy viendo</option>
-              <option>Avisame cuando entre algo en mi zona</option>
-            </select>
-          </div>
+          <label class="campo-f" for="fMensaje">
+            <textarea id="fMensaje" rows="3" placeholder=" " data-valor="formMensaje" data-change="escribirMensaje"></textarea>
+            <span class="campo-f__rotulo">Contanos un poco más <em>(opcional)</em></span>
+          </label>
           <div aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden"><label>Empresa<input id="fEmpresa" type="text" tabindex="-1" autocomplete="off" /></label></div>
-          <button class="boton" data-click="enviarConsulta" data-attr-disabled="enviando" style="width:100%;background:var(--naranja);color:var(--verde-noche);border:none;border-radius:10px;font-weight:600;font-size:15px;min-height:50px;cursor:pointer;transition:background .2s" data-fx="fx-2">Enviar la consulta</button>
+          <button class="contacto__enviar" data-click="enviarConsulta" data-attr-disabled="enviando"><span data-txt="enviarTxt"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:17px;height:17px"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></button>
           <p data-estilo="estiloNotaForm"><span data-txt="notaForm"></span></p>
-          <p style="margin:10px 0 0;text-align:center;font-size:13px;color:var(--gris)">¿Preferís hablar? <a href="https://wa.me/5493874153669?text=Hola%2C%20vi%20el%20sitio%20y%20quiero%20consultar." target="_blank" rel="noopener" style="font-weight:600;color:var(--verde-claro)">Escribinos por WhatsApp</a></p>
         </div>
         <div data-si="formEnviado" hidden>
-          <div style="text-align:center;padding:24px 6px">
-            <div class="tilde" style="width:56px;height:56px;border-radius:50%;background:var(--ok-suave);display:grid;place-items:center;margin:0 auto 14px">
-              <svg viewBox="0 0 24 24" fill="none" stroke="var(--ok)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:29px;height:29px"><path d="M20 6 9 17l-5-5"></path></svg></div>
-            <h3 style="margin:0 0 6px;font-family:'Libre Caslon Text',Georgia,serif;font-size:21px;font-weight:700">Consulta recibida</h3>
-            <p style="margin:0;color:var(--gris);font-size:14px"><span data-txt="okMsg"></span></p>
-            <a href="https://wa.me/5493874153669?text=Hola%2C%20acabo%20de%20dejar%20una%20consulta%20en%20el%20sitio." target="_blank" rel="noopener" style="margin-top:16px;display:inline-flex;align-items:center;gap:8px;font-size:13.5px;font-weight:600;color:var(--verde-claro)">Si es urgente, escribinos por WhatsApp →</a>
+          <div class="contacto__ok">
+            <div class="tilde"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="width:30px;height:30px"><path d="M20 6 9 17l-5-5"></path></svg></div>
+            <h3>Consulta recibida</h3>
+            <p><span data-txt="okMsg"></span></p>
+            <ol class="contacto__pasos">
+              <li><b>Ya está en el sistema.</b> Francisco la ve en el momento.</li>
+              <li><b>Te escribimos por WhatsApp</b> con lo que haya para tu búsqueda.</li>
+              <li><b>Si querés ver algo,</b> coordinamos la visita con turno.</li>
+            </ol>
+            <a class="contacto__urgente" href="https://wa.me/5493874153669?text=Hola%2C%20acabo%20de%20dejar%20una%20consulta%20en%20el%20sitio." target="_blank" rel="noopener">Si es urgente, escribinos por WhatsApp →</a>
           </div>
         </div>
       </div>
@@ -883,7 +976,7 @@
         <a href="#propiedades" style="display:block;font-size:13.5px;color:rgba(255,255,255,.64);padding:5px 0">Toda la cartera</a>
         <a href="#proyectos" style="display:block;font-size:13.5px;color:rgba(255,255,255,.64);padding:5px 0">Aires de San Lorenzo</a>
         <a href="https://edificiolatorre.com/" style="display:block;font-size:13.5px;color:rgba(255,255,255,.64);padding:5px 0">Edificio La Torre</a>
-        <a href="#zonas" style="display:block;font-size:13.5px;color:rgba(255,255,255,.64);padding:5px 0">Zonas</a>
+        <a href="#preguntas" style="display:block;font-size:13.5px;color:rgba(255,255,255,.64);padding:5px 0">Preguntas frecuentes</a>
       </div>
       <div>
         <h4 style="color:#fff;font-size:13px;margin:0 0 12px;font-weight:700">Contacto</h4>
@@ -944,7 +1037,8 @@
         </div>
       </div>
 
-      <div style="padding:22px 26px 30px">
+      <div class="ficha__cuerpo">
+      <div class="ficha__principal">
         <span style="display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;letter-spacing:.04em;color:var(--verde-claro)">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path><circle cx="12" cy="10" r="3"></circle></svg>
           <span data-txt="mUbicacion"></span></span>
@@ -1002,30 +1096,73 @@
 
         <div style="margin-top:26px;padding-top:22px;border-top:1px solid var(--borde)">
           <h4 style="margin:0 0 12px;font-family:'Libre Caslon Text',Georgia,serif;font-size:19px;font-weight:700">Descripción</h4>
-          <template data-lista="mDescParrafos" data-alias="d">
-            <p style="font-size:14.5px;line-height:1.7;color:var(--tinta-suave);max-width:70ch;margin:0 0 12px"><span data-txt="d"></span></p>
-          </template>
+          <p class="ficha__lead"><span data-txt="mDescLead"></span></p>
+          <div data-si="mDescAbierta" hidden>
+            <template data-lista="mDescResto" data-alias="d">
+              <p style="font-size:14.5px;line-height:1.7;color:var(--tinta-suave);max-width:70ch;margin:0 0 12px"><span data-txt="d"></span></p>
+            </template>
+          </div>
+          <div data-si="mDescLarga" hidden><button type="button" class="ficha__leermas" data-click="mLeerMas">Leer la descripción completa</button></div>
         </div>
 
         <div data-si="mHaySimilares" hidden>
           <div style="margin-top:26px;padding-top:22px;border-top:1px solid var(--borde)">
             <h4 style="margin:0 0 14px;font-family:'Libre Caslon Text',Georgia,serif;font-size:19px;font-weight:700">Te puede interesar también</h4>
-            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px">
+            <div class="fila-reco fila-reco--grilla">
               <template data-lista="mSimilares" data-alias="s">
-                <button data-click="s.abrir" style="display:flex;flex-direction:column;text-align:left;background:#fff;border:1px solid var(--borde);border-radius:10px;overflow:hidden;padding:0;cursor:pointer;transition:border-color .2s,transform .2s" data-fx="fx-9">
-                  <span style="display:block;aspect-ratio:4/3;overflow:hidden;background:var(--verde-suave);width:100%">
-                    <div data-si="s.foto" hidden><img data-src="s.foto" data-attr-alt="s.titulo" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block" /></div>
-                  </span>
-                  <span style="display:block;padding:11px 12px 13px">
-                    <span style="display:block;font-size:11px;font-weight:600;color:var(--verde-claro)"><span data-txt="s.zona"></span></span>
-                    <span style="display:block;font-size:13.5px;font-weight:600;line-height:1.3;margin:4px 0 6px"><span data-txt="s.titulo"></span></span>
-                    <span style="display:block;font-family:'Libre Caslon Text',Georgia,serif;font-size:16.5px;font-weight:700"><span data-txt="s.precio"></span></span>
-                  </span>
-                </button>
+                <button type="button" class="reco" data-click="s.abrir">
+              <span class="reco__foto">
+                <span data-si="s.foto" hidden><span class="minigal" data-n="0">
+                <template data-lista="s.fotos" data-alias="f"><img data-attr-class="f.clase" data-src="f.srcAhora" data-attr-data-lazy="f.src" alt="" loading="lazy" /></template>
+                <span data-si="s.variasFotos" hidden><span class="minigal__puntos"><template data-lista="s.fotos" data-alias="f"><i data-attr-class="f.punto"></i></template></span></span>
+              </span></span>
+                <span data-si="s.sinFoto" hidden><span class="reco__sinfoto">fotos en la consulta</span></span>
+              </span>
+              <span class="reco__texto">
+                <span class="reco__zona"><span data-txt="s.ubicacion"></span></span>
+                <span class="reco__titulo"><span data-txt="s.titulo"></span></span>
+                <span class="reco__specs"><span data-txt="s.tipo"></span><span data-si="s.specs" hidden> · <span data-txt="s.specs"></span></span></span>
+                <span class="reco__precio"><span data-txt="s.precio"></span></span>
+              </span>
+            </button>
               </template>
             </div>
           </div>
         </div>
+      </div>
+      <aside class="ficha__lado">
+        <div data-si="mHayNav" hidden>
+          <div class="ficha__nav">
+            <button type="button" data-click="mAnterior" aria-label="Propiedad anterior"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px"><path d="m15 18-6-6 6-6"></path></svg></button>
+            <span><span data-txt="mPos"></span></span>
+            <button type="button" data-click="mSiguiente" aria-label="Propiedad siguiente"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px"><path d="m9 18 6-6-6-6"></path></svg></button>
+          </div>
+        </div>
+        <div data-si="noEsMovil" hidden>
+        <div class="ficha__contacto">
+          <div class="ficha__corredor">
+            <img src="img/logo-molins.png" alt="" width="44" height="44" />
+            <div><b>Francisco Molins</b><small>Corredor matriculado · CUCIS 251</small></div>
+          </div>
+          <a data-href="mWa" target="_blank" rel="noopener" class="ficha__wa">
+            <svg viewBox="0 0 24 24" fill="currentColor" style="width:18px;height:18px"><path d="M.057 24l1.687-6.163a11.867 11.867 0 0 1-1.587-5.946C.16 5.335 5.495 0 12.05 0a11.817 11.817 0 0 1 8.413 3.488 11.824 11.824 0 0 1 3.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 0 1-5.688-1.448L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884a9.86 9.86 0 0 0 1.51 5.26l-.999 3.648 3.978-1.052z"></path></svg>
+            Consultar por WhatsApp</a>
+          <button type="button" class="ficha__datos" data-click="dejarDatos">Dejar mis datos y que me llamen</button>
+          <p>Respondemos en el día. La visita se coordina con turno.</p>
+        </div>
+        </div>
+        <div data-si="mHayVecinas" hidden>
+          <div class="ficha__vecinas">
+            <div class="ficha__vecinas-cab"><b data-txt="mVecinasTitulo"></b><button type="button" data-click="mVerZona">Ver todas →</button></div>
+            <template data-lista="mVecinas" data-alias="v">
+              <button type="button" class="vecina" data-click="v.abrir">
+                <span class="vecina__foto"><span data-si="v.foto" hidden><img data-src="v.foto" alt="" loading="lazy" /></span></span>
+                <span class="vecina__texto"><b data-txt="v.titulo"></b><small><span data-txt="v.tipo"></span></small><span class="vecina__precio" data-txt="v.precio"></span></span>
+              </button>
+            </template>
+          </div>
+        </div>
+      </aside>
       </div>
       <div data-si="esMovil" hidden>
         <div class="ficha-acciones">
@@ -1042,9 +1179,9 @@
 </div>
 
 
-<script src="src/pintor.js?v=20260905d"></script>
-<script src="src/medicion.js?v=20260905d"></script>
-<script src="src/app.js?v=20260905d"></script>
-<script src="src/reel.js?v=20260905d"></script>
+<script src="src/pintor.js?v=20260905g"></script>
+<script src="src/medicion.js?v=20260905g"></script>
+<script src="src/app.js?v=20260905g"></script>
+<script src="src/reel.js?v=20260905g"></script>
 </body>
 </html>
