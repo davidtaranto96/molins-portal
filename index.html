@@ -17,17 +17,21 @@
   button,input,select{font-family:inherit}
   @keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
   @keyframes fadein{from{opacity:0}to{opacity:1}}
+  @keyframes paneo{from{transform:scale(1.06) translate3d(1.5%,0,0)}to{transform:scale(1.12) translate3d(-1.5%,-1%,0)}}
+  .hero-paneo{animation:paneo 24s ease-in-out infinite alternate;will-change:transform}
+  @media (prefers-reduced-motion:reduce){.hero-paneo{animation:none}}
+  @media (max-width:899px){.logo-lopez{display:none!important}.hero-lpz{position:static!important;flex-direction:row!important;gap:12px!important;margin:18px 20px 0;justify-content:flex-start}.hero-lpz img{height:44px!important}}
   input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:6px;border-radius:6px;background:var(--borde-3);outline:none}
   input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:var(--verde);cursor:pointer;border:3px solid #fff;box-shadow:0 2px 7px rgba(17,60,61,.35)}
   input[type=range]::-moz-range-thumb{width:19px;height:19px;border-radius:50%;background:var(--verde);cursor:pointer;border:3px solid #fff}
   @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
 </style>
 
-<title>Molins Negocios Inmobiliarios — Propiedades en Salta</title>
+<title>Francisco Molins — Real Estate · Salta</title>
 <meta name="description" content="Casas, departamentos, locales, oficinas y terrenos en Salta. Cartera propia de Francisco Molins, corredor inmobiliario matriculado CUCIS 251. Grupo LPZ-Molins." />
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23113C3D'/%3E%3Ctext x='32' y='44' text-anchor='middle' font-family='Georgia,serif' font-size='36' font-weight='700' fill='%23F66503'%3EM%3C/text%3E%3C/svg%3E" />
 <meta property="og:type" content="website" />
-<meta property="og:title" content="Molins Negocios Inmobiliarios — Propiedades en Salta" />
+<meta property="og:title" content="Francisco Molins — Real Estate · Salta" />
 <meta property="og:description" content="Casas, departamentos, locales y terrenos en Salta. Cartera propia, atendida por un corredor matriculado." />
 <meta property="og:image" content="https://franciscomolins.com/img/hero-MOL-204329.jpg" />
 <meta property="og:url" content="https://franciscomolins.com/" />
@@ -94,14 +98,12 @@
 <!-- NAV : el logo manda -->
 <header style="position:sticky;top:0;z-index:100;background:rgba(250,249,245,.94);backdrop-filter:blur(10px);border-bottom:1px solid var(--borde)">
   <div style="max-width:1180px;margin:0 auto;padding:0 20px;display:flex;align-items:center;justify-content:space-between;min-height:84px;gap:16px">
-    <a href="#inicio" aria-label="Molins Negocios Inmobiliarios, inicio" style="display:flex;align-items:center;gap:14px;color:var(--tinta)">
+    <!-- Pedido de Fran (5/9): en la barra va sólo el escudo a la izquierda, el menú al
+         centro, y el logo de Luis (López Propiedades) a la derecha. -->
+    <a href="#inicio" aria-label="Francisco Molins, inicio" style="display:flex;align-items:center;gap:14px;color:var(--tinta);flex:0 0 auto">
       <img loading="lazy" src="img/logo-molins.png" alt="Escudo de Molins" style="width:52px;height:52px;border-radius:10px;object-fit:cover;display:block" />
-      <span style="display:block;line-height:1">
-        <b style="font-family:'Libre Caslon Text',Georgia,serif;font-weight:700;font-size:25px;letter-spacing:.02em;display:block">MOLINS</b>
-        <small style="display:block;font-size:10.5px;font-weight:600;letter-spacing:.16em;color:var(--verde-claro);margin-top:4px">NEGOCIOS INMOBILIARIOS</small>
-      </span>
     </a>
-    <div data-si="noEsMovil" hidden>
+    <div data-si="noEsMovil" hidden style="flex:1 1 auto;display:flex;align-items:center;justify-content:center;gap:22px">
       <nav style="display:flex;align-items:center;gap:26px">
         <a href="#propiedades" style="font-size:14px;font-weight:500;color:var(--tinta-suave)">Propiedades</a>
         <a href="#emprendimientos" style="font-size:14px;font-weight:500;color:var(--tinta-suave)">Emprendimientos</a>
@@ -111,6 +113,10 @@
       </nav>
       <a href="#contacto" style="background:var(--naranja);color:var(--verde-noche);font-weight:600;font-size:14.5px;padding:12px 20px;border-radius:10px;display:inline-flex;align-items:center;min-height:46px;white-space:nowrap;box-shadow:0 6px 16px rgba(246,101,3,.24);transition:background .2s,transform .2s" data-fx="fx-1">Reservar una visita</a>
     </div>
+    <!-- El logo de Luis: oculto hasta que el archivo exista y cargue (todavía no lo mandaron). -->
+    <a id="logo-lopez" hidden href="https://wa.me/5493875030113" target="_blank" rel="noopener" aria-label="López Propiedades, Luis López" class="logo-lopez" style="flex:0 0 auto;display:flex;align-items:center">
+      <img src="img/logo-lopez.png" alt="López Propiedades" onload="document.getElementById('logo-lopez').hidden=false" style="height:44px;width:auto;display:block" />
+    </a>
     <div data-si="esMovil" hidden>
       <button data-click="alternarMenu" aria-label="Abrir menú" style="background:none;border:none;cursor:pointer;padding:10px;display:flex;flex-direction:column;gap:5px">
         <span style="width:23px;height:2px;background:var(--tinta);border-radius:2px;display:block"></span>
@@ -126,7 +132,7 @@
     <div style="display:flex;align-items:center;justify-content:space-between">
       <div style="display:flex;align-items:center;gap:11px">
         <img loading="lazy" src="img/logo-molins.png" alt="" style="width:42px;height:42px;border-radius:9px;object-fit:cover" />
-        <b style="font-family:'Libre Caslon Text',Georgia,serif;font-size:20px;letter-spacing:.02em">MOLINS</b>
+        <b style="font-family:'Libre Caslon Text',Georgia,serif;font-size:19px;letter-spacing:.01em">Francisco Molins</b>
       </div>
       <button data-click="alternarMenu" aria-label="Cerrar el menú" style="width:44px;height:44px;border-radius:50%;border:1px solid var(--borde);background:#fff;cursor:pointer;display:grid;place-items:center">
         <svg viewBox="0 0 24 24" fill="none" stroke="var(--tinta)" stroke-width="2.2" stroke-linecap="round" style="width:18px;height:18px"><path d="M18 6 6 18M6 6l12 12"></path></svg>
@@ -152,7 +158,9 @@
 <div data-si="heroInstitucional" hidden>
 <section data-screen-label="Hero institucional" style="position:relative;min-height:min(86vh,720px);display:flex;align-items:flex-end;color:#fff;overflow:hidden">
   <div aria-hidden="true" style="position:absolute;inset:0;background:var(--verde)">
-    <img loading="lazy" src="img/hero-MOL-209940.jpg" alt="" style="width:100%;height:100%;object-fit:cover;display:block" />
+    <!-- Fran pidió una imagen o animación de Salta en vez de la casa. Hasta que llegue
+         la foto, la que hay se mueve despacio (paneo de 24 s, se apaga con reduced-motion). -->
+    <img loading="lazy" src="img/hero-MOL-209940.jpg" alt="" class="hero-paneo" style="width:100%;height:100%;object-fit:cover;display:block" />
     <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(11,32,33,.55) 0%,rgba(11,32,33,.18) 34%,rgba(9,30,31,.9) 100%)"></div>
   </div>
   <div style="position:relative;max-width:1180px;margin:0 auto;padding:150px 20px 54px;width:100%">
@@ -160,13 +168,11 @@
       <div style="display:flex;align-items:center;gap:18px;animation:rise .7s cubic-bezier(.22,.61,.36,1) both">
         <img loading="lazy" src="img/logo-molins.png" alt="Escudo de Molins" style="width:clamp(64px,8vw,88px);height:clamp(64px,8vw,88px);border-radius:14px;object-fit:cover;box-shadow:0 14px 34px rgba(0,0,0,.35)" />
         <div>
-          <h1 style="margin:0;font-family:'Libre Caslon Text',Georgia,serif;font-weight:700;font-size:clamp(34px,5.6vw,62px);line-height:1;letter-spacing:.02em;color:#fff">MOLINS</h1>
-          <p style="margin:6px 0 0;font-size:clamp(12px,1.4vw,15px);font-weight:600;letter-spacing:.22em;color:rgba(255,255,255,.85)">NEGOCIOS INMOBILIARIOS · SALTA</p>
+          <h1 style="margin:0;font-family:'Libre Caslon Text',Georgia,serif;font-weight:700;font-size:clamp(30px,4.8vw,58px);line-height:1.02;letter-spacing:.01em;color:#fff">Francisco Molins</h1>
+          <p style="margin:8px 0 0;font-size:clamp(12px,1.4vw,15px);font-weight:600;letter-spacing:.24em;color:rgba(255,255,255,.85)">REAL ESTATE · SALTA</p>
         </div>
       </div>
-      <span style="display:inline-flex;align-items:center;gap:8px;margin-top:20px;font-size:13px;font-weight:600;color:var(--naranja-palido);border:1px solid rgba(255,255,255,.24);background:rgba(9,30,31,.5);padding:7px 14px;border-radius:100px;animation:rise .7s cubic-bezier(.22,.61,.36,1) .12s both">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"></path><path d="m9 12 2 2 4-4"></path></svg>
-        Corredor inmobiliario matriculado · CUCIS 251</span>
+      
       <p style="font-size:clamp(16px,1.9vw,19px);color:rgba(255,255,255,.9);max-width:54ch;margin:16px 0 26px;animation:rise .7s cubic-bezier(.22,.61,.36,1) .2s both">Casas, departamentos, locales y terrenos en Salta. Cartera propia, atendida de forma directa por quien la conoce.</p>
       <div style="background:#fff;border-radius:14px;padding:10px;display:flex;gap:8px;flex-wrap:wrap;box-shadow:0 24px 60px rgba(0,0,0,.3);max-width:640px;animation:rise .7s cubic-bezier(.22,.61,.36,1) .3s both">
         <select data-valor="bOper" data-change="cambiarBOper" aria-label="Operación" style="flex:1 1 140px;min-height:48px;border:1.5px solid var(--borde);border-radius:9px;padding:10px 12px;font-size:14px;color:var(--tinta);background:var(--hueso);cursor:pointer">
@@ -188,6 +194,10 @@
       </div>
       <div style="margin-top:14px;font-size:13px;color:rgba(255,255,255,.75);animation:rise .7s cubic-bezier(.22,.61,.36,1) .4s both"><span data-txt="resumenCartera"></span> · <a href="#emprendimientos" style="color:var(--naranja-palido);font-weight:600">Ver los emprendimientos</a></div>
     </div>
+  <div aria-hidden="false" class="hero-lpz" style="position:absolute;right:clamp(92px,9vw,128px);bottom:8px;display:flex;flex-direction:column;align-items:center;gap:6px;animation:rise .7s cubic-bezier(.22,.61,.36,1) .35s both">
+    <img loading="lazy" src="img/logo-lpz.png" alt="Grupo LPZ" style="height:clamp(56px,7vw,86px);width:auto;filter:brightness(0) invert(1);opacity:.92" />
+    <span style="font-size:12px;font-weight:700;letter-spacing:.2em;color:rgba(255,255,255,.85)">CUCIS 251</span>
+  </div>
   </div>
 </section>
 </div>
@@ -200,13 +210,11 @@
       <div style="display:flex;align-items:center;gap:20px;animation:rise .7s cubic-bezier(.22,.61,.36,1) both">
         <img loading="lazy" src="img/logo-molins.png" alt="Escudo de Molins" style="width:clamp(72px,9vw,104px);height:clamp(72px,9vw,104px);border-radius:16px;object-fit:cover;box-shadow:0 16px 40px rgba(0,0,0,.35)" />
         <div>
-          <h1 style="margin:0;font-family:'Libre Caslon Text',Georgia,serif;font-weight:700;font-size:clamp(36px,5vw,58px);line-height:1;letter-spacing:.02em;color:#fff">MOLINS</h1>
-          <p style="margin:7px 0 0;font-size:clamp(11px,1.3vw,14px);font-weight:600;letter-spacing:.24em;color:rgba(255,255,255,.8)">NEGOCIOS INMOBILIARIOS</p>
+          <h1 style="margin:0;font-family:'Libre Caslon Text',Georgia,serif;font-weight:700;font-size:clamp(30px,4.4vw,54px);line-height:1.02;letter-spacing:.01em;color:#fff">Francisco Molins</h1>
+          <p style="margin:8px 0 0;font-size:clamp(11px,1.3vw,14px);font-weight:600;letter-spacing:.24em;color:rgba(255,255,255,.8)">REAL ESTATE · SALTA</p>
         </div>
       </div>
-      <span style="display:inline-flex;align-items:center;gap:8px;margin-top:22px;font-size:13px;font-weight:600;color:var(--naranja-palido);border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.06);padding:7px 14px;border-radius:100px;align-self:flex-start;animation:rise .7s cubic-bezier(.22,.61,.36,1) .1s both">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"></path><path d="m9 12 2 2 4-4"></path></svg>
-        Corredor inmobiliario matriculado · CUCIS 251</span>
+      
       <p style="font-size:clamp(15.5px,1.8vw,18px);color:rgba(255,255,255,.85);max-width:46ch;margin:18px 0 28px;animation:rise .7s cubic-bezier(.22,.61,.36,1) .18s both">Casas, departamentos, locales y terrenos en Salta. Cartera propia, atendida de forma directa por quien la conoce.</p>
       <div style="display:flex;flex-direction:column;gap:8px;max-width:460px;animation:rise .7s cubic-bezier(.22,.61,.36,1) .28s both">
         <div style="display:flex;gap:8px;flex-wrap:wrap">
@@ -669,7 +677,7 @@
       </div>
     </div>
     <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;padding-top:18px;font-size:12.5px;color:rgba(255,255,255,.55);flex-wrap:wrap">
-      <span>© 2026 Molins Negocios Inmobiliarios — CUCIS 251 · Salta, Argentina</span>
+      <span>© 2026 Francisco Molins · Real Estate · Salta — CUCIS 251 · Grupo LPZ-Molins</span>
       <span style="display:inline-flex;align-items:center;gap:8px">Parte de
         <img loading="lazy" src="img/logo-lpz.png" alt="Grupo LPZ — CUCIS 251" style="height:44px;width:auto;opacity:.85;filter:brightness(0) invert(1)" /></span>
     </div>
