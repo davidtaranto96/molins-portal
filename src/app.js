@@ -92,7 +92,7 @@
   function norm(t) { return String(t || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, ""); }
 
   function set(cambios) { for (var k in cambios) S[k] = cambios[k]; pintar(); }
-  function pintar() { window.Pintor.pintar(vista()); }
+  function pintar() { window.Pintor.pintar(vista()); if (window.observarTarjetas) observarTarjetas(); }
 
   /* ── formato ─────────────────────────────────────────────────────────── */
   function tidy(s) { if (!s) return s; if (s === s.toUpperCase()) s = s.toLowerCase(); return s.charAt(0).toUpperCase() + s.slice(1); }
@@ -773,21 +773,80 @@
     /* El reel pide abrir una ficha. */
     document.addEventListener("molins:ficha", function (ev) { if (prop(ev.detail)) abrirFicha(ev.detail); });
 
-    /* El buscador flotante: cuando queda pegado bajo la barra se achica y
-       toma fondo. La altura de la barra manda dónde se pega. */
-    var busc = document.getElementById("buscador"), cab = document.querySelector("header");
+    /* El buscador flotante. Tres cosas: cuando queda pegado bajo la barra se
+       achica (lo dice un centinela que queda en su lugar de origen, no una
+       medida en cada scroll); al bajar rápido se esconde y apenas subís
+       vuelve, como la barra de Safari, salvo que estés escribiendo; y la
+       tecla «/» lo enfoca desde cualquier lado. */
+    var busc = document.getElementById("buscador"), lugar = document.getElementById("buscador-lugar"), cab = document.querySelector("header");
+    var quieto = matchMedia("(prefers-reduced-motion:reduce)").matches;
     function medirBarra() { if (cab) document.documentElement.style.setProperty("--barra", cab.offsetHeight + "px"); }
     medirBarra();
     if (busc) {
-      var pegadoAntes = null;
-      function mirarBuscador() {
-        var top = busc.getBoundingClientRect().top, lim = (cab ? cab.offsetHeight : 0) + 14;
-        var pegado = top <= lim + 1 && window.scrollY > 120;
-        if (pegado !== pegadoAntes) { pegadoAntes = pegado; busc.classList.toggle("es-pegado", pegado); }
+      var pegado = false;
+      if (lugar && "IntersectionObserver" in window) {
+        new IntersectionObserver(function (es) {
+          es.forEach(function (e) {
+            /* El centinela sale por arriba cuando el buscador ya está pegado. */
+            pegado = !e.isIntersecting && e.boundingClientRect.top < 0;
+            busc.classList.toggle("es-pegado", pegado);
+            if (!pegado) busc.classList.remove("es-oculto");
+          });
+        }, { rootMargin: "-" + ((cab ? cab.offsetHeight : 0) + 40) + "px 0px 0px 0px" }).observe(lugar);
       }
-      var enCola = false;
-      addEventListener("scroll", function () { if (enCola) return; enCola = true; requestAnimationFrame(function () { enCola = false; mirarBuscador(); }); }, { passive: true });
-      mirarBuscador();
+      var yAntes = window.scrollY, acum = 0, enCola = false;
+      addEventListener("scroll", function () {
+        if (enCola) return; enCola = true;
+        requestAnimationFrame(function () {
+          enCola = false;
+          var y = window.scrollY, dy = y - yAntes; yAntes = y;
+          if (!pegado || quieto) { busc.classList.remove("es-oculto"); acum = 0; return; }
+          if (document.activeElement && busc.contains(document.activeElement)) { busc.classList.remove("es-oculto"); return; }
+          acum = (dy > 0) === (acum > 0) ? acum + dy : dy;
+          if (acum > 90) busc.classList.add("es-oculto");
+          else if (acum < -24) busc.classList.remove("es-oculto");
+        });
+      }, { passive: true });
+      setTimeout(function () { busc.classList.remove("buscador--entra"); }, 3200);
+      document.addEventListener("keydown", function (ev) {
+        if (ev.key !== "/" || ev.ctrlKey || ev.metaKey || ev.altKey) return;
+        var t = ev.target, tag = t && t.tagName;
+        if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT" || (t && t.isContentEditable)) return;
+        var c = document.getElementById("fTexto"); if (!c) return;
+        ev.preventDefault(); busc.classList.remove("es-oculto"); c.focus();
+        if (!pegado) c.scrollIntoView({ block: "center", behavior: quieto ? "auto" : "smooth" });
+      });
+    }
+
+    /* Las tarjetas entran al aparecer (y la portada se mueve más lento que la
+       página, con el rótulo desvaneciéndose: invita a seguir bajando). */
+    if ("IntersectionObserver" in window && !quieto) {
+      document.documentElement.classList.add("js-reveal");
+      var obsT = new IntersectionObserver(function (es) {
+        es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add("es-visto"); obsT.unobserve(e.target); } });
+      }, { rootMargin: "0px 0px -6% 0px", threshold: 0.08 });
+      window.observarTarjetas = function () {
+        var nuevas = document.querySelectorAll(".tarjeta:not(.es-visto)"), k = 0;
+        nuevas.forEach(function (t) {
+          if (t.__obs) return; t.__obs = true;
+          t.style.transitionDelay = Math.min(k++, 8) * 55 + "ms";
+          obsT.observe(t);
+        });
+      };
+      observarTarjetas();
+      var portada = document.querySelector(".portada"), reelEl = document.getElementById("reel"), pieEl = document.querySelector(".reel__pie"), marcaEl = document.querySelector(".portada__marca");
+      if (portada && reelEl) {
+        var enColaH = false;
+        function paralajePortada() {
+          var y = window.scrollY, h = portada.offsetHeight;
+          if (y > h) return;
+          reelEl.style.transform = "translate3d(0," + (y * 0.28).toFixed(1) + "px,0)";
+          var op = Math.max(0, 1 - y / (h * 0.55)).toFixed(3);
+          if (pieEl) pieEl.style.opacity = op;
+          if (marcaEl) marcaEl.style.opacity = op;
+        }
+        addEventListener("scroll", function () { if (enColaH) return; enColaH = true; requestAnimationFrame(function () { enColaH = false; paralajePortada(); }); }, { passive: true });
+      }
     }
 
     /* Los bloques de La Torre y Aires entran cuando aparecen, y su foto se
