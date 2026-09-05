@@ -106,16 +106,16 @@
     <div data-si="noEsMovil" hidden style="flex:1 1 auto;display:flex;align-items:center;justify-content:center;gap:22px">
       <nav style="display:flex;align-items:center;gap:26px">
         <a href="#propiedades" style="font-size:14px;font-weight:500;color:var(--tinta-suave)">Propiedades</a>
-        <a href="#emprendimientos" style="font-size:14px;font-weight:500;color:var(--tinta-suave)">Emprendimientos</a>
+        <a href="#proyectos" style="font-size:14px;font-weight:500;color:var(--tinta-suave)">Proyectos</a>
         <a href="#zonas" style="font-size:14px;font-weight:500;color:var(--tinta-suave)">Zonas</a>
         <a href="#financiacion" style="font-size:14px;font-weight:500;color:var(--tinta-suave)">Financiación</a>
         <a href="#contacto" style="font-size:14px;font-weight:500;color:var(--tinta-suave)">Contacto</a>
       </nav>
       <a href="#contacto" style="background:var(--naranja);color:var(--verde-noche);font-weight:600;font-size:14.5px;padding:12px 20px;border-radius:10px;display:inline-flex;align-items:center;min-height:46px;white-space:nowrap;box-shadow:0 6px 16px rgba(246,101,3,.24);transition:background .2s,transform .2s" data-fx="fx-1">Reservar una visita</a>
     </div>
-    <!-- El logo de Luis: oculto hasta que el archivo exista y cargue (todavía no lo mandaron). -->
-    <a id="logo-lopez" hidden href="https://wa.me/5493875030113" target="_blank" rel="noopener" aria-label="López Propiedades, Luis López" class="logo-lopez" style="flex:0 0 auto;display:flex;align-items:center">
-      <img src="img/logo-lopez.png" alt="López Propiedades" onload="document.getElementById('logo-lopez').hidden=false" style="height:44px;width:auto;display:block" />
+    <!-- El logo de Luis (Grupo LPZ), el mismo que está en la web de Aires. -->
+    <a href="https://wa.me/5493875030113" target="_blank" rel="noopener" aria-label="Grupo LPZ, Luis López" class="logo-lopez" style="flex:0 0 auto;display:flex;align-items:center">
+      <img src="img/logo-lpz.png" alt="Grupo LPZ" width="731" height="900" style="height:56px;width:auto;display:block" />
     </a>
     <div data-si="esMovil" hidden>
       <button data-click="alternarMenu" aria-label="Abrir menú" style="background:none;border:none;cursor:pointer;padding:10px;display:flex;flex-direction:column;gap:5px">
@@ -140,7 +140,7 @@
     </div>
     <nav style="display:flex;flex-direction:column;margin-top:26px">
       <a href="#propiedades" data-click="cerrarMenu" style="font-family:'Libre Caslon Text',Georgia,serif;font-size:22px;font-weight:700;color:var(--tinta);padding:15px 4px;border-bottom:1px solid var(--borde)">Propiedades</a>
-      <a href="#emprendimientos" data-click="cerrarMenu" style="font-family:'Libre Caslon Text',Georgia,serif;font-size:22px;font-weight:700;color:var(--tinta);padding:15px 4px;border-bottom:1px solid var(--borde)">Emprendimientos</a>
+      <a href="#proyectos" data-click="cerrarMenu" style="font-family:'Libre Caslon Text',Georgia,serif;font-size:22px;font-weight:700;color:var(--tinta);padding:15px 4px;border-bottom:1px solid var(--borde)">Proyectos</a>
       <a href="#zonas" data-click="cerrarMenu" style="font-family:'Libre Caslon Text',Georgia,serif;font-size:22px;font-weight:700;color:var(--tinta);padding:15px 4px;border-bottom:1px solid var(--borde)">Zonas</a>
       <a href="#financiacion" data-click="cerrarMenu" style="font-family:'Libre Caslon Text',Georgia,serif;font-size:22px;font-weight:700;color:var(--tinta);padding:15px 4px;border-bottom:1px solid var(--borde)">Financiación</a>
       <a href="#contacto" data-click="cerrarMenu" style="font-family:'Libre Caslon Text',Georgia,serif;font-size:22px;font-weight:700;color:var(--tinta);padding:15px 4px;border-bottom:1px solid var(--borde)">Contacto</a>
@@ -158,9 +158,16 @@
 <div data-si="heroInstitucional" hidden>
 <section data-screen-label="Hero institucional" style="position:relative;min-height:min(86vh,720px);display:flex;align-items:flex-end;color:#fff;overflow:hidden">
   <div aria-hidden="true" style="position:absolute;inset:0;background:var(--verde)">
-    <!-- Fran pidió una imagen o animación de Salta en vez de la casa. Hasta que llegue
-         la foto, la que hay se mueve despacio (paneo de 24 s, se apaga con reduced-motion). -->
-    <img loading="lazy" src="img/hero-MOL-209940.jpg" alt="" class="hero-paneo" style="width:100%;height:100%;object-fit:cover;display:block" />
+    <!-- Fran pidió una imagen o animación de Salta en vez de la casa. Va el material de sus
+         proyectos: el valle de San Lorenzo, de la web de Aires. En escritorio el video (se carga
+         después, sólo si se ve y sin reduced-motion); en el celular queda la foto con paneo. -->
+    <picture>
+      <source media="(max-width:899px)" srcset="img/hero-valle-v.webp" />
+      <img src="img/hero-valle.webp" alt="" width="1920" height="1080" fetchpriority="high" class="hero-paneo" style="width:100%;height:100%;object-fit:cover;display:block" />
+    </picture>
+    <video id="hero-video" muted playsinline loop preload="none" poster="img/hero-valle.webp" aria-hidden="true" disablepictureinpicture disableremoteplayback style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity 1.2s ease">
+      <source data-src="img/hero-valle.mp4" type="video/mp4" />
+    </video>
     <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(11,32,33,.55) 0%,rgba(11,32,33,.18) 34%,rgba(9,30,31,.9) 100%)"></div>
   </div>
   <div style="position:relative;max-width:1180px;margin:0 auto;padding:150px 20px 54px;width:100%">
@@ -192,7 +199,7 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
         </button>
       </div>
-      <div style="margin-top:14px;font-size:13px;color:rgba(255,255,255,.75);animation:rise .7s cubic-bezier(.22,.61,.36,1) .4s both"><span data-txt="resumenCartera"></span> · <a href="#emprendimientos" style="color:var(--naranja-palido);font-weight:600">Ver los emprendimientos</a></div>
+      <div style="margin-top:14px;font-size:13px;color:rgba(255,255,255,.75);animation:rise .7s cubic-bezier(.22,.61,.36,1) .4s both"><span data-txt="resumenCartera"></span> · <a href="#proyectos" style="color:var(--naranja-palido);font-weight:600">Ver los proyectos</a></div>
     </div>
   <div aria-hidden="false" class="hero-lpz" style="position:absolute;right:clamp(92px,9vw,128px);bottom:8px;display:flex;flex-direction:column;align-items:center;gap:6px;animation:rise .7s cubic-bezier(.22,.61,.36,1) .35s both">
     <img loading="lazy" src="img/logo-lpz.png" alt="Grupo LPZ" style="height:clamp(56px,7vw,86px);width:auto;filter:brightness(0) invert(1);opacity:.92" />
@@ -391,12 +398,13 @@
 </section>
 
 <!-- ══ EMPRENDIMIENTOS ══ -->
-<section id="emprendimientos" data-screen-label="Emprendimientos" style="padding:clamp(52px,6.5vw,92px) 0 0">
+<div id="emprendimientos"></div>
+<section id="proyectos" data-screen-label="Proyectos" style="padding:clamp(52px,6.5vw,92px) 0 0">
   <div style="max-width:1180px;margin:0 auto;padding:0 20px">
     <div style="max-width:680px;margin-bottom:30px">
       <div style="width:44px;height:3px;background:var(--naranja);border-radius:3px;margin-bottom:18px"></div>
-      <h2 style="margin:0;font-family:'Libre Caslon Text',Georgia,serif;font-weight:700;font-size:clamp(28px,3.8vw,42px);line-height:1.14">Emprendimientos</h2>
-      <p style="margin:12px 0 0;font-size:clamp(15.5px,1.8vw,17.5px);color:var(--gris);max-width:62ch">Otro producto, con otra lógica: se compra en pozo, con plan largo, directo con el desarrollo. Molins comercializa en exclusiva.</p>
+      <h2 style="margin:0;font-family:'Libre Caslon Text',Georgia,serif;font-weight:700;font-size:clamp(28px,3.8vw,42px);line-height:1.14">Proyectos y oportunidades</h2>
+      <p style="margin:12px 0 0;font-size:clamp(15.5px,1.8vw,17.5px);color:var(--gris);max-width:62ch">Los desarrollos que Molins comercializa. Otra lógica que la cartera: se compra en pozo, con plan largo y directo con el desarrollo.</p>
     </div>
 
     <!-- Aires de San Lorenzo -->
@@ -422,24 +430,26 @@
               <svg viewBox="0 0 24 24" fill="currentColor" style="width:17px;height:17px"><path d="M.057 24l1.687-6.163a11.867 11.867 0 0 1-1.587-5.946C.16 5.335 5.495 0 12.05 0a11.817 11.817 0 0 1 8.413 3.488 11.824 11.824 0 0 1 3.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 0 1-5.688-1.448L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884a9.86 9.86 0 0 0 1.51 5.26l-.999 3.648 3.978-1.052z"></path></svg>
               Consultar por Aires</a>
             <button data-click="pedirPlanAires" style="background:rgba(255,255,255,.08);color:#fff;border:1.5px solid rgba(255,255,255,.4);font-weight:600;font-size:14.5px;padding:12px 20px;border-radius:10px;cursor:pointer;min-height:46px;transition:background .2s" data-fx="fx-6">Pedir el plan de pago</button>
+            <a href="https://airesdesanlorenzo.com/#etapa1" target="_blank" rel="noopener" style="color:#fff;font-weight:600;font-size:14.5px;padding:12px 6px;display:inline-flex;align-items:center;gap:8px;min-height:46px">Elegir una unidad en la web
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
           </div>
         </div>
         <div style="position:relative;min-height:320px">
-          <img src="img/zona-san-lorenzo.jpg" alt="Vista de la zona de San Lorenzo, Salta" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" />
-          <div style="position:absolute;bottom:0;left:0;right:0;padding:26px 16px 12px;font-size:11.5px;color:rgba(255,255,255,.78);background:linear-gradient(180deg,transparent,rgba(9,30,31,.85))">Imagen de la zona de San Lorenzo. Las imágenes del emprendimiento se entregan en la consulta.</div>
+          <img src="img/aires-conjunto.webp" alt="Render aéreo de Aires de San Lorenzo" loading="lazy" width="1400" height="788" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" />
+          <div style="position:absolute;bottom:0;left:0;right:0;padding:26px 16px 12px;font-size:11.5px;color:rgba(255,255,255,.78);background:linear-gradient(180deg,transparent,rgba(9,30,31,.85))">Render del masterplan. Etapa 1 en comercialización.</div>
         </div>
       </div>
     </div>
 
     <!-- La Torre: el conector -->
-    <a href="https://edificiolatorre.com/" data-screen-label="Card La Torre" style="margin-top:20px;display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));background:#fff;border:1px solid var(--borde);border-radius:20px;overflow:hidden;color:var(--tinta);transition:transform .22s cubic-bezier(.22,.61,.36,1),box-shadow .22s cubic-bezier(.22,.61,.36,1)" data-fx="fx-3">
+    <a href="https://edificiolatorre.com/" target="_blank" rel="noopener" data-screen-label="Card La Torre" style="margin-top:20px;display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));background:#fff;border:1px solid var(--borde);border-radius:20px;overflow:hidden;color:var(--tinta);transition:transform .22s cubic-bezier(.22,.61,.36,1),box-shadow .22s cubic-bezier(.22,.61,.36,1)" data-fx="fx-3">
       <div style="position:relative;min-height:260px;background:var(--verde-suave)">
         <img src="img/torre-hero.jpg" alt="Fachada del Edificio La Torre sobre calle Balcarce" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" />
       </div>
       <div style="padding:clamp(26px,3.5vw,44px);display:flex;flex-direction:column;justify-content:center">
         <span style="display:inline-flex;align-self:flex-start;align-items:center;gap:8px;font-size:12px;font-weight:700;letter-spacing:.04em;color:var(--naranja-oscuro);background:var(--naranja-suave);border:1px solid var(--naranja-borde);padding:6px 13px;border-radius:100px">Por lanzarse</span>
         <h3 style="margin:16px 0 10px;font-family:'Libre Caslon Text',Georgia,serif;font-weight:700;font-size:clamp(24px,3vw,34px);line-height:1.12">Edificio La Torre</h3>
-        <p style="margin:0;font-size:15px;color:var(--tinta-suave);max-width:50ch">Doce unidades sobre calle Balcarce, en el centro de Salta. El proyecto tiene su propia página, con las tipologías y los planos.</p>
+        <p style="margin:0;font-size:15px;color:var(--tinta-suave);max-width:50ch">Doce unidades sobre calle Balcarce, en el centro de Salta. El proyecto tiene su propia página, con la torre en 3D, las tipologías y las unidades disponibles.</p>
         <span style="margin-top:20px;display:inline-flex;align-items:center;gap:8px;font-size:14.5px;font-weight:600;color:var(--verde-claro)">Conocer el proyecto
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></span>
       </div>
@@ -664,7 +674,7 @@
       <div>
         <h4 style="color:#fff;font-size:13px;margin:0 0 12px;font-weight:700">Propiedades</h4>
         <a href="#propiedades" style="display:block;font-size:13.5px;color:rgba(255,255,255,.64);padding:5px 0">Toda la cartera</a>
-        <a href="#emprendimientos" style="display:block;font-size:13.5px;color:rgba(255,255,255,.64);padding:5px 0">Aires de San Lorenzo</a>
+        <a href="#proyectos" style="display:block;font-size:13.5px;color:rgba(255,255,255,.64);padding:5px 0">Aires de San Lorenzo</a>
         <a href="https://edificiolatorre.com/" style="display:block;font-size:13.5px;color:rgba(255,255,255,.64);padding:5px 0">Edificio La Torre</a>
         <a href="#zonas" style="display:block;font-size:13.5px;color:rgba(255,255,255,.64);padding:5px 0">Zonas</a>
       </div>
@@ -815,5 +825,17 @@
 <script src="src/pintor.js"></script>
 <script src="src/medicion.js"></script>
 <script src="src/app.js"></script>
+<script>
+(function(){
+  var v=document.getElementById('hero-video'); if(!v) return;
+  var quieto=matchMedia('(prefers-reduced-motion:reduce)').matches, chica=matchMedia('(max-width:899px)').matches;
+  var c=navigator.connection; if(quieto||chica||(c&&(c.saveData||/2g/.test(c.effectiveType||'')))) return;
+  function encender(){ var s=v.querySelector('source'); if(!s||s.src) return; s.src=s.getAttribute('data-src'); v.load(); v.muted=true; v.loop=true;
+    v.addEventListener('playing',function(){ v.style.opacity='1'; },{once:true});
+    var p=v.play(); if(p&&p.catch) p.catch(function(){}); }
+  if('IntersectionObserver' in window){ var o=new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting){ encender(); o.disconnect(); } }); },{rootMargin:'200px 0px'}); o.observe(v); }
+  else encender();
+})();
+</script>
 </body>
 </html>
