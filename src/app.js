@@ -61,7 +61,8 @@
 
   var S = {
     props: [], cargando: true, muestra: false,
-    seg: "todo", fTipo: "", fZona: "", fDorm: "", fPrecio: "",
+    seg: "todo", fTipo: "", fZona: "", fDorm: "", fPrecio: "", fTexto: "", fOrden: "destacadas",
+    favs: leerLS("molins_favs", []), recientes: leerLS("molins_vistas", []),
     bOper: "todo", bZona: "",
     menuOpen: false, ancho: 1200,
     ficha: null, fotoN: 1,
@@ -70,6 +71,24 @@
     calcPrecio: 75000, calcAnt: 30, calcCuotas: 60
   };
   var mapa = null;
+
+  /* Guardadas y vistas viven en el navegador de cada visitante, nunca en el
+     sistema: no identifican a nadie y sirven para volver a lo que miró. */
+  function leerLS(k, def) { try { var v = JSON.parse(localStorage.getItem(k)); return Array.isArray(v) ? v : def; } catch (e) { return def; } }
+  function guardarLS(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+  function esFav(c) { return S.favs.indexOf(c) >= 0; }
+  function alternarFav(c) {
+    var f = S.favs.slice(), i = f.indexOf(c);
+    if (i >= 0) f.splice(i, 1); else f.unshift(c);
+    guardarLS("molins_favs", f);
+    if (window.VISITAS) VISITAS.anotar(i >= 0 ? "quitar_guardada" : "guardar", c, c);
+    set({ favs: f, seg: S.seg === "guardadas" && !f.length ? "todo" : S.seg });
+  }
+  function anotarVista(c) {
+    var r = S.recientes.filter(function (x) { return x !== c; }); r.unshift(c);
+    S.recientes = r.slice(0, 8); guardarLS("molins_vistas", S.recientes);
+  }
+  function norm(t) { return String(t || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, ""); }
 
   function set(cambios) { for (var k in cambios) S[k] = cambios[k]; pintar(); }
   function pintar() { window.Pintor.pintar(vista()); }
@@ -91,9 +110,11 @@
     return "https://wa.me/" + TEL + "?text=" + encodeURIComponent("Hola, quiero consultar por " + p.titulo + " (" + p.codigo + ")");
   }
 
-  function desdeApi(x) {
+  function desdeApi(x, i) {
     var p = {};
-    p.codigo = x.codigo;
+    p.codigo = x.codigo; p.orden = i || 0; p.destacada = !!x.destacada;
+    p.publicadaEn = x.publicadaEn ? Date.parse(x.publicadaEn) : 0;
+    p.nueva = p.publicadaEn > 0 && (Date.now() - p.publicadaEn) < 10 * 864e5;
     p.sinDireccion = !x.direccion;
     p.barrio = x.barrio || "";
     p.tipo = TIPO_LEGIBLE[x.tipo] || "Propiedad";
@@ -172,7 +193,13 @@
 
   /* ── filtros ─────────────────────────────────────────────────────────── */
   function pasaFiltros(p) {
-    if (S.seg !== "todo" && segDe(p) !== S.seg) return false;
+    if (S.seg === "guardadas") { if (!esFav(p.codigo)) return false; }
+    else if (S.seg !== "todo" && segDe(p) !== S.seg) return false;
+    if (S.fTexto.trim()) {
+      var q = norm(S.fTexto).trim().split(/\s+/);
+      var pajar = norm([p.titulo, p.barrio, p.zona, p.tipo, p.codigo, p.operacion].join(" "));
+      for (var i = 0; i < q.length; i++) if (pajar.indexOf(q[i]) < 0) return false;
+    }
     if (S.fTipo && p.tipo !== S.fTipo) return false;
     if (S.fZona && p.zona !== S.fZona) return false;
     if (S.fDorm && p.dorm < +S.fDorm) return false;
@@ -182,6 +209,17 @@
       if (p.precio < r[0] || p.precio > r[1]) return false;
     }
     return true;
+  }
+
+  function ordenar(lista) {
+    var k = S.fOrden, l = lista.slice();
+    var precio = function (p) { return p.precio > 0 && p.moneda === "USD" ? p.precio : (p.precio > 0 ? p.precio / 1200 : 0); };
+    if (k === "precio-asc") l.sort(function (a, b) { return (precio(a) || 1e12) - (precio(b) || 1e12); });
+    else if (k === "precio-desc") l.sort(function (a, b) { return precio(b) - precio(a); });
+    else if (k === "m2") l.sort(function (a, b) { return b.m2 - a.m2; });
+    else if (k === "recientes") l.sort(function (a, b) { return b.publicadaEn - a.publicadaEn; });
+    else l.sort(function (a, b) { return a.orden - b.orden; });
+    return l;
   }
 
   function scrollA(id) {
@@ -194,8 +232,10 @@
 
   /* ── ficha ───────────────────────────────────────────────────────────── */
   function abrirFicha(codigo) {
+    anotarVista(codigo);
     set({ ficha: codigo, fotoN: 1 });
     document.body.style.overflow = "hidden";
+    precargarFotos(codigo, 1);
     urlFicha(codigo);
     if (window.VISITAS) VISITAS.anotar("ficha", codigo, codigo);
     setTimeout(montarMapa, 80);
@@ -214,6 +254,16 @@
     var total = p.fotos.length;
     var n = ((S.fotoN + d - 1) % total + total) % total + 1;
     set({ fotoN: n });
+    precargarFotos(p.codigo, n);
+    var caja = document.getElementById("fichaFotoCaja");
+    if (caja) { caja.classList.remove("foto-entra"); void caja.offsetWidth; caja.classList.add("foto-entra"); }
+    var th = document.querySelector("#fichaThumbs [aria-current='true']");
+    if (th && th.scrollIntoView) try { th.scrollIntoView({ block: "nearest", inline: "center", behavior: "smooth" }); } catch (e) {}
+  }
+  /* La foto que sigue y la anterior ya están bajadas cuando se toca la flecha. */
+  function precargarFotos(codigo, n) {
+    var p = prop(codigo); if (!p || p.fotos.length < 2) return;
+    [n, n - 2, n + 1].forEach(function (k) { var src = p.fotos[((k % p.fotos.length) + p.fotos.length) % p.fotos.length]; if (src) { var im = new Image(); im.src = src; } });
   }
   function montarMapa() {
     var p = prop(S.ficha), cont = document.getElementById("fichaMapa");
@@ -273,6 +323,16 @@
     }).sort(function (a, b) { return b.s - a.s; }).slice(0, 3).map(function (o) { return o.p; });
   }
 
+  var relojTexto = null;
+  /* El pintor no toca un campo que tiene el foco (le movería el cursor), así
+     que al vaciar el texto desde un chip hay que vaciar el campo a mano. */
+  function vaciarTexto() { clearTimeout(relojTexto); var c = document.getElementById("fTexto"); if (c) c.value = ""; set({ fTexto: "" }); }
+  function escribirTexto(ev) {
+    var v = ev.target.value;
+    clearTimeout(relojTexto);
+    relojTexto = setTimeout(function () { if (S.fTexto !== v) set({ fTexto: v }); }, 160);
+  }
+
   function irAConsultar(ctx, busca, p) {
     set({ ctx: ctx, ctxProp: p || null, formBusca: busca || S.formBusca, enviado: false, formError: "" });
     if (window.VISITAS) VISITAS.anotar("form_abierto", ctx || "contacto", p ? p.codigo : null);
@@ -313,7 +373,8 @@
   /* ── la vista ────────────────────────────────────────────────────────── */
   function vista() {
     var esMovil = S.ancho <= 1060;
-    var visibles = S.props.filter(pasaFiltros);
+    var visibles = ordenar(S.props.filter(pasaFiltros));
+    var nReservadas = S.props.filter(function (p) { return p.estado === "reservada"; }).length;
     var cuenta = function (k) { return S.props.filter(function (p) { return segDe(p) === k; }).length; };
     var nVenta = cuenta("venta"), nTerreno = cuenta("terreno"), nAlquiler = cuenta("alquiler");
 
@@ -323,9 +384,10 @@
       { k: "todo", t: "Todas", n: S.props.length },
       { k: "venta", t: "Venta", n: nVenta },
       { k: "terreno", t: "Terrenos", n: nTerreno },
-      { k: "alquiler", t: "Alquiler", n: nAlquiler }
-    ].map(function (c) {
-      return { k: c.k, t: c.t, n: c.n, estilo: S.seg === c.k ? chipOn : chipBase, elegir: function () { set({ seg: c.k }); } };
+      { k: "alquiler", t: "Alquiler", n: nAlquiler },
+      S.favs.length ? { k: "guardadas", t: "Guardadas", n: S.favs.length } : null
+    ].filter(Boolean).map(function (c) {
+      return { k: c.k, t: c.t, n: c.n, activo: S.seg === c.k ? "true" : "false", estilo: S.seg === c.k ? chipOn : chipBase, elegir: function () { set({ seg: c.k }); } };
     });
 
     var conteoZona = {};
@@ -340,14 +402,20 @@
     }
 
     var tarjetas = visibles.map(function (p, i) {
-      var b = badgeDe(p), cuota = cuotaRef(p);
+      var b = badgeDe(p), cuota = cuotaRef(p), fav = esFav(p.codigo);
       return {
         codigo: p.codigo, titulo: p.titulo, ubicacion: ubicCorta(p),
+        nueva: p.nueva && p.estado !== "reservada", nFotos: p.fotos.length > 1 ? p.fotos.length + " fotos" : "",
+        reservada: p.estado === "reservada",
+        fotoEstilo: "width:100%;height:100%;object-fit:cover;display:block;transition:transform .7s cubic-bezier(.22,.61,.36,1)" + (p.estado === "reservada" ? ";filter:saturate(.55)" : ""),
+        esFav: fav ? "true" : "false", favFill: fav ? "currentColor" : "none", favAria: fav ? "Quitar de guardadas" : "Guardar",
+        favEstilo: "position:absolute;top:44px;right:11px;width:34px;height:34px;border-radius:50%;border:none;cursor:pointer;display:grid;place-items:center;transition:transform .18s,background .2s;background:" + (fav ? "var(--naranja)" : "rgba(255,255,255,.92)") + ";color:" + (fav ? "#fff" : "var(--verde)"),
+        guardar: function (ev) { ev.stopPropagation(); alternarFav(p.codigo); var b = ev.currentTarget; if (b) { b.classList.remove("late"); void b.offsetWidth; b.classList.add("late"); } },
         tipoLinea: p.tipo + (p.sinDireccion ? "" : " · " + p.zona),
         operacion: p.operacion,
         foto: p.fotos[0] || "", sinFoto: !p.fotos.length,
         badge: b.t,
-        badgeEstilo: "position:absolute;top:11px;left:11px;font-size:11px;font-weight:700;padding:5px 10px;border-radius:100px;color:#fff;background:" + b.bg,
+        badgeEstilo: "font-size:11px;font-weight:700;padding:5px 10px;border-radius:100px;color:#fff;background:" + b.bg,
         specs: [
           p.dorm > 0 ? p.dorm + " dorm." : null,
           p.banos > 0 ? p.banos + (p.banos === 1 ? " baño" : " baños") : null,
@@ -358,7 +426,7 @@
         cuota: cuota ? "desde " + cuota + "/mes" : "",
         wa: waLink(p),
         aria: p.tipo + " en " + p.zona + ", " + p.codigo,
-        delay: Math.min(i, 8) * 45 + "ms",
+        delay: Math.min(i, 9) * 40 + "ms",
         abrir: function () { abrirFicha(p.codigo); }
       };
     });
@@ -367,7 +435,21 @@
       return { n: conteoZona[z], nombre: z, desc: ZONA_DESC[z] || "", elegir: function () { set({ fZona: z, seg: "todo" }); scrollA("propiedades"); } };
     });
 
-    var hayFiltros = S.seg !== "todo" || S.fTipo || S.fZona || S.fDorm || S.fPrecio;
+    var hayFiltros = S.seg !== "todo" || S.fTipo || S.fZona || S.fDorm || S.fPrecio || S.fTexto.trim();
+    var PRECIO_TXT = { a: "Hasta USD 50.000", b: "USD 50.000 a 100.000", c: "USD 100.000 a 200.000", d: "Más de USD 200.000" };
+    var chipsActivos = [
+      S.fTexto.trim() ? { t: "“" + S.fTexto.trim() + "”", quitar: vaciarTexto } : null,
+      S.fTipo ? { t: S.fTipo, quitar: function () { set({ fTipo: "" }); } } : null,
+      S.fZona ? { t: S.fZona, quitar: function () { set({ fZona: "" }); } } : null,
+      S.fDorm ? { t: S.fDorm + " o más dorm.", quitar: function () { set({ fDorm: "" }); } } : null,
+      S.fPrecio ? { t: PRECIO_TXT[S.fPrecio], quitar: function () { set({ fPrecio: "" }); } } : null
+    ].filter(Boolean);
+
+    /* Recomendadas: parecidas a la última ficha que abrió; si no abrió
+       ninguna, las más nuevas. Nunca las que ya están en pantalla filtradas. */
+    var ultima = S.recientes.length ? prop(S.recientes[0]) : null;
+    var recomendadas = (ultima ? similaresDe(ultima) : ordenar(S.props).slice(0, 3)).filter(function (x) { return x.estado !== "reservada"; }).slice(0, 3);
+    var recomendadasTxt = ultima ? "Parecidas a " + ultima.titulo.toLowerCase() : "Las últimas que entraron";
     var segNombre = { venta: "en venta", terreno: "de terrenos", alquiler: "en alquiler" }[S.seg];
     var anticipo = S.calcPrecio * S.calcAnt / 100, saldo = S.calcPrecio - anticipo;
 
@@ -380,7 +462,7 @@
         mVariasFotos: fp.fotos.length > 1, mFotoCuenta: S.fotoN + " de " + fp.fotos.length,
         mThumbs: fp.fotos.map(function (src, i) {
           return {
-            src: src,
+            src: src, activa: i + 1 === S.fotoN ? "true" : "false",
             estilo: "width:78px;height:56px;flex:none;border-radius:8px;overflow:hidden;border:2px solid " + (i + 1 === S.fotoN ? "var(--naranja-claro)" : "transparent") + ";padding:0;cursor:pointer;background:none;opacity:" + (i + 1 === S.fotoN ? "1" : ".6"),
             ver: function () { set({ fotoN: i + 1 }); }
           };
@@ -392,6 +474,12 @@
         mPrecioSufijo: fp.operacion === "Alquiler" && fp.precio > 0 ? "por mes" : "",
         mCuota: cuota ? "Referencia " + cuota + " por mes con 30% de anticipo" : "",
         mWa: waLink(fp),
+        mEsFav: esFav(fp.codigo) ? "true" : "false", mFavFill: esFav(fp.codigo) ? "currentColor" : "none", mFavTxt: esFav(fp.codigo) ? "Guardada" : "Guardar",
+        mFavEstilo: "display:inline-flex;align-items:center;gap:8px;font-weight:600;font-size:14.5px;padding:12px 18px;border-radius:10px;cursor:pointer;min-height:46px;transition:background .2s,border-color .2s;border:1.5px solid " + (esFav(fp.codigo) ? "var(--naranja)" : "var(--borde-fuerte)") + ";background:" + (esFav(fp.codigo) ? "var(--naranja-suave)" : "#fff") + ";color:" + (esFav(fp.codigo) ? "var(--naranja-oscuro)" : "var(--verde)"),
+        guardarFicha: function () { alternarFav(fp.codigo); },
+        mEstadoEstilo: "margin:14px 0 0;font-size:13px;display:flex;gap:8px;align-items:center;color:" + (fp.estado === "reservada" ? "var(--naranja-oscuro)" : "var(--verde-claro)"),
+        mPuntoEstilo: "width:8px;height:8px;border-radius:50%;flex:none;" + (fp.estado === "reservada" ? "background:var(--naranja);box-shadow:0 0 0 3px var(--naranja-suave)" : "background:var(--ok);box-shadow:0 0 0 3px var(--ok-suave)"),
+        mEstadoTxt: fp.estado === "reservada" ? "Reservada: hay una oferta en curso. Podés dejar tus datos por si se libera." : "Disponible hoy. El estado sale del sistema en vivo: si se reserva, acá cambia.",
         mQuick: [
           { v: fp.dorm > 0 ? String(fp.dorm) : zonaCorta(fp), k: fp.dorm > 0 ? (fp.dorm === 1 ? "Dormitorio" : "Dormitorios") : "Zona" },
           { v: fp.banos > 0 ? String(fp.banos) : fp.operacion, k: fp.banos > 0 ? (fp.banos === 1 ? "Baño" : "Baños") : "Operación" },
@@ -457,8 +545,20 @@
       cambiarZona: function (ev) { set({ fZona: ev.target.value }); },
       cambiarDorm: function (ev) { set({ fDorm: ev.target.value }); },
       cambiarPrecio: function (ev) { set({ fPrecio: ev.target.value }); },
-      limpiarFiltros: function () { set({ seg: "todo", fTipo: "", fZona: "", fDorm: "", fPrecio: "" }); },
+      limpiarFiltros: function () { vaciarTexto(); set({ seg: "todo", fTipo: "", fZona: "", fDorm: "", fPrecio: "" }); },
       hayFiltros: hayFiltros,
+      chipsActivos: chipsActivos, hayChips: chipsActivos.length > 0,
+      fTexto: S.fTexto, escribirTexto: escribirTexto, hayTexto: !!S.fTexto,
+      limpiarTexto: function () { vaciarTexto(); var c = document.getElementById("fTexto"); if (c) c.focus(); },
+      fOrden: S.fOrden, cambiarOrden: function (ev) { set({ fOrden: ev.target.value }); },
+      disponibilidadTxt: S.cargando ? "" : (S.props.length - nReservadas) + " disponibles hoy" + (nReservadas ? " · " + nReservadas + (nReservadas === 1 ? " reservada" : " reservadas") : "") + " · actualizado desde el sistema",
+      recomendadas: recomendadas.map(function (x) {
+        return { foto: x.fotos[0] || "", zona: zonaCorta(x), titulo: x.titulo, tipo: x.tipo + " · " + x.operacion,
+          precio: x.precio > 0 ? money(x.moneda, x.precio) + (x.operacion === "Alquiler" ? " /mes" : "") : "Consultar",
+          abrir: function () { abrirFicha(x.codigo); } };
+      }),
+      hayRecomendadas: !S.cargando && recomendadas.length > 0 && visibles.length > 0,
+      recomendadasTxt: recomendadasTxt,
       resultadoTxt: S.cargando ? "" : (visibles.length === 1 ? "1 propiedad" : visibles.length + " propiedades"),
       cargando: S.cargando, modoMuestra: S.muestra,
       tarjetas: tarjetas,
@@ -499,7 +599,7 @@
       enviarConsulta: enviarForm,
       notaForm: S.formError || (S.enviando ? "Enviando…" : "Sin compromiso. Usamos tus datos solo para responderte."),
       estiloNotaForm: "font-size:12px;text-align:center;margin:11px 0 0;" + (S.formError ? "color:var(--alerta);font-weight:600" : "color:var(--gris)"),
-      okMsg: S.okMsg, ctxConsulta: S.ctx,
+      okMsg: S.okMsg, ctxConsulta: S.ctx, enviando: S.enviando,
 
       // Embebido en la vista previa del CRM no hay cartel: ahí no hay nada
       // que consentir porque no se mide nada (ver medicion.js).
@@ -548,6 +648,20 @@
     window.addEventListener("resize", function () {
       set({ ancho: window.innerWidth, menuOpen: window.innerWidth > 1060 ? false : S.menuOpen });
     });
+    /* Deslizar la foto de la ficha con el dedo. */
+    var t0 = null;
+    document.addEventListener("touchstart", function (ev) {
+      if (!S.ficha || !ev.target.closest || !ev.target.closest("#fichaFotoCaja")) { t0 = null; return; }
+      t0 = { x: ev.touches[0].clientX, y: ev.touches[0].clientY, t: Date.now() };
+    }, { passive: true });
+    document.addEventListener("touchend", function (ev) {
+      if (!t0 || !S.ficha) return;
+      var dx = ev.changedTouches[0].clientX - t0.x, dy = ev.changedTouches[0].clientY - t0.y;
+      t0 = null;
+      if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) * 1.5) moverFoto(dx < 0 ? 1 : -1);
+    }, { passive: true });
+    /* El reel de la portada pide un segmento ("Ver alquileres"). */
+    document.addEventListener("molins:segmento", function (ev) { set({ seg: ev.detail, fTipo: "", fZona: "", fDorm: "", fPrecio: "", fTexto: "" }); });
     document.addEventListener("keydown", function (ev) {
       if (!S.ficha) return;
       if (ev.key === "Escape") cerrarFicha();
