@@ -56,6 +56,9 @@
     if (b) b.textContent = r.t;
   }
   if (prox) prox.addEventListener("click", function () { ir((i + 1) % REEL.length); });
+  /* En el celular no hay botón: se toca la foto y se abre la ficha. */
+  raiz.addEventListener("click", function () { if (!matchMedia("(max-width:899px)").matches) return; var d = REEL[i]; if (datos[d.codigo]) document.dispatchEvent(new CustomEvent("molins:ficha", { detail: d.codigo })); else location.href = "?ficha=" + encodeURIComponent(d.codigo); });
+  if (matchMedia("(max-width:899px)").matches) { raiz.removeAttribute("aria-hidden"); raiz.setAttribute("role", "button"); raiz.setAttribute("aria-label", "Ver la ficha de esta propiedad"); }
   if (proxM) proxM.addEventListener("click", function () { ir((i + 1) % REEL.length); });
   var puntos = pie ? pie.querySelector(".reel__puntos") : null;
   var quieto = matchMedia("(prefers-reduced-motion:reduce)").matches;

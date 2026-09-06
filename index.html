@@ -1019,6 +1019,37 @@
     .panel__cab{position:relative;padding-top:16px;touch-action:none}
     .previa__caja::before{content:"";position:absolute;left:50%;top:8px;z-index:4;width:38px;height:4px;border-radius:4px;background:rgba(255,255,255,.55);transform:translateX(-50%)}
   }
+  /* ══ Menú fluido y portada compacta (celular) ══ */
+  .barra__hamb{position:relative;z-index:2}
+  .barra__hamb .barra__linea{transition:transform .35s cubic-bezier(.2,.8,.2,1),opacity .2s,background .3s;transform-origin:center}
+  .barra__hamb[aria-expanded="true"] .barra__linea{background:var(--tinta)}
+  .barra__hamb[aria-expanded="true"] .barra__linea:nth-child(1){transform:translateY(7px) rotate(45deg)}
+  .barra__hamb[aria-expanded="true"] .barra__linea:nth-child(2){opacity:0;transform:scaleX(.2)}
+  .barra__hamb[aria-expanded="true"] .barra__linea:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+  html.con-menu .barra{transform:none!important;background:transparent!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;box-shadow:none!important;border-color:transparent!important}
+  html.con-menu .barra::before{opacity:0}
+  html.con-menu .barra{z-index:310}
+  html.con-menu .barra .marca b{color:var(--tinta);text-shadow:none}html.con-menu .barra .marca small{color:var(--gris)}
+  html.con-menu .barra .marca{transform:none!important}
+  .menu__cab{display:none}
+  .menu{z-index:290;padding-top:76px;opacity:0;visibility:hidden;transform:translateY(-10px);transition:opacity .28s ease,transform .38s cubic-bezier(.2,.8,.2,1),visibility 0s .38s;animation:none}
+  .menu.es-abierto{opacity:1;visibility:visible;transform:none;transition:opacity .28s ease,transform .38s cubic-bezier(.2,.8,.2,1),visibility 0s}
+  .menu__item{opacity:1;transform:none;animation:none;transition:opacity .35s ease,transform .45s cubic-bezier(.2,.8,.2,1);transition-delay:0s}
+  .menu:not(.es-abierto) .menu__item{opacity:0;transform:translateY(14px)}
+  .menu.es-abierto .menu__item{transition-delay:calc(var(--i,0) * 55ms + 60ms)}
+  .menu__pie{animation:none;opacity:1;transition:opacity .35s ease .25s,transform .45s cubic-bezier(.2,.8,.2,1) .25s}
+  .menu:not(.es-abierto) .menu__pie{opacity:0;transform:translateY(14px)}
+  @media (max-width:899px){
+    .reel{height:min(58svh,500px);min-height:380px}
+    .reel__img{object-position:50% 10%;cursor:pointer}
+    .reel::after{height:58%}
+    .portada__texto{padding-bottom:40px}
+    .reel__cta,.reel__prox-m{display:none}
+    .reel__t{font-size:clamp(28px,7.8vw,36px)}
+    .reel__s{margin-top:6px;font-size:13.5px}
+    .reel__mando{margin-top:12px}
+    .buscador{margin-top:-30px}
+  }
 </style>
 
 <title>Francisco Molins — Real Estate · Salta</title>
@@ -1064,7 +1095,7 @@
     document.head.appendChild(cf);
   }
 </script>
-<link rel="stylesheet" href="src/estilos.css?v=20260907b">
+<link rel="stylesheet" href="src/estilos.css?v=20260907d">
 </head>
 <body>
 
@@ -1096,7 +1127,7 @@
       </nav>
     </div>
     <div data-si="esMovil" hidden>
-      <button data-click="alternarMenu" aria-label="Abrir menú" style="background:none;border:none;cursor:pointer;padding:10px;display:flex;flex-direction:column;gap:5px">
+      <button data-click="alternarMenu" class="barra__hamb" data-attr-aria-expanded="menuAria" aria-label="Abrir o cerrar el menú" style="background:none;border:none;cursor:pointer;padding:10px;display:flex;flex-direction:column;gap:5px">
         <span class="barra__linea"></span>
         <span class="barra__linea"></span>
         <span class="barra__linea"></span>
@@ -1105,11 +1136,10 @@
   </div>
 </header>
 
-<div data-si="menuAbierto" hidden>
-  <div class="menu">
+<div data-si="esMovil" hidden>
+  <div class="menu" data-attr-class="menuClase" data-attr-aria-hidden="menuCerradoAria">
     <div class="menu__cab">
       <div class="menu__marca"><img loading="lazy" src="img/logo-molins.png" alt="" /><b>Francisco Molins</b></div>
-      <button data-click="alternarMenu" aria-label="Cerrar el menú" class="menu__x btn-anim"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" style="width:18px;height:18px"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
     </div>
     <nav class="menu__nav">
       <a class="menu__item" href="#propiedades" data-click="cerrarMenu" style="--i:0">Propiedades<i>→</i></a>
@@ -2000,9 +2030,9 @@
 </div>
 
 
-<script src="src/pintor.js?v=20260907b"></script>
-<script src="src/medicion.js?v=20260907b"></script>
-<script src="src/app.js?v=20260907b"></script>
-<script src="src/reel.js?v=20260907b"></script>
+<script src="src/pintor.js?v=20260907d"></script>
+<script src="src/medicion.js?v=20260907d"></script>
+<script src="src/app.js?v=20260907d"></script>
+<script src="src/reel.js?v=20260907d"></script>
 </body>
 </html>

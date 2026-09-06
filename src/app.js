@@ -108,6 +108,7 @@
     window.Pintor.pintar(vista());
     var capa = !!S.ficha || S.vista === "buscar" || !!S.fichaPendiente;
     document.documentElement.classList.toggle("con-capa", capa);
+    document.documentElement.classList.toggle("con-menu", S.menuOpen && S.ancho <= 1060);
     document.body.style.overflow = (capa || S.vista !== "inicio" || S.torrePrevia) ? "hidden" : "";
     if (S.ficha) vigilarFicha();
     if (S.vista === "contacto" || S.vista === "preguntas") vigilarPaneles();
@@ -788,7 +789,7 @@
 
     var v = {
       esMovil: esMovil, noEsMovil: !esMovil,
-      menuAbierto: S.menuOpen && esMovil,
+      menuAbierto: S.menuOpen && esMovil, menuClase: "menu" + (S.menuOpen && esMovil ? " es-abierto" : ""), menuAria: S.menuOpen && esMovil ? "true" : "false", menuCerradoAria: S.menuOpen && esMovil ? "false" : "true",
       alternarMenu: function () { set({ menuOpen: !S.menuOpen }); },
       cerrarMenu: function () { set({ menuOpen: false, menuProy: false }); },
       menuProy: S.menuProy, menuProyAria: S.menuProy ? "true" : "false", alternarMenuProy: function () { set({ menuProy: !S.menuProy }); },
