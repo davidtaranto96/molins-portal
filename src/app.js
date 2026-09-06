@@ -41,7 +41,7 @@
   var TEL = "5493874153669";
 
   var TIPO_LEGIBLE = { CASA: "Casa", DEPARTAMENTO: "Departamento", DUPLEX: "Dúplex", TERRENO: "Terreno", LOCAL: "Local comercial", OFICINA: "Oficina", GALPON: "Galpón", FINCA: "Finca", COCHERA: "Cochera", OTRO: "Propiedad" };
-  var ZONA_DE_BARRIO = { "Centro": "Centro", "El Encón": "El Encón · Rosario de Lerma", "Rosario de Lerma": "El Encón · Rosario de Lerma", "San Lorenzo": "San Lorenzo", "Villa San Lorenzo": "San Lorenzo", "San Lorenzo Chico": "San Lorenzo", "Vaqueros": "Vaqueros", "La Caldera": "Vaqueros", "Cerrillos": "Cerrillos", "Chicoana": "Chicoana", "El Portezuelo": "El Portezuelo", "San Antonio": "San Antonio" };
+  var ZONA_DE_BARRIO = { "Grand Bourg": "Grand Bourg", "Tres Cerritos": "Tres Cerritos", "Centro": "Centro", "El Encón": "El Encón · Rosario de Lerma", "Rosario de Lerma": "El Encón · Rosario de Lerma", "San Lorenzo": "San Lorenzo", "Villa San Lorenzo": "San Lorenzo", "San Lorenzo Chico": "San Lorenzo", "Vaqueros": "Vaqueros", "La Caldera": "Vaqueros", "Cerrillos": "Cerrillos", "Chicoana": "Chicoana", "El Portezuelo": "El Portezuelo", "San Antonio": "San Antonio" };
   var ZONA_DESC = {
     "Centro": "El casco céntrico de Salta. Departamentos para vivir o alquilar, locales sobre calle y casas antiguas de buena superficie.",
     "El Encón · Rosario de Lerma": "Al oeste, camino a Campo Quijano. Club de campo, fincas y lotes grandes con parque.",
@@ -50,14 +50,16 @@
     "Cerrillos": "Valle de Lerma, al sur. Superficies grandes y suelo productivo.",
     "Chicoana": "Valle de Lerma, camino a Cafayate. Terreno en zona de fincas.",
     "El Portezuelo": "Sobre la ladera del cerro, con vista alta a la ciudad.",
+    "Grand Bourg": "Barrio residencial al este de la ciudad, a pocas cuadras de la Casa de Gobierno.",
+    "Tres Cerritos": "Barrio residencial al este, al pie de los cerros.",
     "San Antonio": "Barrio residencial consolidado, cerca de las avenidas de acceso.",
     "Otras zonas de Salta": "Casas y terrenos en distintos puntos de la ciudad. Consultá por ubicación exacta."
   };
-  var ZONA_ORDEN = ["Centro", "El Encón · Rosario de Lerma", "San Lorenzo", "Vaqueros", "Cerrillos", "Chicoana", "El Portezuelo", "San Antonio", "Otras zonas de Salta"];
+  var ZONA_ORDEN = ["Centro", "Grand Bourg", "Tres Cerritos", "El Encón · Rosario de Lerma", "San Lorenzo", "Vaqueros", "Cerrillos", "Chicoana", "El Portezuelo", "San Antonio", "Otras zonas de Salta"];
   /* El punto es el de la ZONA, no el de la propiedad, y es a propósito: la
      dirección exacta se pasa al coordinar la visita. El portal en vivo hacía
      lo mismo aunque el API devuelva `geo` con la coordenada fina. */
-  var ZONA_GEO = { "Centro": [-24.7889, -65.4103], "San Lorenzo": [-24.7338, -65.4859], "Vaqueros": [-24.6927, -65.4106], "Cerrillos": [-24.8996, -65.4867], "El Portezuelo": [-24.7998, -65.3838], "San Antonio": [-24.8035, -65.4005], "Chicoana": [-25.1078, -65.5375], "El Encón · Rosario de Lerma": [-24.9847, -65.5806] };
+  var ZONA_GEO = { "Grand Bourg": [-24.7669, -65.4256], "Tres Cerritos": [-24.7716, -65.3929], "Centro": [-24.7889, -65.4103], "San Lorenzo": [-24.7338, -65.4859], "Vaqueros": [-24.6927, -65.4106], "Cerrillos": [-24.8996, -65.4867], "El Portezuelo": [-24.7998, -65.3838], "San Antonio": [-24.8035, -65.4005], "Chicoana": [-25.1078, -65.5375], "El Encón · Rosario de Lerma": [-24.9847, -65.5806] };
 
   var S = {
     props: [], cargando: true, muestra: false,
@@ -156,6 +158,7 @@
     p.antiguedad = x.antiguedad; p.expensas = x.expensas || 0; p.caracteristicas = x.caracteristicas || [];
     p.estado = x.estado === "RESERVADA" ? "reservada" : "activa";
     p.descripcion = x.descripcion || "";
+    p.geo = x.geo && x.geo.lat && x.geo.lng ? [Math.round(x.geo.lat * 100) / 100, Math.round(x.geo.lng * 100) / 100] : null;
     p.zona = ZONA_DE_BARRIO[p.barrio] || (p.barrio === "Centro" ? "Centro" : "Otras zonas de Salta");
     p.titulo = p.sinDireccion ? x.titulo : tidy(x.direccion);
     p.fotos = (x.fotos || []).map(function (u) { return u.indexOf("http") === 0 ? u : API + u; });
@@ -413,7 +416,7 @@
   function montarMapa() {
     var p = prop(S.ficha), cont = document.getElementById("fichaMapa");
     if (!p || !cont || !window.L) return;
-    var geo = ZONA_GEO[p.zona];
+    var geo = ZONA_GEO[p.zona] || p.geo;
     if (!geo) return;
     if (mapa) { try { mapa.remove(); } catch (e) {} mapa = null; }
     mapa = L.map(cont, { scrollWheelZoom: false, dragging: S.ancho > 768 }).setView(geo, 14);
@@ -624,7 +627,7 @@
     var fp = S.ficha ? prop(S.ficha) : null;
     var ficha = {};
     if (fp) {
-      var b = badgeDe(fp) || { t: "Disponible", bg: "var(--ok-fuerte)" }, geo = ZONA_GEO[fp.zona], cuota = cuotaRef(fp), sim = similaresDe(fp, S.ancho <= 699 ? 6 : 8);
+      var b = badgeDe(fp) || { t: "Disponible", bg: "var(--ok-fuerte)" }, geo = ZONA_GEO[fp.zona] || fp.geo, cuota = cuotaRef(fp), sim = similaresDe(fp, S.ancho <= 699 ? 6 : 8);
       /* Para moverse sin cerrar: la lista es la que está filtrada en pantalla
          (o toda la cartera si la ficha vino por enlace y no está en ella). */
       var lista = visibles.some(function (x) { return x.codigo === fp.codigo; }) ? visibles : S.props;
@@ -834,6 +837,11 @@
 
       vistaContacto: S.vista === "contacto", vistaPreguntas: S.vista === "preguntas",
       cerrarVista: cerrarVista, abrirContacto: function () { abrirVista("contacto"); }, abrirPreguntas: function () { abrirVista("preguntas"); },
+      nGuardadas: S.favs.length ? String(S.favs.length) : "",
+      guardadasActiva: S.seg === "guardadas" ? "true" : "false",
+      guardadasClase: "buscador__fav btn-anim" + (S.seg === "guardadas" ? " es-activa" : ""),
+      guardadasFill: S.seg === "guardadas" ? "currentColor" : "none",
+      verGuardadas: function () { if (!S.favs.length) { avisar("Todavía no guardaste ninguna: tocá el corazón de una propiedad."); return; } set({ seg: S.seg === "guardadas" ? "todo" : "guardadas" }); },
       abrirBuscar: function () { abrirVista("buscar"); setTimeout(function () { var c = document.getElementById("fTexto2"); if (c && S.ancho > 900) c.focus(); }, 350); },
       vistaBuscar: S.vista === "buscar",
       cerrarVistaFondo: function (ev) { if (ev.target === ev.currentTarget) cerrarVista(); },

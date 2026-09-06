@@ -40,6 +40,16 @@
   if (!raiz) return;
   var capas = [raiz.querySelector(".reel__capa--a"), raiz.querySelector(".reel__capa--b")];
   var pie = document.querySelector(".reel__pie");
+  /* Al lado de la foto asoma la siguiente propiedad; tocarla adelanta. */
+  var prox = document.querySelector(".reel__prox");
+  function pintarProx(n) {
+    if (!prox) return;
+    var d = REEL[(n + 1) % REEL.length], r = rotulo(d);
+    var im = prox.querySelector(".reel__prox-foto"), b = prox.querySelector("b");
+    if (im && im.getAttribute("src") !== d.img) { im.style.opacity = "0"; im.onload = function () { im.style.transition = "opacity .5s"; im.style.opacity = "1"; }; im.src = d.img; }
+    if (b) b.textContent = r.t;
+  }
+  if (prox) prox.addEventListener("click", function () { ir((i + 1) % REEL.length); });
   var puntos = pie ? pie.querySelector(".reel__puntos") : null;
   var quieto = matchMedia("(prefers-reduced-motion:reduce)").matches;
 
@@ -117,7 +127,7 @@
       activa = 1 - activa;
       i = n;
       /* El rótulo cambia cuando la foto nueva ya se impuso, no al arrancar el fundido. */
-      setTimeout(function () { if (mi === serie) pintarPie(d, n); }, 550);
+      setTimeout(function () { if (mi === serie) { pintarPie(d, n); pintarProx(n); } }, 550);
       progreso(n, DUR);
       programar(DUR);
       setTimeout(function () { if (mi === serie) while (sale.firstChild) sale.removeChild(sale.firstChild); }, FUNDIDO + 100);
