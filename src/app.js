@@ -1055,16 +1055,7 @@
           if (pieEl) { pieEl.style.opacity = op; pieEl.style.transform = "translate3d(" + (mx * 7).toFixed(1) + "px," + (y * -0.06 + my * 5).toFixed(1) + "px,0)"; }
           if (marcaEl) marcaEl.style.opacity = op;
         }
-        if (innerWidth >= 900) {
-          var enColaM = false;
-          portada.addEventListener("mousemove", function (ev) {
-            var r = portada.getBoundingClientRect();
-            mx = ((ev.clientX - r.left) / r.width - 0.5) * 2; my = ((ev.clientY - r.top) / r.height - 0.5) * 2;
-            if (enColaM) return; enColaM = true;
-            requestAnimationFrame(function () { enColaM = false; paralajePortada(); });
-          });
-          portada.addEventListener("mouseleave", function () { mx = 0; my = 0; paralajePortada(); });
-        }
+        /* El seguimiento del mouse se sacó (6/9): mareaba. Queda el paralaje del scroll. */
         addEventListener("scroll", function () { if (enColaH) return; enColaH = true; requestAnimationFrame(function () { enColaH = false; paralajePortada(); }); }, { passive: true });
         paralajePortada();
       }
