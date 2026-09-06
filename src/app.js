@@ -106,7 +106,7 @@
     set({ vista: v, menuOpen: false });
     if (window.history && history.replaceState) try { history.replaceState(null, "", location.pathname + location.search + "#" + v); } catch (e) {}
     if (window.VISITAS) VISITAS.anotar("pagina", location.pathname + "#" + v);
-    setTimeout(function () { var p = document.querySelector(".panel__scroll"); if (p) p.scrollTop = 0; }, 30);
+    setTimeout(function () { var p = document.querySelector(".panel__caja, .buscar__scroll"); if (p) p.scrollTop = 0; }, 30);
   }
   function cerrarVista() {
     set({ vista: "inicio" });
@@ -365,7 +365,7 @@
       var listo = function () {
         var a = f.getBoundingClientRect(); if (!a.width) return;
         var sx = desde.width / a.width, sy = desde.height / a.height, dx = desde.left - a.left, dy = desde.top - a.top;
-        f.animate([{ transform: "translate(" + dx + "px," + dy + "px) scale(" + sx + "," + sy + ")", borderRadius: "10px" }, { transform: "none", borderRadius: "8px" }], { duration: 460, easing: "cubic-bezier(.2,.8,.2,1)" });
+        f.animate([{ transform: "translate(" + dx + "px," + dy + "px) scale(" + sx + "," + sy + ")", borderRadius: "10px" }, { transform: "none", borderRadius: "8px" }], { duration: 360, easing: "cubic-bezier(.2,.8,.2,1)" });
       };
       if (f.complete && f.naturalWidth) listo(); else f.addEventListener("load", listo, { once: true });
     });
@@ -472,7 +472,7 @@
   var relojTexto = null;
   /* El pintor no toca un campo que tiene el foco (le movería el cursor), así
      que al vaciar el texto desde un chip hay que vaciar el campo a mano. */
-  function vaciarTexto() { clearTimeout(relojTexto); var c = document.getElementById("fTexto"); if (c) c.value = ""; set({ fTexto: "" }); }
+  function vaciarTexto() { clearTimeout(relojTexto); ["fTexto", "fTexto2"].forEach(function (id) { var c = document.getElementById(id); if (c) c.value = ""; }); set({ fTexto: "" }); }
   function escribirTexto(ev) {
     var v = ev.target.value;
     clearTimeout(relojTexto);
@@ -813,6 +813,9 @@
 
       vistaContacto: S.vista === "contacto", vistaPreguntas: S.vista === "preguntas",
       cerrarVista: cerrarVista, abrirContacto: function () { abrirVista("contacto"); }, abrirPreguntas: function () { abrirVista("preguntas"); },
+      abrirBuscar: function () { abrirVista("buscar"); setTimeout(function () { var c = document.getElementById("fTexto2"); if (c && S.ancho > 900) c.focus(); }, 350); },
+      vistaBuscar: S.vista === "buscar",
+      cerrarVistaFondo: function (ev) { if (ev.target === ev.currentTarget) cerrarVista(); },
       toast: !!S.toast, toastTxt: S.toast,
       fichaAbierta: !!fp,
       cerrarFicha: cerrarFicha,
@@ -909,8 +912,8 @@
       var x = ev.clientX;
       tira.querySelectorAll("button").forEach(function (b) {
         var r = b.getBoundingClientRect(), d = Math.abs(x - (r.left + r.width / 2));
-        var k = Math.max(0, 1 - d / 150), esc = 1 + 0.6 * k * k;
-        b.style.transform = "scale(" + esc.toFixed(3) + ") translateY(" + (-(esc - 1) * 6).toFixed(1) + "px)";
+        var k = Math.max(0, 1 - d / 190), esc = 1 + 1.05 * k * k;
+        b.style.transform = "scale(" + esc.toFixed(3) + ") translateY(" + (-(esc - 1) * 14).toFixed(1) + "px)";
         b.style.zIndex = k > 0 ? "2" : "";
       });
     });
@@ -950,6 +953,8 @@
         var y = window.scrollY, dy = y - yAntes; yAntes = y;
         var alto = portadaEl ? portadaEl.offsetHeight : 400;
         if (cab) cab.classList.toggle("es-solida", y > alto - (cab.offsetHeight || 64));
+        var proy = document.getElementById("proyectos");
+        busc.classList.toggle("es-fuera", !!proy && proy.getBoundingClientRect().top < innerHeight * 0.45);
         if (quieto || y < 120) { raizH.classList.remove("es-bajando"); acum = 0; return; }
         if (document.activeElement && busc.contains(document.activeElement)) { raizH.classList.remove("es-bajando"); return; }
         acum = (dy > 0) === (acum > 0) ? acum + dy : dy;

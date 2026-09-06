@@ -109,6 +109,9 @@
       var entra = capas[1 - activa], sale = capas[activa];
       while (entra.firstChild) entra.removeChild(entra.firstChild);
       entra.appendChild(media);
+      /* El marco toma el ancho exacto de la proporción de la foto: entera, sin recortes. */
+      var ar = im.naturalWidth && im.naturalHeight ? im.naturalWidth / im.naturalHeight : 1.333;
+      ajustarAncho(ar);
       entra.classList.add("es-visible");
       sale.classList.remove("es-visible");
       activa = 1 - activa;
@@ -124,6 +127,18 @@
     else { im.onload = listo; im.onerror = function () { if (mi === serie) { enVuelo = false; programar(800); } }; }
   }
 
+  var arActual = 1.333;
+  function ajustarAncho(ar) {
+    arActual = ar || arActual;
+    raiz.style.setProperty("--ar", arActual.toFixed(4));
+    if (matchMedia("(max-width:899px)").matches) { raiz.style.width = ""; return; }
+    var alto = raiz.parentNode ? raiz.parentNode.offsetHeight : raiz.offsetHeight;
+    /* La portada arranca oculta hasta que el pintor la muestra: si todavía no
+       tiene alto, se vuelve a intentar en el próximo cuadro. */
+    if (!alto) { requestAnimationFrame(function () { ajustarAncho(); }); return; }
+    raiz.style.width = Math.round(alto * arActual) + "px";
+  }
+  addEventListener("resize", function () { ajustarAncho(); });
   function programar(ms) {
     clearTimeout(reloj);
     if (quieto) return;
@@ -164,6 +179,8 @@
     pintarPie(REEL[i], i);
   });
 
-  mostrar(0);
+  function arrancar() { requestAnimationFrame(function () { mostrar(0); }); }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", arrancar); else arrancar();
+  document.addEventListener("molins:propiedades", function () { ajustarAncho(); });
   window.addEventListener("pagehide", function () { vivo = false; clearTimeout(reloj); });
 })();
