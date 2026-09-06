@@ -110,6 +110,7 @@
     document.documentElement.classList.toggle("con-capa", capa);
     document.body.style.overflow = (capa || S.vista !== "inicio" || S.torrePrevia) ? "hidden" : "";
     if (S.ficha) vigilarFicha();
+    if (S.vista === "contacto" || S.vista === "preguntas") vigilarPaneles();
     if (window.observarTarjetas) observarTarjetas();
     if (window.observarSecciones) observarSecciones();
   }
@@ -370,6 +371,7 @@
     caja.addEventListener("scroll", function () {
       var m = document.getElementById("fichaFotoCaja"), lim = (m ? m.offsetHeight : 300) - 72;
       f.classList.toggle("es-baja", caja.scrollTop > lim);
+      if (m) { if (innerWidth < 900) cubrir(m, caja.scrollTop, m.offsetHeight); else { m.style.transform = ""; m.style.filter = ""; } }
     }, { passive: true });
   }
   function cerrarFicha() {
@@ -458,6 +460,30 @@
     if (!m) return;
     var cod = decodeURIComponent(m[1]);
     if (prop(cod)) abrirFicha(cod); else { urlFicha(null); set({ fichaPendiente: null }); }
+  }
+  /* Cuánto tapó la hoja al bloque de arriba (0 a 1): el de arriba se encoge y se oscurece. */
+  function cubrir(el, tapado, visto) {
+    var k = Math.min(1, Math.max(0, tapado / Math.max(1, visto)));
+    el.style.transform = "scale(" + (1 - 0.06 * k).toFixed(3) + ")";
+    el.style.filter = "brightness(" + (1 - 0.4 * k).toFixed(3) + ")";
+    el.style.borderRadius = (k * 24).toFixed(1) + "px";
+  }
+  /* Preguntas y Contacto en el celular: la lista tapa la introducción, la tarjeta oscura tapa el formulario. */
+  function vigilarPaneles() {
+    document.querySelectorAll(".panel__cuerpo").forEach(function (c) {
+      var pares = [[c.querySelector(".preguntas__intro"), c.querySelector(".preguntas__lista")], [c.querySelector(".contacto__form"), c.querySelector(".contacto__izq")]].filter(function (p) { return p[0] && p[1]; });
+      if (!pares.length) return;
+      var medir = function () { pares.forEach(function (p) { p[0].style.top = Math.min(0, c.clientHeight - p[0].offsetHeight) + "px"; }); };
+      var mover = function () {
+        if (innerWidth >= 900) { pares.forEach(function (p) { p[0].style.transform = ""; p[0].style.filter = ""; p[0].style.borderRadius = ""; }); return; }
+        pares.forEach(function (p) {
+          var ra = p[1].getBoundingClientRect(), rb = p[0].getBoundingClientRect();
+          cubrir(p[0], rb.bottom - ra.top, Math.min(rb.height, c.clientHeight));
+        });
+      };
+      if (!c.__vigilado) { c.__vigilado = true; c.addEventListener("scroll", mover, { passive: true }); }
+      setTimeout(function () { medir(); mover(); }, 60);
+    });
   }
   function cerrarPrevia() { set({ torrePrevia: null }); }
   function compartir() { var p = prop(S.ficha); if (p) compartirCodigo(p.codigo, p); }
@@ -1220,7 +1246,7 @@
     } else bloques.forEach(function (b) { b.classList.add("es-visto"); tipear(b.querySelector(".editorial__bajada")); });
     if (!quieto && bloques.length) {
       var enColaP = false;
-      var torreEl = document.querySelector(".bloque--torre"), airesEl = document.querySelector(".bloque--aires"), cierreEl = document.querySelector("main .cierre");
+      var torreEl = document.querySelector(".bloque--torre"), airesEl = document.querySelector(".bloque--aires"), cierreEl = document.querySelector("main .cierre"), editorialEl = document.querySelector(".editorial-caja");
       function paralaje() {
         bloques.forEach(function (b) {
           var f = b.querySelector(".bloque__fondo"); if (!f) return;
@@ -1232,7 +1258,7 @@
         /* Aires se apila sobre La Torre, y la hoja de contacto sobre Aires: mientras lo cubre,
            el de abajo se encoge y se oscurece. Vale en todos los anchos: en el celular el
            bloque es más alto que la pantalla, así que se mide contra lo que se ve de él. */
-        [[torreEl, airesEl], [airesEl, cierreEl]].forEach(function (par) {
+        [[editorialEl, torreEl], [torreEl, airesEl], [airesEl, cierreEl]].forEach(function (par) {
           var abajo = par[0], arriba = par[1]; if (!abajo || !arriba) return;
           var ra = arriba.getBoundingClientRect(), rb = abajo.getBoundingClientRect();
           var visto = Math.max(1, Math.min(rb.height, innerHeight));

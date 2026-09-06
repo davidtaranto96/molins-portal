@@ -981,6 +981,31 @@
     #proyectos{padding-top:44px!important}
   }
   @media (max-width:899px) and (prefers-reduced-motion:reduce){.menu__item,.menu__pie,.menu__sub{animation:none;opacity:1;transform:none}}
+
+  /* ══ Ronda catorce: más apilado ══ */
+  .editorial-caja{position:sticky;top:0;z-index:0;background:var(--hueso);padding-bottom:28px;transform-origin:50% 100%;will-change:transform}
+  #proyectos .bloque--torre{z-index:1}
+  .mosaico__lugar{display:none}
+  @media (max-width:899px){
+    .editorial__titulo{font-size:clamp(28px,9.4vw,44px);letter-spacing:-.01em}
+    .editorial-caja{padding-bottom:22px}
+    /* la ficha: la hoja del detalle tapa la foto */
+    .ficha__mosaico{position:sticky;top:0;z-index:1;transform-origin:50% 0;will-change:transform,filter}
+    .ficha__cuerpo{position:relative;z-index:2;margin-top:-22px}
+    .mosaico__lugar{display:inline-flex;align-items:center;gap:6px;position:absolute;left:12px;top:60px;z-index:3;font-size:12px;font-weight:600;color:#fff;background:rgba(9,30,31,.55);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);padding:6px 11px 6px 9px;border-radius:999px}
+    .mosaico__contador{bottom:44px}
+    .mosaico__todas{bottom:42px}
+    .mosaico__estado{bottom:86px}
+    .ficha__principal > span:first-child{display:none!important}
+    .ficha__principal > h3{margin-top:0!important}
+    /* Preguntas y Contacto: lo de abajo tapa lo de arriba */
+    .panel .preguntas__intro{position:sticky;top:0;z-index:0;background:var(--hueso);padding-bottom:14px;transform-origin:50% 100%;will-change:transform,filter}
+    .panel .preguntas__lista{position:relative;z-index:1;background:var(--hueso);border-radius:22px 22px 0 0;padding-top:14px;box-shadow:0 -18px 40px rgba(9,30,31,.12)}
+    .panel .preguntas{padding-bottom:40px}
+    .panel .contacto__caja{overflow:visible}
+    .panel .contacto__form{position:sticky;top:0;z-index:0;transform-origin:50% 100%;will-change:transform,filter}
+    .panel .contacto__izq{position:relative;z-index:1;box-shadow:0 -24px 60px rgba(0,0,0,.3)}
+  }
 </style>
 
 <title>Francisco Molins — Real Estate · Salta</title>
@@ -1026,7 +1051,7 @@
     document.head.appendChild(cf);
   }
 </script>
-<link rel="stylesheet" href="src/estilos.css?v=20260906v">
+<link rel="stylesheet" href="src/estilos.css?v=20260906w">
 </head>
 <body>
 
@@ -1353,13 +1378,13 @@
 <!-- ══ EMPRENDIMIENTOS ══ -->
 <div id="emprendimientos"></div>
 <section id="proyectos" data-screen-label="Proyectos" style="padding:clamp(52px,6.5vw,92px) 0 0">
-  <div style="max-width:1400px;margin:0 auto;padding:0 20px 0">
+  <div class="editorial-caja"><div style="max-width:1400px;margin:0 auto;padding:0 20px 0">
     <div class="editorial">
       <span class="editorial__sobre">Dos desarrollos que comercializa Molins</span>
       <h2 class="editorial__titulo" aria-label="Oportunidades"><span class="editorial__mascara"><span class="editorial__palabra">Oportunidades</span></span></h2>
       <p class="editorial__bajada">Se compra en pozo, con plan largo y directo con el desarrollo. Los números salen del sistema en vivo.</p>
     </div>
-  </div>
+  </div></div>
 
   <!-- La Torre: el bloque con su paleta (terracota sobre noche, crema) -->
   <article class="bloque bloque--torre" data-screen-label="Bloque La Torre">
@@ -1829,6 +1854,7 @@
         <div data-si="mSinFoto" hidden><div class="mosaico__sinfoto">fotos en la consulta</div></div>
         <span data-si="mHayBadge" hidden><span class="mosaico__estado" data-estilo="mBadgeEstilo"><span data-txt="mBadge"></span></span></span>
         <span data-si="mVariasFotos" hidden><span class="mosaico__contador" data-txt="mFotoCuenta"></span></span>
+        <span class="mosaico__lugar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path><circle cx="12" cy="10" r="3"></circle></svg><span data-txt="mUbicacion"></span></span>
       </div>
       <div class="ficha__cuerpo">
       <div class="ficha__principal">
@@ -1961,9 +1987,9 @@
 </div>
 
 
-<script src="src/pintor.js?v=20260906v"></script>
-<script src="src/medicion.js?v=20260906v"></script>
-<script src="src/app.js?v=20260906v"></script>
-<script src="src/reel.js?v=20260906v"></script>
+<script src="src/pintor.js?v=20260906w"></script>
+<script src="src/medicion.js?v=20260906w"></script>
+<script src="src/app.js?v=20260906w"></script>
+<script src="src/reel.js?v=20260906w"></script>
 </body>
 </html>
