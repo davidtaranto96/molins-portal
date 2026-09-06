@@ -466,7 +466,9 @@
       var t = p.descripcion.trim().replace(/\s*Comercializa\s+Molins[^.]*\.?\s*$/i, "").trim();
       var parrafos = t.split(/\n{2,}|\r\n\r\n/).map(function (x) { return x.trim().replace(/\n/g, " "); }).filter(Boolean);
       if (parrafos.length === 1) {
-        var oraciones = parrafos[0].match(/[^.!?]+[.!?]+(\s|$)/g) || [parrafos[0]];
+        /* Los puntos de los miles («$350.000») no cierran oración: se protegen antes de partir. */
+        var protegido = parrafos[0].replace(/(\d)\.(?=\d)/g, "$1\u0001");
+        var oraciones = (protegido.match(/[^.!?]+[.!?]+(\s|$)/g) || [protegido]).map(function (o) { return o.replace(/\u0001/g, "."); });
         parrafos = [];
         for (var i = 0; i < oraciones.length; i += 3) parrafos.push(oraciones.slice(i, i + 3).join("").trim());
       }
@@ -562,7 +564,7 @@
       { k: "alquiler", t: "Alquiler", n: nAlquiler },
       S.favs.length ? { k: "guardadas", t: "Guardadas", n: S.favs.length } : null
     ].filter(Boolean).map(function (c) {
-      return { k: c.k, t: c.t, n: c.n, activo: S.seg === c.k ? "true" : "false", elegir: function () { set({ seg: c.k }); guardarBusqueda(); } };
+      return { k: c.k, t: c.t, n: c.n, activo: S.seg === c.k ? "true" : "false", elegir: function () { set({ seg: c.k, bOper: c.k === "guardadas" ? S.bOper : c.k }); guardarBusqueda(); } };
     });
 
     var conteoZona = {};
@@ -642,7 +644,7 @@
       var lista = visibles.some(function (x) { return x.codigo === fp.codigo; }) ? visibles : S.props;
       var pos = lista.findIndex(function (x) { return x.codigo === fp.codigo; });
       var vecinas = S.props.filter(function (x) { return x.codigo !== fp.codigo && x.zona === fp.zona && x.estado !== "reservada"; }).slice(0, 4);
-      var desc = descripcionDe(fp), largo = desc.join(" ").length > 520;
+      var desc = descripcionDe(fp), largo = desc.join(" ").length > 1800;
       ficha = {
         mPos: pos >= 0 ? (pos + 1) + " de " + lista.length : "",
         mHayNav: lista.length > 1,
@@ -752,7 +754,7 @@
         : "Hoy: " + nVenta + " en venta · " + nTerreno + " terrenos · " + nAlquiler + " en alquiler",
 
       bOper: S.bOper, bZona: S.bZona,
-      cambiarBOper: function (ev) { set({ bOper: ev.target.value }); },
+      cambiarBOper: function (ev) { set({ bOper: ev.target.value, seg: ev.target.value }); guardarBusqueda(); },
       cambiarBZona: function (ev) { set({ bZona: ev.target.value }); },
       buscarDesdeHero: function (ev) { if (ev && ev.preventDefault) ev.preventDefault(); set({ seg: S.bOper, fZona: S.bZona }); guardarBusqueda(); scrollA("propiedades"); if (window.VISITAS) VISITAS.anotar("buscar", (S.fTexto || "") + "|" + S.bOper + "|" + S.bZona); },
       zonasSelect: zonasSelect, tipos: tipos,
@@ -923,6 +925,12 @@
       var a = ev.relatedTarget;
       if (!a || !(a.closest && a.closest(".minigal") === galActiva)) galParar();
     });
+
+    /* Preguntas: al abrir una se cierra la que estaba abierta. */
+    document.addEventListener("toggle", function (ev) {
+      var d = ev.target; if (!d || !d.matches || !d.matches("details.pregunta") || !d.open) return;
+      d.parentNode.querySelectorAll("details.pregunta[open]").forEach(function (o) { if (o !== d) o.open = false; });
+    }, true);
 
     /* Contacto y Preguntas viven en ventanas: cualquier enlace a #contacto o
        #preguntas las abre (barra, menú, pie, cierre), y el hash al entrar también. */

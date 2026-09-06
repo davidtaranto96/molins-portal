@@ -8,7 +8,8 @@
  *
  * Qué entiende, que es exactamente lo que emite el transpilador:
  *
- *   <template data-lista="expr" data-alias="x">…</template>
+ *   <template data-lista="expr" data-alias="x" data-clave="x.id">…</template>
+ *   (data-clave es opcional: con clave, la fila que se repite se reusa)
  *        Rinde una fila por elemento y las escribe como hermanas ANTERIORES al
  *        template. Sin nodo contenedor: `<sc-for>` en el editor rinde como
  *        fragmento, y un envase rompería las grillas y sería inválido adentro
@@ -113,30 +114,42 @@ window.Pintor = (function () {
 
   function expandir(tpl, alcance) {
     var lista = evaluar(tpl.dataset.lista, alcance);
-    var alias = tpl.dataset.alias;
+    var alias = tpl.dataset.alias, claveExpr = tpl.dataset.clave;
     var padre = tpl.parentNode;
 
-    /* Lo generado en la pasada anterior se anota en el propio template. Se
-       borra por esa lista y no caminando hacia atrás por los hermanos: entre
-       fila y fila la plantilla deja nodos de texto (los saltos de línea del
-       HTML), y un recorrido que corta en el primer nodo que no es elemento se
-       frena ahí y va dejando basura en cada pintada. */
-    var previos = tpl.__generados || [];
-    for (var i = 0; i < previos.length; i++) if (previos[i].parentNode === padre) padre.removeChild(previos[i]);
-    tpl.__generados = [];
-    if (!Array.isArray(lista)) return;
-
-    lista.forEach(function (item) {
-      var sub = derivar(alcance, alias, item);
-      var frag = tpl.content.cloneNode(true);
-      var nuevos = [];
-      for (var n = frag.firstChild; n; n = n.nextSibling) {
-        tpl.__generados.push(n);
-        if (n.nodeType === 1) nuevos.push(n);
+    /* Lo generado en la pasada anterior queda anotado en el propio template, por
+       filas (una fila puede ser más de un nodo: entre fila y fila quedan los
+       saltos de línea del HTML). Con `data-clave`, la fila cuya clave se repite
+       se reusa en vez de rehacerse: así un repintado no parpadea (las fotos no
+       se vuelven a decodificar y las animaciones de entrada no se repiten). */
+    var previos = tpl.__grupos || [], viejos = {}, i;
+    if (claveExpr) for (i = 0; i < previos.length; i++) if (previos[i].clave != null && !viejos[previos[i].clave]) viejos[previos[i].clave] = previos[i];
+    var grupos = [], usados = [];
+    if (Array.isArray(lista)) lista.forEach(function (item) {
+      var sub = derivar(alcance, alias, item), clave = claveExpr ? String(evaluar(claveExpr, sub)) : null, g = null;
+      if (clave != null && viejos[clave] && usados.indexOf(viejos[clave]) < 0) { g = viejos[clave]; usados.push(g); g.sub = sub; }
+      else {
+        var frag = tpl.content.cloneNode(true), nodos = [];
+        /* Las filas generadas se marcan: el recorrido general las saltea, porque
+           las pinta su template con el alcance que corresponde. Si las tocara
+           con el alcance de la página, sus listas anidadas se vaciarían. */
+        for (var n = frag.firstChild; n; n = n.nextSibling) { nodos.push(n); if (n.nodeType === 1) n.__deLista = true; }
+        g = { clave: clave, nodos: nodos, frag: frag, sub: sub };
       }
-      padre.insertBefore(frag, tpl);
-      nuevos.forEach(function (el) { recorrer(el, sub, true); });
+      grupos.push(g);
     });
+    for (i = 0; i < previos.length; i++) if (usados.indexOf(previos[i]) < 0) previos[i].nodos.forEach(function (n) { if (n.parentNode === padre) padre.removeChild(n); });
+    /* Se acomodan de atrás para adelante y sólo se mueve lo que no está en su
+       lugar: sacar y volver a poner un nodo reinicia sus animaciones. */
+    var ref = tpl;
+    for (i = grupos.length - 1; i >= 0; i--) {
+      var g2 = grupos[i];
+      if (g2.frag) { padre.insertBefore(g2.frag, ref); g2.frag = null; }
+      else for (var j = g2.nodos.length - 1; j >= 0; j--) { var nd = g2.nodos[j]; if (nd.nextSibling !== ref) padre.insertBefore(nd, ref); ref = nd; }
+      if (g2.nodos.length) ref = g2.nodos[0];
+    }
+    grupos.forEach(function (g3) { g3.nodos.forEach(function (el) { if (el.nodeType === 1) recorrer(el, g3.sub, true); }); });
+    tpl.__grupos = grupos;
   }
 
   /* Recorre en profundidad. Los <template> no se pintan: son moldes. */
@@ -145,7 +158,7 @@ window.Pintor = (function () {
       if (el.tagName === "TEMPLATE") { if (el.dataset.lista !== undefined) expandir(el, alcance); return; }
       aplicar(el, alcance);
     }
-    for (var h = el.firstElementChild; h; h = h.nextElementSibling) recorrer(h, alcance, true);
+    for (var h = el.firstElementChild; h; h = h.nextElementSibling) if (!h.__deLista) recorrer(h, alcance, true);
   }
 
   return {
