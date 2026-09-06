@@ -1032,17 +1032,30 @@
       var portada = document.querySelector(".portada"), reelEl = document.getElementById("reel"), pieEl = document.querySelector(".reel__pie"), marcaEl = document.querySelector(".portada__marca");
       if (portada && reelEl) {
         var enColaH = false;
+        /* Profundidad: la foto y el texto responden distinto al mouse (el texto,
+           adelante, se mueve menos y en contra) y al scroll. */
+        var mx = 0, my = 0;
         function paralajePortada() {
           var y = window.scrollY, h = portada.offsetHeight;
           var k = Math.min(1, Math.max(0, y / (h * 0.6)));
           document.documentElement.style.setProperty("--crece", k.toFixed(3));
           if (y > h * 1.2) return;
           /* Al bajar, la foto se encoge y se redondea como una tarjeta, y el rótulo se desvanece. */
-          reelEl.style.transform = "translate3d(0," + (y * 0.16).toFixed(1) + "px,0) scale(" + (1 - 0.07 * k).toFixed(3) + ")";
+          reelEl.style.transform = "translate3d(" + (mx * -12).toFixed(1) + "px," + (y * 0.16 + my * -8).toFixed(1) + "px,0) scale(" + (1 - 0.07 * k).toFixed(3) + ")";
           reelEl.style.borderRadius = (k * 28).toFixed(1) + "px";
           var op = Math.max(0, 1 - y / (h * 0.55)).toFixed(3);
-          if (pieEl) pieEl.style.opacity = op;
+          if (pieEl) { pieEl.style.opacity = op; pieEl.style.transform = "translate3d(" + (mx * 7).toFixed(1) + "px," + (y * -0.06 + my * 5).toFixed(1) + "px,0)"; }
           if (marcaEl) marcaEl.style.opacity = op;
+        }
+        if (innerWidth >= 900) {
+          var enColaM = false;
+          portada.addEventListener("mousemove", function (ev) {
+            var r = portada.getBoundingClientRect();
+            mx = ((ev.clientX - r.left) / r.width - 0.5) * 2; my = ((ev.clientY - r.top) / r.height - 0.5) * 2;
+            if (enColaM) return; enColaM = true;
+            requestAnimationFrame(function () { enColaM = false; paralajePortada(); });
+          });
+          portada.addEventListener("mouseleave", function () { mx = 0; my = 0; paralajePortada(); });
         }
         addEventListener("scroll", function () { if (enColaH) return; enColaH = true; requestAnimationFrame(function () { enColaH = false; paralajePortada(); }); }, { passive: true });
         paralajePortada();
@@ -1052,7 +1065,7 @@
     /* Los bloques de La Torre y Aires entran cuando aparecen, y su foto se
        mueve apenas con el scroll (no con reduced-motion). */
     var quieto = matchMedia("(prefers-reduced-motion:reduce)").matches;
-    var bloques = document.querySelectorAll(".bloque");
+    var bloques = document.querySelectorAll(".bloque, .editorial");
     if (bloques.length && "IntersectionObserver" in window) {
       var obsB = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add("es-visto"); obsB.unobserve(e.target); } }); }, { threshold: 0.18 });
       bloques.forEach(function (b) { obsB.observe(b); });
