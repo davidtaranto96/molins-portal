@@ -577,7 +577,7 @@
         reservada: p.estado === "reservada",
         fotoEstilo: "width:100%;height:100%;object-fit:cover;display:block;transition:transform .7s cubic-bezier(.22,.61,.36,1)" + (p.estado === "reservada" ? ";filter:saturate(.55)" : ""),
         esFav: fav ? "true" : "false", favFill: fav ? "currentColor" : "none", favAria: fav ? "Quitar de guardadas" : "Guardar",
-        favEstilo: "position:absolute;top:44px;right:11px;width:34px;height:34px;border-radius:50%;border:none;cursor:pointer;display:grid;place-items:center;transition:transform .18s,background .2s;background:" + (fav ? "var(--naranja)" : "rgba(255,255,255,.92)") + ";color:" + (fav ? "#fff" : "var(--verde)"),
+        favEstilo: "",
         guardar: function (ev) { ev.stopPropagation(); alternarFav(p.codigo); var b = ev.currentTarget; if (b) { b.classList.remove("late"); void b.offsetWidth; b.classList.add("late"); } },
         tipoLinea: p.tipo + (p.sinDireccion ? "" : " · " + p.zona),
         linea: [p.tipo, p.dorm > 0 ? p.dorm + " dorm." : null, p.banos > 0 ? p.banos + (p.banos === 1 ? " baño" : " baños") : null, p.m2 > 0 ? num(p.m2) + " m²" : null].filter(Boolean).join(" · "),
@@ -627,7 +627,7 @@
     var fp = S.ficha ? prop(S.ficha) : null;
     var ficha = {};
     if (fp) {
-      var b = badgeDe(fp) || { t: "Disponible", bg: "var(--ok-fuerte)" }, geo = ZONA_GEO[fp.zona] || fp.geo, cuota = cuotaRef(fp), sim = similaresDe(fp, S.ancho <= 699 ? 6 : 8);
+      var b = badgeDe(fp), geo = ZONA_GEO[fp.zona] || fp.geo, cuota = cuotaRef(fp), sim = similaresDe(fp, S.ancho <= 699 ? 6 : 8);
       /* Para moverse sin cerrar: la lista es la que está filtrada en pantalla
          (o toda la cartera si la ficha vino por enlace y no está en ella). */
       var lista = visibles.some(function (x) { return x.codigo === fp.codigo; }) ? visibles : S.props;
@@ -672,8 +672,9 @@
           };
         }),
         mUbicacion: ubicCorta(fp), mTitulo: fp.titulo, mOperacion: fp.operacion, mTipo: fp.tipo, mCodigo: fp.codigo,
-        mBadge: b.t,
-        mBadgeEstilo: "background:" + b.bg,
+        mHayBadge: !!b,
+        mBadge: b ? b.t : "",
+        mBadgeEstilo: b ? "background:" + b.bg : "",
         mPrecio: fp.precio > 0 ? money(fp.moneda, fp.precio) : "Consultar",
         mPrecioSufijo: fp.operacion === "Alquiler" && fp.precio > 0 ? "por mes" : "",
         mCuota: cuota ? "Referencia " + cuota + " por mes con 30% de anticipo" : "",
@@ -935,12 +936,51 @@
       };
     }
 
-    /* La tira del visor como el Dock: cada miniatura crece según la distancia al mouse. */
-    var tiraAuto = 0, tiraEl = null, tiraCola = false;
+    /* La tira del visor como el Dock: cada miniatura crece según la distancia al mouse,
+       las vecinas se corren para no pisarse, y el punto de mira sigue al mouse con
+       inercia para que el cambio de una a otra se sienta fluido. */
+    var tiraAuto = 0, tiraEl = null, tiraCola = false, miraX = null, miraObj = null, miraCola = false;
     function tiraDeslizar() {
       if (!tiraAuto || !tiraEl) { tiraCola = false; return; }
       tiraEl.scrollLeft += tiraAuto;
       requestAnimationFrame(tiraDeslizar);
+    }
+    function tiraPintar() {
+      if (!tiraEl || miraObj === null) { miraCola = false; return; }
+      miraX = miraX === null ? miraObj : miraX + (miraObj - miraX) * 0.32;
+      var bs = tiraEl.querySelectorAll("button"), n = bs.length, esc = new Array(n), cen = new Array(n), m = 0, mejor = Infinity;
+      for (var j = 0; j < n; j++) {
+        var r = bs[j].getBoundingClientRect();
+        /* El centro real, sin el corrimiento que ya tenga puesto. */
+        cen[j] = r.left + r.width / 2 - parseFloat(bs[j].dataset.dx || 0);
+        var d = Math.abs(miraX - cen[j]), k = d < 300 ? 0.5 + 0.5 * Math.cos(Math.PI * d / 300) : 0;
+        esc[j] = 1 + 0.8 * k * k;
+        if (d < mejor) { mejor = d; m = j; }
+      }
+      var w = n ? (bs[0].offsetWidth || 98) : 98, dxs = new Array(n), j2, k2;
+      for (j2 = 0; j2 < n; j2++) {
+        var dx = 0;
+        if (j2 > m) { dx = (esc[m] - 1) * w / 2 + (esc[j2] - 1) * w / 2; for (k2 = m + 1; k2 < j2; k2++) dx += (esc[k2] - 1) * w; }
+        else if (j2 < m) { dx = -((esc[m] - 1) * w / 2 + (esc[j2] - 1) * w / 2); for (k2 = j2 + 1; k2 < m; k2++) dx -= (esc[k2] - 1) * w; }
+        dxs[j2] = dx;
+      }
+      /* En las puntas, si la primera o la última miniatura están a la vista, nada se
+         sale de la tira: se corre todo el conjunto lo justo, como hace el Dock. */
+      if (n) {
+        var rt = tiraEl.getBoundingClientRect(), margen = 16;
+        var izq = cen[0] - w * esc[0] / 2 + dxs[0], der = cen[n - 1] + w * esc[n - 1] / 2 + dxs[n - 1];
+        var corr = 0;
+        if (cen[0] - w / 2 >= rt.left && izq < rt.left + margen) corr = rt.left + margen - izq;
+        else if (cen[n - 1] + w / 2 <= rt.right && der > rt.right - margen) corr = rt.right - margen - der;
+        if (corr) for (j2 = 0; j2 < n; j2++) dxs[j2] += corr;
+      }
+      for (j2 = 0; j2 < n; j2++) {
+        var dx = dxs[j2];
+        bs[j2].dataset.dx = dx.toFixed(2);
+        bs[j2].style.transform = "translateX(" + dx.toFixed(2) + "px) translateY(" + (-(esc[j2] - 1) * 14).toFixed(1) + "px) scale(" + esc[j2].toFixed(3) + ")";
+        bs[j2].style.zIndex = esc[j2] > 1.01 ? String(2 + Math.round(esc[j2] * 10)) : "";
+      }
+      requestAnimationFrame(tiraPintar);
     }
     document.addEventListener("mousemove", function (ev) {
       var tira = ev.target.closest && ev.target.closest(".visor__tira"); if (!tira) { tiraAuto = 0; return; }
@@ -948,20 +988,17 @@
       /* Cerca del borde, la tira se desliza sola y muestra las que siguen. */
       var borde = 110;
       tiraAuto = x > rt.right - borde ? Math.min(9, (x - (rt.right - borde)) / 12 + 2) : x < rt.left + borde ? -Math.min(9, ((rt.left + borde) - x) / 12 + 2) : 0;
-      tiraEl = tira;
+      tiraEl = tira; miraObj = x;
+      tira.classList.add("es-viva");
       if (tiraAuto && !tiraCola) { tiraCola = true; requestAnimationFrame(tiraDeslizar); }
-      tira.querySelectorAll("button").forEach(function (b) {
-        var r = b.getBoundingClientRect(), d = Math.abs(x - (r.left + r.width / 2));
-        var k = Math.max(0, 1 - d / 230), esc = 1 + 0.9 * k * k;
-        b.style.transform = "scale(" + esc.toFixed(3) + ") translateY(" + (-(esc - 1) * 18).toFixed(1) + "px)";
-        b.style.zIndex = k > 0 ? "2" : "";
-      });
+      if (!miraCola) { miraCola = true; requestAnimationFrame(tiraPintar); }
     });
     document.addEventListener("mouseout", function (ev) {
       var tira = ev.target.closest && ev.target.closest(".visor__tira");
       if (!tira || (ev.relatedTarget && tira.contains(ev.relatedTarget))) return;
-      tiraAuto = 0;
-      tira.querySelectorAll("button").forEach(function (b) { b.style.transform = ""; b.style.zIndex = ""; });
+      tiraAuto = 0; miraObj = null; miraX = null;
+      tira.classList.remove("es-viva");
+      tira.querySelectorAll("button").forEach(function (b) { b.style.transform = ""; b.style.zIndex = ""; delete b.dataset.dx; });
     });
 
     /* El reel pide abrir una ficha. */
@@ -976,6 +1013,15 @@
     var quieto = matchMedia("(prefers-reduced-motion:reduce)").matches;
     function medirBarra() { if (cab) document.documentElement.style.setProperty("--barra", cab.offsetHeight + "px"); }
     medirBarra();
+    /* La hoja de cierre (contacto + pie) mide lo que mide: ese es el recorrido en el que
+       Aires queda fija abajo mientras la hoja la va tapando. */
+    function medirHoja() {
+      var raizE = document.documentElement, cierre = document.querySelector("main .cierre"), pie = document.querySelector('footer[data-screen-label="Pie"]');
+      if (!cierre || !pie || !innerHeight) return;
+      raizE.style.setProperty("--pie", pie.offsetHeight + "px");
+      raizE.style.setProperty("--hoja", (cierre.offsetHeight + pie.offsetHeight) + "px");
+    }
+    medirHoja(); setTimeout(medirHoja, 600); addEventListener("load", medirHoja);
     if (busc) {
       var pegado = false;
       if (lugar && "IntersectionObserver" in window) {
@@ -1065,10 +1111,34 @@
        mueve apenas con el scroll (no con reduced-motion). */
     var quieto = matchMedia("(prefers-reduced-motion:reduce)").matches;
     var bloques = document.querySelectorAll(".bloque, .editorial");
+    /* La bajada del título editorial se escribe letra por letra, con cursor, cuando el
+       título ya subió. Las letras existen desde el principio: el alto no salta. */
+    function prepararTipeo(p) {
+      if (!p || p.dataset.tipeo) return;
+      var texto = p.textContent.trim(); p.dataset.tipeo = texto; p.setAttribute("aria-label", texto);
+      while (p.firstChild) p.removeChild(p.firstChild);
+      texto.split("").forEach(function (ch) { var c = document.createElement("span"); c.className = "tipeo__c"; c.setAttribute("aria-hidden", "true"); c.textContent = ch; p.appendChild(c); });
+    }
+    function tipear(p) {
+      if (!p || p.dataset.tipeado) return; p.dataset.tipeado = "1";
+      var letras = p.querySelectorAll(".tipeo__c");
+      if (quieto) { letras.forEach(function (c) { c.classList.add("es-visible"); }); return; }
+      var cursor = document.createElement("span"); cursor.className = "tipeo__cursor"; cursor.setAttribute("aria-hidden", "true");
+      p.insertBefore(cursor, letras[0] || null);
+      var i = 0;
+      (function paso() {
+        if (i >= letras.length) { setTimeout(function () { cursor.classList.add("se-va"); }, 1400); return; }
+        var c = letras[i++]; c.classList.add("es-visible");
+        p.insertBefore(cursor, c.nextSibling);
+        var ch = c.textContent, espera = ch === "." ? 260 : ch === "," ? 150 : 18 + Math.random() * 26;
+        setTimeout(paso, espera);
+      })();
+    }
+    document.querySelectorAll(".editorial__bajada").forEach(prepararTipeo);
     if (bloques.length && "IntersectionObserver" in window) {
-      var obsB = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add("es-visto"); obsB.unobserve(e.target); } }); }, { threshold: 0.18 });
+      var obsB = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add("es-visto"); obsB.unobserve(e.target); if (e.target.classList.contains("editorial")) setTimeout(function () { tipear(e.target.querySelector(".editorial__bajada")); }, 500); } }); }, { threshold: 0.18 });
       bloques.forEach(function (b) { obsB.observe(b); });
-    } else bloques.forEach(function (b) { b.classList.add("es-visto"); });
+    } else bloques.forEach(function (b) { b.classList.add("es-visto"); tipear(b.querySelector(".editorial__bajada")); });
     if (!quieto && bloques.length) {
       var enColaP = false;
       var torreEl = document.querySelector(".bloque--torre"), airesEl = document.querySelector(".bloque--aires"), cierreEl = document.querySelector("main .cierre");
@@ -1097,7 +1167,7 @@
     }
 
     window.addEventListener("resize", function () {
-      medirBarra();
+      medirBarra(); medirHoja();
       set({ ancho: window.innerWidth, menuOpen: window.innerWidth > 1060 ? false : S.menuOpen });
     });
     /* Deslizar la foto de la ficha con el dedo. */

@@ -46,7 +46,11 @@
     if (!prox) return;
     var d = REEL[(n + 1) % REEL.length], r = rotulo(d);
     var im = prox.querySelector(".reel__prox-foto"), b = prox.querySelector("b");
-    if (im && im.getAttribute("src") !== d.img) { im.style.opacity = "0"; im.onload = function () { im.style.transition = "opacity .5s"; im.style.opacity = "1"; }; im.src = d.img; }
+    if (im && im.getAttribute("src") !== d.img) {
+      im.style.transition = "none"; im.style.opacity = "0"; im.style.transform = "translateX(60px)";
+      im.onload = function () { requestAnimationFrame(function () { im.style.transition = "opacity .6s ease, transform .7s cubic-bezier(.2,.8,.2,1), filter .5s"; im.style.opacity = "1"; im.style.transform = ""; }); };
+      im.src = d.img;
+    } else if (im) { im.style.opacity = "1"; im.style.transform = ""; }
     if (b) b.textContent = r.t;
   }
   if (prox) prox.addEventListener("click", function () { ir((i + 1) % REEL.length); });
@@ -107,8 +111,59 @@
     p.classList.add("es-corriendo");
   }
 
+  /* El cambio de propiedad: la foto de la franja "Siguiente" vuela hasta el marco
+     principal (crece, se desplaza y se ilumina) mientras la actual se aleja; recién
+     cuando llega se hace el cambio de capa, sin fundido, así nunca se mezclan dos fotos.
+     Devuelve false cuando no puede volar (celular, movimiento reducido, sin franja). */
+  var volando = false;
+  function rectDestino(ar) {
+    var alto = raiz.parentNode.offsetHeight, w = Math.round(alto * ar), antes = raiz.style.width;
+    raiz.style.transition = "none"; raiz.style.width = w + "px";
+    var r = raiz.getBoundingClientRect();
+    raiz.style.width = antes; void raiz.offsetWidth; raiz.style.transition = "";
+    return r;
+  }
+  function volar(d, ar, sale, fin) {
+    var chica = matchMedia("(max-width:899px)").matches;
+    var im = prox && prox.querySelector(".reel__prox-foto");
+    if (!prox || quieto || chica || !im || !raiz.parentNode || !("animate" in im)) return false;
+    var padre = raiz.parentNode, pr = padre.getBoundingClientRect(), a = im.getBoundingClientRect();
+    if (!a.width || !pr.width) return false;
+    var b = rectDestino(ar);
+    var clon = document.createElement("img");
+    clon.src = d.img; clon.alt = ""; clon.className = "reel__vuelo";
+    clon.style.cssText = "left:" + (a.left - pr.left) + "px;top:" + (a.top - pr.top) + "px;width:" + a.width + "px;height:" + a.height + "px";
+    padre.appendChild(clon);
+    volando = true;
+    im.style.transition = "opacity .2s"; im.style.opacity = "0";
+    /* El marco ya empieza a tomar el ancho de la foto que llega. */
+    ajustarAncho(ar);
+    var suave = "cubic-bezier(.2,.8,.2,1)";
+    /* Mientras vuela, el borde difuminado de la izquierda (el mismo del marco) va
+       entrando: al llegar ya es idéntico a la capa de abajo y el cambio no se ve. */
+    var anim = clon.animate([
+      { left: (a.left - pr.left) + "px", top: (a.top - pr.top) + "px", width: a.width + "px", height: a.height + "px", filter: "brightness(.62) saturate(.9)", maskSize: "200% 100%", maskPosition: "100% 0%", webkitMaskSize: "200% 100%", webkitMaskPosition: "100% 0%" },
+      { left: (b.left - pr.left) + "px", top: (b.top - pr.top) + "px", width: b.width + "px", height: b.height + "px", filter: "brightness(1) saturate(1)", maskSize: "100% 100%", maskPosition: "0% 0%", webkitMaskSize: "100% 100%", webkitMaskPosition: "0% 0%" }
+    ], { duration: 760, easing: suave, fill: "forwards" });
+    var lejos = sale.animate([
+      { transform: "none", filter: "brightness(1)" },
+      { transform: "translateX(-5%) scale(.96)", filter: "brightness(.55)" }
+    ], { duration: 760, easing: suave, fill: "forwards" });
+    var cerrado = false;
+    var cierre = function () {
+      if (cerrado) return; cerrado = true; volando = false;
+      fin();
+      /* Con la capa nueva ya debajo, el clon se apaga y aparece el borde difuminado. */
+      clon.classList.add("se-apaga");
+      setTimeout(function () { lejos.cancel(); sale.style.transform = ""; sale.style.filter = ""; if (clon.parentNode) clon.parentNode.removeChild(clon); }, 320);
+    };
+    anim.onfinish = cierre;
+    setTimeout(cierre, 1000);
+    return true;
+  }
+
   function mostrar(n) {
-    if (!vivo) return;
+    if (!vivo || volando) return;
     clearTimeout(reloj); reloj = null;
     var d = REEL[n], mi = ++serie;
     enVuelo = true;
@@ -121,9 +176,15 @@
       entra.appendChild(media);
       /* El marco toma el ancho exacto de la proporción de la foto: entera, sin recortes. */
       var ar = im.naturalWidth && im.naturalHeight ? im.naturalWidth / im.naturalHeight : 1.333;
-      ajustarAncho(ar);
-      entra.classList.add("es-visible");
-      sale.classList.remove("es-visible");
+      var esPrimera = !document.querySelector(".reel__capa.es-visible");
+      var cambiar = function (seco) {
+        if (seco) { entra.style.transition = "none"; sale.style.transition = "none"; }
+        ajustarAncho(ar);
+        entra.classList.add("es-visible");
+        sale.classList.remove("es-visible");
+        if (seco) requestAnimationFrame(function () { entra.style.transition = ""; sale.style.transition = ""; });
+      };
+      if (esPrimera || !volar(d, ar, sale, function () { cambiar(true); })) cambiar(false);
       activa = 1 - activa;
       i = n;
       /* El rótulo cambia cuando la foto nueva ya se impuso, no al arrancar el fundido. */
