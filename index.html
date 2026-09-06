@@ -993,7 +993,9 @@
     /* la ficha: la hoja del detalle tapa la foto */
     .ficha__mosaico{position:sticky;top:0;z-index:1;transform-origin:50% 0;will-change:transform,filter}
     .ficha__cuerpo{position:relative;z-index:2;margin-top:-22px}
-    .mosaico__lugar{display:inline-flex;align-items:center;gap:6px;position:absolute;left:12px;top:60px;z-index:3;font-size:12px;font-weight:600;color:#fff;background:rgba(9,30,31,.55);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);padding:6px 11px 6px 9px;border-radius:999px}
+    .mosaico__lugar{display:inline-flex;align-items:center;gap:6px;position:absolute;left:60px;top:14px;height:32px;max-width:calc(100% - 172px);z-index:7;font-size:12px;font-weight:600;color:#fff;background:rgba(9,30,31,.55);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);padding:0 11px 0 9px;border-radius:999px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;box-sizing:border-box}
+    .mosaico__lugar span{overflow:hidden;text-overflow:ellipsis}
+    .ficha.es-baja .mosaico__lugar{opacity:0}
     .mosaico__contador{bottom:44px}
     .mosaico__todas{bottom:42px}
     .mosaico__estado{bottom:86px}
@@ -1062,7 +1064,7 @@
     document.head.appendChild(cf);
   }
 </script>
-<link rel="stylesheet" href="src/estilos.css?v=20260907a">
+<link rel="stylesheet" href="src/estilos.css?v=20260907b">
 </head>
 <body>
 
@@ -1998,9 +2000,9 @@
 </div>
 
 
-<script src="src/pintor.js?v=20260907a"></script>
-<script src="src/medicion.js?v=20260907a"></script>
-<script src="src/app.js?v=20260907a"></script>
-<script src="src/reel.js?v=20260907a"></script>
+<script src="src/pintor.js?v=20260907b"></script>
+<script src="src/medicion.js?v=20260907b"></script>
+<script src="src/app.js?v=20260907b"></script>
+<script src="src/reel.js?v=20260907b"></script>
 </body>
 </html>
