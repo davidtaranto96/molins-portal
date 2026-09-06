@@ -1299,30 +1299,32 @@
       var cuerpo = caja.querySelector(".panel__cuerpo"), enCab = !!t.closest(".panel__cab");
       var scrollea = cuerpo && !enCab ? cuerpo : (caja.classList.contains("previa__caja") ? caja : null);
       if (!enCab && scrollea && scrollea.scrollTop > 0) return;
-      hoja = { caja: caja, y0: ev.touches[0].clientY, t0: Date.now(), dy: 0, activa: false, cierra: caja.classList.contains("previa__caja") ? cerrarPrevia : cerrarVista };
+      hoja = { caja: caja, fondo: caja.parentNode, x0: ev.touches[0].clientX, y0: ev.touches[0].clientY, t0: Date.now(), dy: 0, activa: false, cierra: caja.classList.contains("previa__caja") ? cerrarPrevia : cerrarVista };
     }, { passive: true });
     document.addEventListener("touchmove", function (ev) {
       if (!hoja) return;
-      var dy = ev.touches[0].clientY - hoja.y0;
-      if (dy < 0 && !hoja.activa) { hoja = null; return; }
-      if (dy > 6) hoja.activa = true;
-      if (!hoja.activa) return;
-      hoja.dy = dy;
-      hoja.caja.classList.add("se-arrastra"); hoja.caja.classList.remove("se-suelta");
+      var t = ev.touches[0], dy = t.clientY - hoja.y0, dx = Math.abs(t.clientX - hoja.x0);
+      /* Hay que frenar al navegador en el PRIMER movimiento: si se deja pasar uno, se
+         queda con el gesto como scroll y no manda más. Hacia arriba o de costado, se suelta. */
+      if (!hoja.activa) { if (dy <= 0 || dx > dy) { hoja = null; return; } hoja.activa = true; hoja.caja.classList.add("se-arrastra"); hoja.caja.classList.remove("se-suelta"); }
+      hoja.dy = dy; hoja.t1 = Date.now();
       hoja.caja.style.transform = "translateY(" + dy + "px)";
+      if (hoja.fondo) hoja.fondo.style.opacity = String(Math.max(.25, 1 - dy / 500));
       if (ev.cancelable) ev.preventDefault();
     }, { passive: false });
     document.addEventListener("touchend", function () {
       if (!hoja) return;
       var h = hoja; hoja = null;
       if (!h.activa) return;
-      var rapido = h.dy / Math.max(1, Date.now() - h.t0) > 0.6;
+      var rapido = h.dy / Math.max(1, (h.t1 || Date.now()) - h.t0) > 0.5;
       h.caja.classList.remove("se-arrastra"); h.caja.classList.add("se-suelta");
-      if (h.dy > 90 || rapido) {
+      if (h.dy > 80 || rapido) {
         h.caja.style.transform = "translateY(110%)";
-        setTimeout(function () { h.caja.style.transform = ""; h.caja.classList.remove("se-suelta"); h.cierra(); }, 300);
+        if (h.fondo) h.fondo.style.opacity = "0";
+        setTimeout(function () { h.cierra(); h.caja.style.transform = ""; h.caja.classList.remove("se-suelta"); if (h.fondo) h.fondo.style.opacity = ""; }, 230);
       } else {
         h.caja.style.transform = "";
+        if (h.fondo) h.fondo.style.opacity = "";
         setTimeout(function () { h.caja.classList.remove("se-suelta"); }, 340);
       }
     }, { passive: true });
