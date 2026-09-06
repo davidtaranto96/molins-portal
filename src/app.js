@@ -1288,6 +1288,44 @@
       t0 = null;
       if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) * 1.5) { if (!S.visor) abrirVisor(S.fotoN); moverFoto(dx < 0 ? 1 : -1); }
     }, { passive: true });
+    /* Las hojas del celular (Contacto, Preguntas, la previa de La Torre) se cierran
+       arrastrándolas hacia abajo: desde la cabecera siempre, o desde el cuerpo cuando
+       está arriba del todo. Al soltar pasados 90 px (o rápido), se van. */
+    var hoja = null;
+    document.addEventListener("touchstart", function (ev) {
+      if (innerWidth >= 900) return;
+      var t = ev.target, caja = t.closest && t.closest(".panel__caja, .previa__caja");
+      if (!caja) return;
+      var cuerpo = caja.querySelector(".panel__cuerpo"), enCab = !!t.closest(".panel__cab");
+      var scrollea = cuerpo && !enCab ? cuerpo : (caja.classList.contains("previa__caja") ? caja : null);
+      if (!enCab && scrollea && scrollea.scrollTop > 0) return;
+      hoja = { caja: caja, y0: ev.touches[0].clientY, t0: Date.now(), dy: 0, activa: false, cierra: caja.classList.contains("previa__caja") ? cerrarPrevia : cerrarVista };
+    }, { passive: true });
+    document.addEventListener("touchmove", function (ev) {
+      if (!hoja) return;
+      var dy = ev.touches[0].clientY - hoja.y0;
+      if (dy < 0 && !hoja.activa) { hoja = null; return; }
+      if (dy > 6) hoja.activa = true;
+      if (!hoja.activa) return;
+      hoja.dy = dy;
+      hoja.caja.classList.add("se-arrastra"); hoja.caja.classList.remove("se-suelta");
+      hoja.caja.style.transform = "translateY(" + dy + "px)";
+      if (ev.cancelable) ev.preventDefault();
+    }, { passive: false });
+    document.addEventListener("touchend", function () {
+      if (!hoja) return;
+      var h = hoja; hoja = null;
+      if (!h.activa) return;
+      var rapido = h.dy / Math.max(1, Date.now() - h.t0) > 0.6;
+      h.caja.classList.remove("se-arrastra"); h.caja.classList.add("se-suelta");
+      if (h.dy > 90 || rapido) {
+        h.caja.style.transform = "translateY(110%)";
+        setTimeout(function () { h.caja.style.transform = ""; h.caja.classList.remove("se-suelta"); h.cierra(); }, 300);
+      } else {
+        h.caja.style.transform = "";
+        setTimeout(function () { h.caja.classList.remove("se-suelta"); }, 340);
+      }
+    }, { passive: true });
     /* El reel de la portada pide un segmento ("Ver alquileres"). */
     document.addEventListener("molins:segmento", function (ev) { set({ seg: ev.detail, fTipo: "", fZona: "", fDorm: "", fPrecio: "", fTexto: "" }); });
     document.addEventListener("keydown", function (ev) {
