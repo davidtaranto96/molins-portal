@@ -65,7 +65,7 @@
     favs: leerLS("molins_favs", []), recientes: leerLS("molins_vistas", []),
     bOper: "todo", bZona: "",
     menuOpen: false, ancho: 1200,
-    ficha: null, fotoN: 1, visor: false,
+    ficha: null, fotoN: 1, visor: false, visorZoom: false, visorFull: false, vista: "inicio", toast: "",
     formNombre: "", formWa: "", formMail: "", formBusca: "Para vivir", formZona: "", formMensaje: "",
     formError: "", enviado: false, enviando: false, okMsg: "", ctx: "", ctxProp: null,
     calcPrecio: 75000, calcAnt: 30, calcCuotas: 60,
@@ -92,7 +92,28 @@
   function norm(t) { return String(t || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, ""); }
 
   function set(cambios) { for (var k in cambios) S[k] = cambios[k]; pintar(); }
-  function pintar() { window.Pintor.pintar(vista()); if (window.observarTarjetas) observarTarjetas(); }
+  function pintar() {
+    window.Pintor.pintar(vista());
+    var capa = !!S.ficha || S.vista !== "inicio";
+    document.documentElement.classList.toggle("con-capa", capa);
+    document.body.style.overflow = capa ? "hidden" : "";
+    if (window.observarTarjetas) observarTarjetas();
+    if (window.observarSecciones) observarSecciones();
+  }
+  /* Las ventanas de contacto y preguntas: viven fuera del inicio. */
+  function abrirVista(v) {
+    if (S.vista === v) return;
+    set({ vista: v, menuOpen: false });
+    if (window.history && history.replaceState) try { history.replaceState(null, "", location.pathname + location.search + "#" + v); } catch (e) {}
+    if (window.VISITAS) VISITAS.anotar("pagina", location.pathname + "#" + v);
+    setTimeout(function () { var p = document.querySelector(".panel__scroll"); if (p) p.scrollTop = 0; }, 30);
+  }
+  function cerrarVista() {
+    set({ vista: "inicio" });
+    if (window.history && history.replaceState) try { history.replaceState(null, "", location.pathname + location.search); } catch (e) {}
+  }
+  var relojToast = null;
+  function avisar(t) { clearTimeout(relojToast); set({ toast: t }); relojToast = setTimeout(function () { set({ toast: "" }); }, 2400); }
 
   /* ── formato ─────────────────────────────────────────────────────────── */
   function tidy(s) { if (!s) return s; if (s === s.toUpperCase()) s = s.toLowerCase(); return s.charAt(0).toUpperCase() + s.slice(1); }
@@ -317,8 +338,7 @@
   /* ── ficha ───────────────────────────────────────────────────────────── */
   function abrirFicha(codigo) {
     anotarVista(codigo);
-    set({ ficha: codigo, fotoN: 1, descLarga: false, visor: false });
-    document.body.style.overflow = "hidden";
+    set({ ficha: codigo, fotoN: 1, descLarga: false, visor: false, visorZoom: false });
     precargarFotos(codigo, 1);
     urlFicha(codigo);
     if (window.VISITAS) VISITAS.anotar("ficha", codigo, codigo);
@@ -327,13 +347,35 @@
     setTimeout(function () { var c = document.getElementById("fichaCaja"); if (c) c.scrollTop = 0; }, 30);
   }
   function cerrarFicha() {
-    set({ ficha: null, visor: false });
-    document.body.style.overflow = "";
+    if (document.fullscreenElement) try { document.exitFullscreen(); } catch (e) {}
+    set({ ficha: null, visor: false, visorZoom: false, visorFull: false });
     urlFicha(null);
     if (mapa) { try { mapa.remove(); } catch (e) {} mapa = null; }
   }
-  function abrirVisor(n) { set({ visor: true, fotoN: n }); precargarFotos(S.ficha, n); }
-  function cerrarVisor() { set({ visor: false }); }
+  /* El visor abre con la foto "creciendo" desde donde estaba (la baldosa del
+     mosaico o la miniatura de la tira): un FLIP con la Web Animations API. */
+  var visorDesde = null;
+  function abrirVisor(n, rect) { visorDesde = rect || null; set({ visor: true, fotoN: n, visorZoom: false }); precargarFotos(S.ficha, n); animarVisor(); }
+  function cerrarVisor() { if (document.fullscreenElement) try { document.exitFullscreen(); } catch (e) {} set({ visor: false, visorZoom: false, visorFull: false }); }
+  function animarVisor() {
+    var desde = visorDesde; visorDesde = null;
+    if (!desde || matchMedia("(prefers-reduced-motion:reduce)").matches) return;
+    requestAnimationFrame(function () {
+      var f = document.getElementById("visorFoto"); if (!f || !f.animate) return;
+      var listo = function () {
+        var a = f.getBoundingClientRect(); if (!a.width) return;
+        var sx = desde.width / a.width, sy = desde.height / a.height, dx = desde.left - a.left, dy = desde.top - a.top;
+        f.animate([{ transform: "translate(" + dx + "px," + dy + "px) scale(" + sx + "," + sy + ")", borderRadius: "10px" }, { transform: "none", borderRadius: "8px" }], { duration: 460, easing: "cubic-bezier(.2,.8,.2,1)" });
+      };
+      if (f.complete && f.naturalWidth) listo(); else f.addEventListener("load", listo, { once: true });
+    });
+  }
+  function alternarZoom() { set({ visorZoom: !S.visorZoom }); }
+  function alternarPantalla() {
+    var v = document.querySelector(".visor"); if (!v) return;
+    if (document.fullscreenElement) { try { document.exitFullscreen(); } catch (e) {} set({ visorFull: false }); }
+    else if (v.requestFullscreen) { v.requestFullscreen().then(function () { set({ visorFull: true }); }).catch(function () {}); }
+  }
   function moverFoto(d) {
     var p = prop(S.ficha);
     if (!p || p.fotos.length < 2) return;
@@ -343,6 +385,8 @@
     precargarFotos(p.codigo, n);
     var caja = document.getElementById("visorMarco");
     if (caja) { caja.classList.remove("foto-entra"); void caja.offsetWidth; caja.classList.add("foto-entra"); }
+    var grande = document.querySelector(".mosaico__foto.es-grande img");
+    if (grande) { grande.style.animation = "none"; void grande.offsetWidth; grande.style.animation = ""; }
     var th = document.querySelector("#fichaThumbs [aria-current='true']");
     if (th && th.scrollIntoView) try { th.scrollIntoView({ block: "nearest", inline: "center", behavior: "smooth" }); } catch (e) {}
   }
@@ -380,8 +424,12 @@
     if (!p) return;
     var url = location.origin + location.pathname + "?ficha=" + encodeURIComponent(p.codigo);
     var texto = p.titulo + " · " + ubicCorta(p) + " · " + (p.precio > 0 ? money(p.moneda, p.precio) : "Consultar") + (p.operacion === "Alquiler" && p.precio > 0 ? " por mes" : "") + "\n" + url;
-    if (navigator.share) navigator.share({ title: p.titulo, text: texto, url: url }).catch(function () {});
-    else window.open("https://wa.me/?text=" + encodeURIComponent(texto), "_blank", "noopener");
+    var copiar = function () {
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(url).then(function () { avisar("Enlace copiado. Pegalo donde quieras."); }).catch(function () { window.prompt("Copiá el enlace:", url); });
+      else window.prompt("Copiá el enlace:", url);
+    };
+    if (navigator.share && /Android|iPhone|iPad/i.test(navigator.userAgent)) navigator.share({ title: p.titulo, text: texto, url: url }).catch(function () {});
+    else copiar();
   }
 
   function descripcionDe(p) {
@@ -434,7 +482,7 @@
   function irAConsultar(ctx, busca, p) {
     set({ ctx: ctx, ctxProp: p || null, formBusca: busca || S.formBusca, enviado: false, formError: "" });
     if (window.VISITAS) VISITAS.anotar("form_abierto", ctx || "contacto", p ? p.codigo : null);
-    scrollA("contacto");
+    abrirVista("contacto");
   }
 
   /* ── el formulario, que ahora sí manda ───────────────────────────────── */
@@ -575,19 +623,29 @@
         mLeerMas: function () { set({ descLarga: true }); },
         mFoto: fp.fotos[S.fotoN - 1] || "", mSinFoto: !fp.fotos.length,
         mVariasFotos: fp.fotos.length > 1, mFotoCuenta: S.fotoN + " de " + fp.fotos.length,
-        mMosaico: fp.fotos.slice(0, 5).map(function (src, i) {
-          return { src: src, clase: "mosaico__foto" + (i === 0 ? " es-grande" : ""), carga: i === 0 ? "eager" : "lazy", ver: function () { abrirVisor(i + 1); } };
-        }),
+        mMosaico: (function () {
+          var n = fp.fotos.length, out = [];
+          for (var i = 0; i < Math.min(4, n); i++) {
+            (function (idx, i) {
+              out.push({ src: fp.fotos[idx], clase: "mosaico__foto" + (i === 0 ? " es-grande" : ""), carga: i === 0 ? "eager" : "lazy",
+                ver: function (ev) { abrirVisor(idx + 1, ev && ev.currentTarget ? ev.currentTarget.getBoundingClientRect() : null); } });
+            })((S.fotoN - 1 + i) % n, i);
+          }
+          return out;
+        })(),
+        visorClase: "visor" + (S.visorZoom ? " es-zoom" : ""),
+        visorZoom: S.visorZoom ? "true" : "false", visorFull: S.visorFull ? "true" : "false",
+        alternarZoom: alternarZoom, alternarPantalla: alternarPantalla,
         mFotosTxt: "Ver las " + fp.fotos.length + " fotos",
-        verTodas: function () { abrirVisor(1); },
+        verTodas: function (ev) { abrirVisor(S.fotoN, ev && ev.currentTarget ? document.querySelector(".mosaico__foto.es-grande") && document.querySelector(".mosaico__foto.es-grande").getBoundingClientRect() : null); },
         mVisor: S.visor,
         cerrarVisor: cerrarVisor,
         cerrarVisorFondo: function (ev) { if (ev.target === ev.currentTarget || ev.target.id === "visorMarco") cerrarVisor(); },
         mThumbs: fp.fotos.map(function (src, i) {
           return {
             src: src, activa: i + 1 === S.fotoN ? "true" : "false", clase: i + 1 === S.fotoN ? "es-activa" : "",
+            ver: function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); visorDesde = ev && ev.currentTarget ? ev.currentTarget.getBoundingClientRect() : null; set({ fotoN: i + 1 }); precargarFotos(fp.codigo, i + 1); animarVisor(); },
             estilo: "width:78px;height:56px;flex:none;border-radius:8px;overflow:hidden;border:2px solid " + (i + 1 === S.fotoN ? "var(--naranja-claro)" : "transparent") + ";padding:0;cursor:pointer;background:none;opacity:" + (i + 1 === S.fotoN ? "1" : ".6"),
-            ver: function () { set({ fotoN: i + 1 }); }
           };
         }),
         mUbicacion: ubicCorta(fp), mTitulo: fp.titulo, mOperacion: fp.operacion, mTipo: fp.tipo, mCodigo: fp.codigo,
@@ -603,6 +661,17 @@
         mEstadoEstilo: "margin:14px 0 0;font-size:13px;display:flex;gap:8px;align-items:center;color:" + (fp.estado === "reservada" ? "var(--naranja-oscuro)" : "var(--verde-claro)"),
         mPuntoEstilo: "width:8px;height:8px;border-radius:50%;flex:none;" + (fp.estado === "reservada" ? "background:var(--naranja);box-shadow:0 0 0 3px var(--naranja-suave)" : "background:var(--ok);box-shadow:0 0 0 3px var(--ok-suave)"),
         mEstadoTxt: fp.estado === "reservada" ? "Reservada: hay una oferta en curso. Podés dejar tus datos por si se libera." : "Disponible hoy. El estado sale del sistema en vivo: si se reserva, acá cambia.",
+        mDatos: [
+          fp.dorm > 0 ? { ico: "cama", v: String(fp.dorm), k: fp.dorm === 1 ? "Dormitorio" : "Dormitorios" } : null,
+          fp.banos > 0 ? { ico: "bano", v: String(fp.banos), k: fp.banos === 1 ? "Baño" : "Baños" } : null,
+          fp.m2 > 0 ? { ico: "area", v: num(fp.m2) + " m²", k: "Superficie" } : null,
+          fp.cubierta > 0 && fp.cubierta !== fp.m2 ? { ico: "techo", v: num(fp.cubierta) + " m²", k: "Cubiertos" } : null,
+          fp.ambientes > 0 ? { ico: "amb", v: String(fp.ambientes), k: "Ambientes" } : null,
+          fp.cocheras > 0 ? { ico: "auto", v: String(fp.cocheras), k: fp.cocheras === 1 ? "Cochera" : "Cocheras" } : null,
+          fp.antiguedad != null ? { ico: "tiempo", v: fp.antiguedad === 0 ? "A estrenar" : fp.antiguedad + " años", k: "Antigüedad" } : null
+        ].filter(Boolean),
+        mTiene: fp.caracteristicas.map(function (t) { return String(t).replace(/^(\w)/, function (c) { return c.toUpperCase(); }); }),
+        mHayTiene: fp.caracteristicas.length > 0,
         mQuick: [
           { v: fp.dorm > 0 ? String(fp.dorm) : zonaCorta(fp), k: fp.dorm > 0 ? (fp.dorm === 1 ? "Dormitorio" : "Dormitorios") : "Zona" },
           { v: fp.banos > 0 ? String(fp.banos) : fp.operacion, k: fp.banos > 0 ? (fp.banos === 1 ? "Baño" : "Baños") : "Operación" },
@@ -621,11 +690,9 @@
           fp.cocheras > 0 ? { k: "Cocheras", v: String(fp.cocheras) } : null,
           fp.antiguedad != null ? { k: "Antigüedad", v: fp.antiguedad === 0 ? "A estrenar" : fp.antiguedad + " años" } : null,
           fp.expensas > 0 ? { k: "Expensas", v: "$ " + num(fp.expensas) + " por mes" } : null,
-          fp.caracteristicas.length ? { k: "Tiene", v: fp.caracteristicas.join(", ") } : null,
           fp.barrio ? { k: "Barrio", v: fp.barrio } : null,
           { k: "Zona", v: fp.zona },
-          { k: "Corredor a cargo", v: "Francisco Molins" },
-          { k: "Matrícula", v: "CUCIS 251" }
+          fp.expensas > 0 ? null : null
         ].filter(Boolean),
         mDescParrafos: descripcionDe(fp),
         mSimilares: sim.map(tarjetaMini),
@@ -744,6 +811,9 @@
       ckSi: function () { CK.decidir(true); if (window.VISITAS) VISITAS.alAceptar(); pintar(); },
       ckNo: function () { CK.decidir(false); pintar(); },
 
+      vistaContacto: S.vista === "contacto", vistaPreguntas: S.vista === "preguntas",
+      cerrarVista: cerrarVista, abrirContacto: function () { abrirVista("contacto"); }, abrirPreguntas: function () { abrirVista("preguntas"); },
+      toast: !!S.toast, toastTxt: S.toast,
       fichaAbierta: !!fp,
       cerrarFicha: cerrarFicha,
       cerrarFichaFondo: function (ev) { if (ev.target === ev.currentTarget) cerrarFicha(); },
@@ -810,6 +880,46 @@
       if (!a || !(a.closest && a.closest(".minigal") === galActiva)) galParar();
     });
 
+    /* Contacto y Preguntas viven en ventanas: cualquier enlace a #contacto o
+       #preguntas las abre (barra, menú, pie, cierre), y el hash al entrar también. */
+    document.addEventListener("click", function (ev) {
+      var a = ev.target.closest && ev.target.closest('a[href="#contacto"], a[href="#preguntas"]');
+      if (!a) return;
+      ev.preventDefault();
+      if (S.ficha) cerrarFicha();
+      abrirVista(a.getAttribute("href").slice(1));
+    });
+    if (/^#(contacto|preguntas)$/.test(location.hash)) abrirVista(location.hash.slice(1));
+    document.addEventListener("fullscreenchange", function () { if (!document.fullscreenElement && S.visorFull) set({ visorFull: false }); });
+
+    /* Las secciones de la ficha entran al aparecer dentro de su propio scroll. */
+    if ("IntersectionObserver" in window && !matchMedia("(prefers-reduced-motion:reduce)").matches) {
+      var obsS = null, raizS = null;
+      window.observarSecciones = function () {
+        var caja = document.getElementById("fichaCaja"); if (!caja) return;
+        if (raizS !== caja) { if (obsS) obsS.disconnect(); raizS = caja; obsS = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add("es-visto"); obsS.unobserve(e.target); } }); }, { root: caja, threshold: 0.12 }); }
+        caja.querySelectorAll(".ficha__sec:not(.es-visto)").forEach(function (x) { if (!x.__obs) { x.__obs = true; obsS.observe(x); } });
+        setTimeout(function () { caja.querySelectorAll(".ficha__sec:not(.es-visto)").forEach(function (x) { x.classList.add("es-visto"); }); }, 1800);
+      };
+    }
+
+    /* La tira del visor como el Dock: cada miniatura crece según la distancia al mouse. */
+    document.addEventListener("mousemove", function (ev) {
+      var tira = ev.target.closest && ev.target.closest(".visor__tira"); if (!tira) return;
+      var x = ev.clientX;
+      tira.querySelectorAll("button").forEach(function (b) {
+        var r = b.getBoundingClientRect(), d = Math.abs(x - (r.left + r.width / 2));
+        var k = Math.max(0, 1 - d / 150), esc = 1 + 0.6 * k * k;
+        b.style.transform = "scale(" + esc.toFixed(3) + ") translateY(" + (-(esc - 1) * 6).toFixed(1) + "px)";
+        b.style.zIndex = k > 0 ? "2" : "";
+      });
+    });
+    document.addEventListener("mouseout", function (ev) {
+      var tira = ev.target.closest && ev.target.closest(".visor__tira");
+      if (!tira || (ev.relatedTarget && tira.contains(ev.relatedTarget))) return;
+      tira.querySelectorAll("button").forEach(function (b) { b.style.transform = ""; b.style.zIndex = ""; });
+    });
+
     /* El reel pide abrir una ficha. */
     document.addEventListener("molins:ficha", function (ev) { if (prop(ev.detail)) abrirFicha(ev.detail); });
 
@@ -834,26 +944,30 @@
           });
         }, { rootMargin: "-" + ((cab ? cab.offsetHeight : 0) + 40) + "px 0px 0px 0px" }).observe(lugar);
       }
-      var yAntes = window.scrollY, acum = 0, enCola = false;
+      var yAntes = window.scrollY, acum = 0, enCola = false, portadaEl = document.querySelector(".portada");
+      var raizH = document.documentElement;
+      function mirarBarra() {
+        var y = window.scrollY, dy = y - yAntes; yAntes = y;
+        var alto = portadaEl ? portadaEl.offsetHeight : 400;
+        if (cab) cab.classList.toggle("es-solida", y > alto - (cab.offsetHeight || 64));
+        if (quieto || y < 120) { raizH.classList.remove("es-bajando"); acum = 0; return; }
+        if (document.activeElement && busc.contains(document.activeElement)) { raizH.classList.remove("es-bajando"); return; }
+        acum = (dy > 0) === (acum > 0) ? acum + dy : dy;
+        if (acum > 90) raizH.classList.add("es-bajando");
+        else if (acum < -24) raizH.classList.remove("es-bajando");
+      }
       addEventListener("scroll", function () {
         if (enCola) return; enCola = true;
-        requestAnimationFrame(function () {
-          enCola = false;
-          var y = window.scrollY, dy = y - yAntes; yAntes = y;
-          if (!pegado || quieto) { busc.classList.remove("es-oculto"); acum = 0; return; }
-          if (document.activeElement && busc.contains(document.activeElement)) { busc.classList.remove("es-oculto"); return; }
-          acum = (dy > 0) === (acum > 0) ? acum + dy : dy;
-          if (acum > 90) busc.classList.add("es-oculto");
-          else if (acum < -24) busc.classList.remove("es-oculto");
-        });
+        requestAnimationFrame(function () { enCola = false; mirarBarra(); });
       }, { passive: true });
+      mirarBarra();
       setTimeout(function () { busc.classList.remove("buscador--entra"); }, 3200);
       document.addEventListener("keydown", function (ev) {
         if (ev.key !== "/" || ev.ctrlKey || ev.metaKey || ev.altKey) return;
         var t = ev.target, tag = t && t.tagName;
         if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT" || (t && t.isContentEditable)) return;
         var c = document.getElementById("fTexto"); if (!c) return;
-        ev.preventDefault(); busc.classList.remove("es-oculto"); c.focus();
+        ev.preventDefault(); document.documentElement.classList.remove("es-bajando"); c.focus();
         if (!pegado) c.scrollIntoView({ block: "center", behavior: quieto ? "auto" : "smooth" });
       });
     }
@@ -934,6 +1048,7 @@
     /* El reel de la portada pide un segmento ("Ver alquileres"). */
     document.addEventListener("molins:segmento", function (ev) { set({ seg: ev.detail, fTipo: "", fZona: "", fDorm: "", fPrecio: "", fTexto: "" }); });
     document.addEventListener("keydown", function (ev) {
+      if (ev.key === "Escape" && !S.ficha && S.vista !== "inicio") { cerrarVista(); return; }
       if (!S.ficha) return;
       if (ev.key === "Escape") { if (S.visor) cerrarVisor(); else cerrarFicha(); return; }
       if (ev.key === "ArrowLeft") moverFoto(-1);

@@ -46,11 +46,15 @@
   var i = 0, activa = 0, reloj = null, serie = 0, enVuelo = false, pausado = false, visible = true, vivo = true, kb = 0;
   var datos = {}; // codigo -> lo que publica el sistema (lo manda app.js)
 
+  /* La foto entera, nunca recortada (pedido de David 6/9): va contenida y
+     centrada, y la misma foto desenfocada y oscura llena los costados. */
   function foto(d) {
-    var im = new Image();
-    im.alt = ""; im.decoding = "async"; im.src = d.img;
-    if (!quieto) { kb++; im.className = "reel__kb" + (kb % 2 ? " reel__kb--a" : " reel__kb--b"); }
-    return im;
+    var caja = document.createElement("span"); caja.className = "reel__cuadro";
+    var fondo = new Image(); fondo.className = "reel__fondo"; fondo.alt = ""; fondo.decoding = "async"; fondo.src = d.img;
+    var im = new Image(); im.alt = ""; im.decoding = "async"; im.src = d.img;
+    im.className = "reel__img" + (quieto ? "" : (kb++ % 2 ? " reel__kb--a" : " reel__kb--b"));
+    caja.appendChild(fondo); caja.appendChild(im); caja.__img = im;
+    return caja;
   }
 
   function rotulo(d) {
@@ -98,7 +102,7 @@
     clearTimeout(reloj); reloj = null;
     var d = REEL[n], mi = ++serie;
     enVuelo = true;
-    var media = foto(d);
+    var media = foto(d), im = media.__img;
     var listo = function () {
       if (!vivo || mi !== serie) return; // llegó tarde: ya se pidió otra
       enVuelo = false;
@@ -116,8 +120,8 @@
       setTimeout(function () { if (mi === serie) while (sale.firstChild) sale.removeChild(sale.firstChild); }, FUNDIDO + 100);
       var sig = new Image(); sig.src = REEL[(n + 1) % REEL.length].img;
     };
-    if (media.complete && media.naturalWidth) listo();
-    else { media.onload = listo; media.onerror = function () { if (mi === serie) { enVuelo = false; programar(800); } }; }
+    if (im.complete && im.naturalWidth) listo();
+    else { im.onload = listo; im.onerror = function () { if (mi === serie) { enVuelo = false; programar(800); } }; }
   }
 
   function programar(ms) {

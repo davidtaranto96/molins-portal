@@ -61,7 +61,7 @@
   @keyframes brillo{to{transform:translateX(100%)}}
   /* ── la ficha ── */
   @keyframes fichaEntra{from{opacity:0;transform:translateY(16px) scale(.985)}to{opacity:1;transform:none}}
-  .foto-entra > [role=img]{animation:fotoEntra .4s ease both}
+  .foto-entra > [role=img],.foto-entra > img{animation:fotoEntra .4s ease both}
   @keyframes fotoEntra{from{opacity:.35;transform:scale(1.02)}to{opacity:1;transform:none}}
   .ficha-acciones{position:sticky;bottom:0;z-index:5;display:flex;gap:10px;padding:10px 14px calc(10px + env(safe-area-inset-bottom));background:rgba(255,255,255,.94);backdrop-filter:blur(8px);border-top:1px solid var(--borde)}
   .ficha-acciones a,.ficha-acciones button{flex:1;display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:46px;border-radius:10px;font-weight:600;font-size:14.5px;cursor:pointer}
@@ -70,17 +70,18 @@
   .tilde{animation:tilde .5s cubic-bezier(.22,.61,.36,1) both}
   @keyframes tilde{0%{transform:scale(.4);opacity:0}60%{transform:scale(1.12);opacity:1}100%{transform:scale(1)}}
   .boton:active{transform:scale(.97)}
-  @media (prefers-reduced-motion:reduce){.tarjeta,.tarjeta__foto,.reco,.reco img,.fav,.chip-activo,#fichaCaja,.foto-entra > [role=img],.tilde,.esqueleto::after{animation:none!important;transition:none!important}.tarjeta:hover{transform:none}}
+  @media (prefers-reduced-motion:reduce){.ficha__sec{opacity:1!important;transform:none!important}.dato{animation:none!important}.btn-anim{transition:none}.barra{transition:none}.tarjeta,.tarjeta__foto,.reco,.reco img,.fav,.chip-activo,#fichaCaja,.foto-entra > [role=img],.tilde,.esqueleto::after{animation:none!important;transition:none!important}.tarjeta:hover{transform:none}}
   /* ── la portada ── */
   .portada{position:relative;height:min(74vh,720px);min-height:480px;background:var(--verde-noche);color:#fff;overflow:hidden}
   .reel{position:absolute;inset:0;overflow:hidden}
-  .reel__poster{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+  .reel__cuadro{position:absolute;inset:0;display:block;overflow:hidden;background:var(--verde-noche)}
+  .reel__fondo{position:absolute;inset:-6%;width:112%;height:112%;object-fit:cover;filter:blur(26px) brightness(.5) saturate(1.15);transform:scale(1.04)}
+  .reel__img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;display:block;filter:drop-shadow(0 24px 60px rgba(0,0,0,.45))}
   .reel__capa{position:absolute;inset:0;opacity:0;transition:opacity 1.4s ease}
   .reel__capa.es-visible{opacity:1}
-  .reel__capa img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
   .reel__velo{position:absolute;inset:0;background:linear-gradient(180deg,rgba(9,30,31,.42) 0%,rgba(9,30,31,0) 22%,rgba(9,30,31,0) 48%,rgba(9,30,31,.78) 100%);pointer-events:none}
-  @keyframes kbA{from{transform:scale(1.02) translate3d(.6%,.3%,0)}to{transform:scale(1.08) translate3d(-.6%,-.5%,0)}}
-  @keyframes kbB{from{transform:scale(1.08) translate3d(-.5%,.4%,0)}to{transform:scale(1.02) translate3d(.5%,-.3%,0)}}
+  @keyframes kbA{from{transform:scale(.965) translate3d(.4%,.3%,0)}to{transform:scale(1) translate3d(0,0,0)}}
+  @keyframes kbB{from{transform:scale(.975) translate3d(-.4%,.2%,0)}to{transform:scale(1) translate3d(0,0,0)}}
   .reel__kb--a{animation:kbA 8s linear both;will-change:transform}
   .reel__kb--b{animation:kbB 8s linear both;will-change:transform}
   .portada__marca{position:absolute;left:clamp(20px,4vw,56px);top:clamp(22px,3.5vw,40px);display:flex;align-items:center;gap:14px;animation:rise .7s cubic-bezier(.22,.61,.36,1) both;z-index:2}
@@ -234,6 +235,23 @@
   .fila-reco > .reco{flex:0 0 250px}
   .fila-reco--grilla{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));overflow:visible;scroll-snap-type:none}
   .fila-reco--grilla > .reco{flex:none}
+  /* ── la barra: transparente sobre la portada, sólida al bajar, y se esconde al bajar rápido ── */
+  .barra{position:fixed;top:0;left:0;right:0;z-index:100;background:transparent;border-bottom:1px solid transparent;transition:transform .45s cubic-bezier(.2,.8,.2,1),background .35s,border-color .35s,box-shadow .35s}
+  .barra nav a{font-size:14px;font-weight:500;color:rgba(255,255,255,.88);transition:color .2s;position:relative;padding:6px 0}
+  .barra nav a::after{content:"";position:absolute;left:0;right:0;bottom:0;height:2px;border-radius:2px;background:var(--naranja);transform:scaleX(0);transform-origin:left;transition:transform .25s cubic-bezier(.2,.8,.2,1)}
+  .barra nav a:hover{color:#fff}.barra nav a:hover::after{transform:scaleX(1)}
+  .barra .marca b{color:#fff;text-shadow:0 1px 10px rgba(0,0,0,.3)}.barra .marca small{color:rgba(255,255,255,.75)}
+  .barra__linea{width:23px;height:2px;background:#fff;border-radius:2px;display:block;transition:background .3s}
+  .barra.es-solida{background:rgba(250,249,245,.9);backdrop-filter:blur(14px) saturate(1.4);-webkit-backdrop-filter:blur(14px) saturate(1.4);border-bottom-color:var(--borde);box-shadow:0 6px 24px rgba(9,30,31,.06)}
+  .barra.es-solida nav a{color:var(--tinta-suave)}.barra.es-solida nav a:hover{color:var(--tinta)}
+  .barra.es-solida .marca b{color:var(--tinta);text-shadow:none}.barra.es-solida .marca small{color:var(--gris)}
+  .barra.es-solida .barra__linea{background:var(--tinta)}
+  html.es-bajando .barra{transform:translateY(-100%)}
+  html.es-bajando .buscador.es-pegado{transform:translateY(calc(-100% - var(--barra,64px) - 24px));opacity:0;pointer-events:none}
+  html.con-capa .barra,html.con-capa main,html.con-capa footer,html.con-capa .fab{visibility:hidden}
+  .btn-anim{transition:transform .22s cubic-bezier(.2,.8,.2,1),background .2s,color .2s,border-color .2s,box-shadow .2s,filter .2s}
+  .btn-anim:hover{transform:translateY(-1px) scale(1.05)}
+  .btn-anim:active{transform:scale(.92);transition-duration:.08s}
   /* ── la barra ── */
   .marca{display:flex;align-items:center;gap:11px;color:var(--tinta)}
   .marca img{width:40px;height:40px;border-radius:9px;object-fit:cover;display:block}
@@ -283,38 +301,76 @@
   .ficha__consultar{display:inline-flex;align-items:center;gap:9px;background:var(--whatsapp);color:var(--verde-noche);font-weight:600;font-size:14.5px;min-height:42px;padding:0 18px;border-radius:999px;transition:transform .15s,filter .2s}
   .ficha__consultar:hover{filter:brightness(1.05);color:var(--verde-noche)}.ficha__consultar:active{transform:scale(.97)}
   .ficha__scroll{flex:1;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
-  .ficha__mosaico{position:relative;max-width:1180px;margin:18px auto 0;padding:0 clamp(14px,2.5vw,28px);display:grid;grid-template-columns:1.6fr 1fr 1fr;grid-template-rows:repeat(2,minmax(0,1fr));gap:8px;height:clamp(300px,54vh,560px)}
+  .ficha__mosaico{position:relative;max-width:1400px;margin:14px auto 0;padding:0 clamp(12px,2vw,24px);display:grid;grid-template-columns:1.55fr 1fr 1fr;grid-template-rows:1.15fr 1fr;gap:10px;height:clamp(340px,72vh,780px)}
   .ficha__mosaico > [data-si]{display:contents}
   .mosaico__foto{position:relative;border:none;padding:0;background:var(--verde-suave);border-radius:10px;overflow:hidden;cursor:zoom-in;min-width:0;min-height:0}
   .mosaico__foto img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .6s cubic-bezier(.22,.61,.36,1)}
   .mosaico__foto:hover img{transform:scale(1.03)}
-  .mosaico__foto.es-grande{grid-row:1 / span 2;border-radius:16px 10px 10px 16px}
-  .mosaico__foto:nth-child(3){border-radius:10px 16px 10px 10px}.mosaico__foto:nth-child(5){border-radius:10px 10px 16px 10px}
+  .mosaico__foto.es-grande{grid-row:1 / span 2;border-radius:20px 12px 12px 20px}
+  .mosaico__foto.es-grande img{animation:fotoEntra .45s ease both}
+  .mosaico__foto:nth-child(2){grid-column:2 / span 2;border-radius:12px 20px 12px 12px}
+  .mosaico__foto:nth-child(4){border-radius:12px 12px 20px 12px}
+  .mosaico__foto:hover img{transform:scale(1.03);filter:brightness(1.04)}
   .mosaico__todas{position:absolute;right:calc(clamp(14px,2.5vw,28px) + 12px);bottom:12px;display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.94);border:1px solid var(--borde);color:var(--tinta);font-weight:600;font-size:13px;padding:9px 14px;border-radius:999px;cursor:pointer;box-shadow:0 6px 18px rgba(9,30,31,.15);transition:transform .15s,background .2s}
   .mosaico__todas:hover{background:#fff;transform:translateY(-1px)}
   .mosaico__sinfoto{grid-column:1 / -1;grid-row:1 / -1;display:grid;place-items:center;border-radius:16px;font-family:monospace;font-size:12px;color:var(--tinta-suave);background:repeating-linear-gradient(45deg,var(--verde-suave),var(--verde-suave) 14px,var(--verde-palido) 14px,var(--verde-palido) 28px)}
   .mosaico__estado{position:absolute;left:calc(clamp(14px,2.5vw,28px) + 12px);top:12px;font-size:11.5px;font-weight:700;color:#fff;padding:5px 11px;border-radius:100px}
-  .ficha__cuerpo{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:0 40px;padding:26px clamp(14px,2.5vw,28px) 30px;align-items:start;max-width:1180px;margin:0 auto}
-  .ficha__lado{position:sticky;top:14px}
+  .ficha__cuerpo{display:block;padding:26px clamp(14px,2.5vw,28px) 40px;max-width:1180px;margin:0 auto}
+  .ficha__sec{opacity:0;transform:translateY(18px);transition:opacity .6s cubic-bezier(.22,.61,.36,1),transform .6s cubic-bezier(.22,.61,.36,1)}
+  .ficha__sec.es-visto{opacity:1;transform:none}
+  .datos{display:flex;gap:10px;margin-top:22px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none;-ms-overflow-style:none}
+  .datos::-webkit-scrollbar{display:none}
+  .dato{flex:1 0 132px;display:flex;flex-direction:column;gap:2px;padding:16px 16px 14px;border-radius:16px;background:linear-gradient(160deg,var(--hueso),var(--hueso-3));border:1px solid var(--borde);transition:transform .25s cubic-bezier(.2,.8,.2,1),box-shadow .25s,border-color .2s;animation:rise .5s cubic-bezier(.22,.61,.36,1) both}
+  .dato:nth-child(2){animation-delay:.06s}.dato:nth-child(3){animation-delay:.12s}.dato:nth-child(4){animation-delay:.18s}.dato:nth-child(5){animation-delay:.24s}.dato:nth-child(6){animation-delay:.3s}.dato:nth-child(7){animation-delay:.36s}
+  .dato:hover{transform:translateY(-3px);box-shadow:0 14px 30px rgba(17,60,61,.1);border-color:var(--borde-fuerte)}
+  .dato__ico{width:34px;height:34px;border-radius:10px;background-color:var(--verde-suave);margin-bottom:8px;background-repeat:no-repeat;background-position:center;background-size:18px}
+  .dato__ico[data-ico=cama]{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23113c3d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 18v-7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v7M3 21v-3M21 21v-3M6 9V6a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v3'/%3E%3C/svg%3E")}
+  .dato__ico[data-ico=bano]{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23113c3d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 12h16v3a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4v-3ZM6 12V6a2 2 0 0 1 2-2h1M7 21v-2M17 21v-2'/%3E%3C/svg%3E")}
+  .dato__ico[data-ico=area]{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23113c3d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='4' y='4' width='16' height='16' rx='2'/%3E%3Cpath d='M4 12h16M12 4v16'/%3E%3C/svg%3E")}
+  .dato__ico[data-ico=techo]{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23113c3d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 11 12 4l9 7M5 10v10h14V10'/%3E%3C/svg%3E")}
+  .dato__ico[data-ico=auto]{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23113c3d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 17h14M6 17l1.5-6h9L18 17M4 17v2M20 17v2M3 12h18'/%3E%3C/svg%3E")}
+  .dato__ico[data-ico=amb]{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23113c3d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='3' width='8' height='8' rx='1.5'/%3E%3Crect x='13' y='3' width='8' height='8' rx='1.5'/%3E%3Crect x='3' y='13' width='8' height='8' rx='1.5'/%3E%3Crect x='13' y='13' width='8' height='8' rx='1.5'/%3E%3C/svg%3E")}
+  .dato__ico[data-ico=tiempo]{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23113c3d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M12 7v5l3 2'/%3E%3C/svg%3E")}
+  .dato b{font-family:'Libre Caslon Text',Georgia,serif;font-size:24px;font-weight:700;line-height:1.05}
+  .dato small{font-size:11.5px;color:var(--gris);font-weight:600;letter-spacing:.02em}
+  .carac{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px}
+  .carac__item{display:flex;flex-direction:column;gap:3px;padding:12px 14px;border-radius:12px;background:#fff;border:1px solid var(--borde);transition:border-color .2s,transform .2s}
+  .carac__item:hover{border-color:var(--borde-fuerte);transform:translateY(-2px)}
+  .carac__item small{font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--gris)}
+  .carac__item b{font-size:14.5px;font-weight:600}
+  .tiene{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+  .tiene__chip{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:600;color:var(--verde);background:var(--verde-suave);border:1px solid var(--borde-4);padding:7px 12px;border-radius:999px}
   .ficha__corredor-linea{max-width:1180px;margin:0 auto;padding:0 clamp(14px,2.5vw,28px) 40px;font-size:12px;color:var(--gris)}
   @media (max-width:899px){.ficha__mosaico{grid-template-columns:1fr;grid-template-rows:1fr;height:min(62vw,420px);margin-top:0;padding:0}.mosaico__foto{border-radius:0!important}.mosaico__foto:not(.es-grande){display:none}.mosaico__foto.es-grande{grid-row:auto}.mosaico__todas{right:12px}.mosaico__estado{left:12px}.ficha__barra-der .ficha__consultar span{display:none}.ficha__barra-der .ficha__consultar{padding:0 12px}.ficha__nav span{display:none}}
   #fichaMapa{position:relative;overflow:hidden;isolation:isolate}
   /* el visor de fotos */
-  .visor{position:fixed;inset:0;z-index:600;background:rgba(6,18,19,.96);display:grid;grid-template-rows:1fr auto;animation:fadein .25s ease both}
-  .visor__marco{display:grid;place-items:center;padding:64px 80px 10px;min-height:0}
-  .visor__foto{max-width:100%;max-height:100%;object-fit:contain;border-radius:6px;box-shadow:0 30px 80px rgba(0,0,0,.6);animation:fotoEntra .35s ease both}
-  .visor__cerrar{position:absolute;top:14px;right:14px;width:44px;height:44px;border-radius:50%;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.08);color:#fff;cursor:pointer;display:grid;place-items:center;transition:background .2s}
-  .visor__cerrar:hover{background:rgba(255,255,255,.2)}
-  .visor__n{position:absolute;top:22px;left:20px;font-size:13px;font-weight:600;color:rgba(255,255,255,.85);letter-spacing:.06em}
+  .visor{position:fixed;inset:0;z-index:600;background:rgba(6,18,19,.985);display:grid;grid-template-rows:auto 1fr auto;animation:fadein .28s ease both}
+  .visor__barra{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px clamp(14px,2vw,24px);color:#fff}
+  .visor__titulo{display:flex;flex-direction:column;min-width:0;line-height:1.2}
+  .visor__titulo b{font-family:'Libre Caslon Text',Georgia,serif;font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .visor__titulo small{font-size:12px;color:rgba(255,255,255,.7);letter-spacing:.04em}
+  .visor__botones{display:flex;align-items:center;gap:8px;flex:none}
+  .visor__btn{width:42px;height:42px;border-radius:50%;border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.08);color:#fff;cursor:pointer;display:grid;place-items:center}
+  .visor__btn:hover{background:rgba(255,255,255,.2)}
+  .visor__btn[aria-pressed="true"]{background:var(--naranja);border-color:var(--naranja);color:var(--verde-noche)}
+  .visor__btn--cerrar{margin-left:6px}
+  .visor__consultar{display:inline-flex;align-items:center;gap:8px;background:var(--whatsapp);color:var(--verde-noche);font-weight:600;font-size:14px;min-height:42px;padding:0 16px;border-radius:999px}
+  .visor__consultar:hover{color:var(--verde-noche);filter:brightness(1.06)}
+  .visor__marco{display:grid;place-items:center;padding:6px 84px 8px;min-height:0;overflow:auto;position:relative}
+  .visor__foto{max-width:100%;max-height:100%;object-fit:contain;border-radius:8px;box-shadow:0 30px 80px rgba(0,0,0,.6);transform-origin:top left;will-change:transform;cursor:zoom-in}
+  .visor.es-zoom .visor__marco{place-items:start;padding:6px 20px 8px}
+  .visor.es-zoom .visor__foto{max-width:none;max-height:none;cursor:zoom-out;border-radius:0}
   .visor__flecha{position:absolute;top:50%;transform:translateY(-50%);width:50px;height:50px;border-radius:50%;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.08);color:#fff;cursor:pointer;display:grid;place-items:center;transition:background .2s,transform .15s}
   .visor__flecha:hover{background:rgba(255,255,255,.2)}.visor__flecha:active{transform:translateY(-50%) scale(.94)}
   .visor__flecha--izq{left:18px}.visor__flecha--der{right:18px}
-  .visor__tira{display:flex;gap:8px;padding:12px 16px 16px;overflow-x:auto;justify-content:safe center;scrollbar-width:thin}
-  .visor__tira button{flex:none;width:84px;height:60px;border-radius:8px;overflow:hidden;border:2px solid transparent;padding:0;background:none;cursor:pointer;opacity:.55;transition:opacity .2s,border-color .2s,transform .2s}
+  /* la tira: como el Dock. Cada miniatura crece según qué tan cerca está el mouse (JS) */
+  .visor__tira{display:flex;gap:6px;padding:26px 16px 14px;overflow-x:auto;justify-content:safe center;align-items:flex-end;height:118px;box-sizing:border-box;scrollbar-width:none}
+  .visor__tira::-webkit-scrollbar{display:none}
+  .visor__tira button{flex:none;width:64px;height:46px;border-radius:7px;overflow:hidden;border:2px solid transparent;padding:0;background:none;cursor:pointer;opacity:.6;transform-origin:bottom center;transition:opacity .2s,border-color .2s,transform .18s cubic-bezier(.2,.8,.2,1)}
   .visor__tira button img{width:100%;height:100%;object-fit:cover;display:block}
-  .visor__tira button:hover{opacity:.9}
-  .visor__tira button.es-activa{opacity:1;border-color:var(--naranja);transform:scale(1.04)}
-  @media (max-width:899px){.visor__marco{padding:60px 8px 8px}.visor__flecha{width:42px;height:42px;top:auto;bottom:96px;transform:none}.visor__flecha:active{transform:scale(.94)}.visor__tira button{width:64px;height:46px}}
+  .visor__tira button:hover{opacity:1}
+  .visor__tira button.es-activa{opacity:1;border-color:var(--naranja)}
+  @media (max-width:899px){.visor__marco{padding:4px 8px 8px}.visor__flecha{width:42px;height:42px;top:auto;bottom:126px;transform:none}.visor__flecha:active{transform:scale(.94)}.visor__tira{height:96px;padding-top:14px}.visor__tira button{width:56px;height:40px}.visor__titulo b{font-size:14px}.visor__consultar span{display:none}.visor__consultar{padding:0 12px}.visor__btn[data-click=alternarZoom]{display:none}}
   /* ── la ficha en dos columnas ── */
   .ficha__principal{min-width:0}
   .ficha__nav{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:12.5px;font-weight:600;color:var(--gris)}
@@ -344,11 +400,30 @@
   .ficha__lead{font-size:16.5px;line-height:1.65;color:var(--tinta);max-width:66ch;margin:0 0 14px;font-weight:500}
   .ficha__leermas{border:none;background:none;color:var(--naranja-oscuro);font-weight:600;font-size:14px;cursor:pointer;padding:6px 0;display:inline-flex;align-items:center;gap:6px}
   .ficha__leermas::after{content:"↓"}
-  @media (max-width:999px){.ficha__cuerpo{grid-template-columns:1fr;padding:18px 14px 24px}.ficha__lado{position:static}}
+  @media (max-width:999px){.ficha__cuerpo{padding:18px 14px 24px}}
   /* ── etiqueta de sección ── */
   .etiqueta-seccion{display:inline-flex;align-items:center;gap:8px;font-size:11.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--naranja-oscuro)}
   .etiqueta-seccion::before{content:"";width:22px;height:2px;background:var(--naranja);border-radius:2px}
   .etiqueta-seccion--clara{color:var(--naranja-palido)}
+  /* ── las ventanas (preguntas, contacto) ── */
+  .panel{position:fixed;inset:0;z-index:520;background:var(--hueso);display:flex;flex-direction:column;animation:fichaEntra .3s cubic-bezier(.22,.61,.36,1) both}
+  .panel__barra{flex:none;display:flex;align-items:center;gap:12px;padding:10px clamp(14px,2.5vw,28px);border-bottom:1px solid var(--borde);background:rgba(250,249,245,.96);min-height:60px}
+  .panel__barra b{font-family:'Libre Caslon Text',Georgia,serif;font-size:17px}
+  .panel__scroll{flex:1;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+  .panel .preguntas{padding-top:28px;padding-bottom:60px}.panel .contacto{margin-top:0;padding:28px 0 60px}
+  .panel .preguntas__intro{top:20px}
+  .cierre{padding:clamp(52px,6.5vw,92px) 20px}
+  .cierre__caja{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr);gap:clamp(24px,4vw,60px);align-items:center;background:radial-gradient(120% 90% at 100% 0%,rgba(246,101,3,.22),transparent 55%),linear-gradient(160deg,var(--verde-hondo),var(--verde-noche));color:#fff;border-radius:24px;padding:clamp(28px,4.5vw,56px);box-shadow:0 30px 80px rgba(9,30,31,.22)}
+  .cierre h2{margin:14px 0 10px;font-family:'Libre Caslon Text',Georgia,serif;font-weight:700;font-size:clamp(24px,3vw,36px);line-height:1.12;color:#fff}
+  .cierre p{margin:0;font-size:15.5px;line-height:1.6;color:rgba(255,255,255,.78);max-width:48ch}
+  .cierre__botones{display:flex;flex-direction:column;gap:10px;align-items:stretch}
+  .cierre__btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;background:var(--naranja);color:var(--verde-noche);font-weight:600;font-size:15px;min-height:52px;border-radius:12px;box-shadow:0 10px 26px rgba(246,101,3,.28)}
+  .cierre__btn:hover{color:var(--verde-noche);background:var(--naranja-claro)}
+  .cierre__btn--wa{background:var(--whatsapp);box-shadow:0 10px 26px rgba(37,211,102,.25)}.cierre__btn--wa:hover{background:var(--whatsapp);filter:brightness(1.05)}
+  .cierre__link{text-align:center;font-size:13.5px;font-weight:600;color:var(--naranja-palido);padding:6px}
+  .toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%);z-index:700;background:var(--verde-noche);color:#fff;font-size:13.5px;font-weight:600;padding:11px 18px;border-radius:999px;box-shadow:0 14px 40px rgba(0,0,0,.35);animation:toastEntra .35s cubic-bezier(.2,.8,.2,1) both}
+  @keyframes toastEntra{from{opacity:0;transform:translate(-50%,14px) scale(.96)}to{opacity:1;transform:translate(-50%,0)}}
+  @media (max-width:899px){.cierre__caja{grid-template-columns:1fr}.cierre{padding:40px 16px}}
   /* ── preguntas ── */
   .preguntas{padding:clamp(56px,7vw,100px) 0 0}
   .preguntas__caja{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.4fr);gap:clamp(28px,5vw,72px);align-items:start}
@@ -466,39 +541,15 @@
     document.head.appendChild(cf);
   }
 </script>
-<link rel="stylesheet" href="src/estilos.css?v=20260905k">
+<link rel="stylesheet" href="src/estilos.css?v=20260906a">
 </head>
 <body>
 
 
 <div style="min-height:100vh">
 
-<!-- TOPBAR -->
-<div style="background:var(--verde);color:rgba(255,255,255,.78);font-size:12.5px">
-  <div style="max-width:1180px;margin:0 auto;padding:0 20px;display:flex;justify-content:space-between;align-items:center;min-height:40px;gap:16px">
-    <div data-si="noEsMovil" hidden>
-      <div style="display:flex;align-items:center;gap:8px;min-width:0;white-space:nowrap;overflow:hidden">
-        <span>20 de Febrero 1705, Of. 7 — Salta</span>
-        <span style="color:rgba(255,255,255,.55)">·</span>
-        <span style="color:var(--naranja-claro);font-weight:600">Corredor matriculado CUCIS 251</span>
-      </div>
-    </div>
-    <div style="display:flex;align-items:center;gap:18px;white-space:nowrap">
-      <div data-si="noEsMovil" hidden>
-        <a href="https://instagram.com/molins.negociosinmobilarios" target="_blank" rel="noopener" style="color:rgba(255,255,255,.78);display:inline-flex;align-items:center;gap:6px">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="width:14px;height:14px"><rect x="3" y="3" width="18" height="18" rx="5"></rect><circle cx="12" cy="12" r="4"></circle><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"></circle></svg>
-          @molins.negociosinmobilarios</a>
-      </div>
-      <a href="tel:+543874153669" style="color:rgba(255,255,255,.85)">387 415 3669</a>
-      <a href="https://wa.me/5493874153669?text=Hola%2C%20vi%20el%20sitio%20y%20quiero%20consultar%20por%20una%20propiedad." target="_blank" rel="noopener" style="color:var(--ok-claro);font-weight:600;display:inline-flex;align-items:center;gap:6px">
-        <svg viewBox="0 0 24 24" fill="currentColor" style="width:14px;height:14px"><path d="M.057 24l1.687-6.163a11.867 11.867 0 0 1-1.587-5.946C.16 5.335 5.495 0 12.05 0a11.817 11.817 0 0 1 8.413 3.488 11.824 11.824 0 0 1 3.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 0 1-5.688-1.448L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884a9.86 9.86 0 0 0 1.51 5.26l-.999 3.648 3.978-1.052z"></path></svg>
-        WhatsApp</a>
-    </div>
-  </div>
-</div>
-
 <!-- NAV : el logo manda -->
-<header style="position:sticky;top:0;z-index:100;background:rgba(250,249,245,.94);backdrop-filter:blur(10px);border-bottom:1px solid var(--borde)">
+<header class="barra">
   <div style="max-width:1180px;margin:0 auto;padding:0 20px;display:flex;align-items:center;justify-content:space-between;min-height:64px;gap:16px">
     <!-- Pedido de Fran (5/9): en la barra va sólo el escudo a la izquierda, el menú al
          centro, y el logo de Luis (López Propiedades) a la derecha. -->
@@ -508,18 +559,17 @@
     </a>
     <div data-si="noEsMovil" hidden style="flex:1 1 auto;display:flex;align-items:center;justify-content:center;gap:22px">
       <nav style="display:flex;align-items:center;gap:26px">
-        <a href="#propiedades" style="font-size:14px;font-weight:500;color:var(--tinta-suave)">Propiedades</a>
-        <a href="#proyectos" style="font-size:14px;font-weight:500;color:var(--tinta-suave)">Proyectos</a>
-        <a href="#preguntas" style="font-size:14px;font-weight:500;color:var(--tinta-suave)">Preguntas</a>
-        <a href="#contacto" style="font-size:14px;font-weight:500;color:var(--tinta-suave)">Contacto</a>
+        <a href="#propiedades">Propiedades</a>
+        <a href="#proyectos">Proyectos</a>
+        <a href="#preguntas">Preguntas</a>
+        <a href="#contacto">Contacto</a>
       </nav>
-      <a href="#contacto" style="background:var(--naranja);color:var(--verde-noche);font-weight:600;font-size:14.5px;padding:12px 20px;border-radius:10px;display:inline-flex;align-items:center;min-height:46px;white-space:nowrap;box-shadow:0 6px 16px rgba(246,101,3,.24);transition:background .2s,transform .2s" data-fx="fx-1">Reservar una visita</a>
     </div>
     <div data-si="esMovil" hidden>
       <button data-click="alternarMenu" aria-label="Abrir menú" style="background:none;border:none;cursor:pointer;padding:10px;display:flex;flex-direction:column;gap:5px">
-        <span style="width:23px;height:2px;background:var(--tinta);border-radius:2px;display:block"></span>
-        <span style="width:23px;height:2px;background:var(--tinta);border-radius:2px;display:block"></span>
-        <span style="width:23px;height:2px;background:var(--tinta);border-radius:2px;display:block"></span>
+        <span class="barra__linea"></span>
+        <span class="barra__linea"></span>
+        <span class="barra__linea"></span>
       </button>
     </div>
   </div>
@@ -558,7 +608,7 @@
      Debajo asoman las tarjetas, y entre las dos cosas flota el buscador (src/reel.js + app.js). -->
 <section class="portada" data-screen-label="Portada">
   <div id="reel" class="reel" aria-hidden="true">
-    <img src="img/hero-204329.webp" alt="" width="1520" height="1140" fetchpriority="high" class="reel__poster" />
+    <span class="reel__cuadro"><img src="img/hero-204329.webp" alt="" class="reel__fondo" aria-hidden="true" /><img src="img/hero-204329.webp" alt="" width="1520" height="1140" fetchpriority="high" class="reel__img reel__poster" /></span>
     <div class="reel__capa reel__capa--a"></div>
     <div class="reel__capa reel__capa--b"></div>
     <div class="reel__velo"></div>
@@ -904,6 +954,28 @@
   </article>
 </section>
 
+<!-- ══ CIERRE DEL INICIO: la invitación a escribir (contacto y preguntas viven en sus ventanas) ══ -->
+<section id="escribinos" data-screen-label="Escribinos" class="cierre">
+  <div class="cierre__caja">
+    <div>
+      <span class="etiqueta-seccion etiqueta-seccion--clara">Hablemos</span>
+      <h2>Contanos qué buscás. Si no lo tenemos, lo salimos a buscar.</h2>
+      <p>Una persona te contesta, no un bot. Las consultas entran directo al sistema y las ve Francisco en el momento.</p>
+    </div>
+    <div class="cierre__botones">
+      <a href="#contacto" class="cierre__btn btn-anim">Escribinos<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:17px;height:17px"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+      <a href="https://wa.me/5493874153669?text=Hola%2C%20vi%20el%20sitio%20y%20quiero%20consultar." target="_blank" rel="noopener" class="cierre__btn cierre__btn--wa btn-anim"><svg viewBox="0 0 24 24" fill="currentColor" style="width:17px;height:17px"><path d="M.057 24l1.687-6.163a11.867 11.867 0 0 1-1.587-5.946C.16 5.335 5.495 0 12.05 0a11.817 11.817 0 0 1 8.413 3.488 11.824 11.824 0 0 1 3.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 0 1-5.688-1.448L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884a9.86 9.86 0 0 0 1.51 5.26l-.999 3.648 3.978-1.052z"></path></svg>WhatsApp</a>
+      <a href="#preguntas" class="cierre__link">Preguntas frecuentes →</a>
+    </div>
+  </div>
+</section>
+</main>
+
+<!-- ══ VENTANAS: Preguntas y Contacto (fuera de la pantalla inicial) ══ -->
+<div data-si="vistaPreguntas" hidden>
+  <div class="panel" role="dialog" aria-modal="true" aria-label="Preguntas frecuentes" data-screen-label="Ventana Preguntas">
+    <div class="panel__barra"><button type="button" class="ficha__ico btn-anim" data-click="cerrarVista" aria-label="Volver"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" style="width:18px;height:18px"><path d="M18 6 6 18M6 6l12 12"></path></svg></button><b>Preguntas frecuentes</b></div>
+    <div class="panel__scroll">
 <!-- ══ PREGUNTAS ══ -->
 <section id="preguntas" data-screen-label="Preguntas frecuentes" class="preguntas">
   <div style="max-width:1180px;margin:0 auto;padding:0 20px">
@@ -928,6 +1000,13 @@
   </div>
 </section>
 
+    </div>
+  </div>
+</div>
+<div data-si="vistaContacto" hidden>
+  <div class="panel" role="dialog" aria-modal="true" aria-label="Contacto" data-screen-label="Ventana Contacto">
+    <div class="panel__barra"><button type="button" class="ficha__ico btn-anim" data-click="cerrarVista" aria-label="Volver"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" style="width:18px;height:18px"><path d="M18 6 6 18M6 6l12 12"></path></svg></button><b>Contacto</b></div>
+    <div class="panel__scroll">
 <!-- ══ CONTACTO ══ -->
 <section id="contacto" data-screen-label="Contacto" class="contacto">
   <div style="max-width:1180px;margin:0 auto;padding:0 20px">
@@ -1024,7 +1103,10 @@
   </div>
 </section>
 
-</main>
+    </div>
+  </div>
+</div>
+<div data-si="toast" hidden><div class="toast"><span data-txt="toastTxt"></span></div></div>
 
 <!-- ══ FOOTER · Molins grande, Grupo LPZ chico ══ -->
 <footer data-screen-label="Pie" style="background:var(--verde);color:rgba(255,255,255,.64);padding:54px 0 22px">
@@ -1066,7 +1148,7 @@
 </footer>
 
 <!-- FAB WhatsApp -->
-<a href="https://wa.me/5493874153669?text=Hola%2C%20vi%20el%20sitio%20y%20quiero%20consultar." target="_blank" rel="noopener" aria-label="Escribir por WhatsApp" style="position:fixed;right:16px;bottom:16px;z-index:150;width:54px;height:54px;border-radius:50%;background:var(--whatsapp);color:#fff;display:grid;place-items:center;box-shadow:0 8px 22px rgba(37,211,102,.38);transition:transform .22s cubic-bezier(.22,.61,.36,1)" data-fx="fx-8">
+<a class="fab" href="https://wa.me/5493874153669?text=Hola%2C%20vi%20el%20sitio%20y%20quiero%20consultar." target="_blank" rel="noopener" aria-label="Escribir por WhatsApp" style="position:fixed;right:16px;bottom:16px;z-index:150;width:54px;height:54px;border-radius:50%;background:var(--whatsapp);color:#fff;display:grid;place-items:center;box-shadow:0 8px 22px rgba(37,211,102,.38);transition:transform .22s cubic-bezier(.22,.61,.36,1)" data-fx="fx-8">
   <svg viewBox="0 0 24 24" fill="currentColor" style="width:28px;height:28px"><path d="M.057 24l1.687-6.163a11.867 11.867 0 0 1-1.587-5.946C.16 5.335 5.495 0 12.05 0a11.817 11.817 0 0 1 8.413 3.488 11.824 11.824 0 0 1 3.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 0 1-5.688-1.448L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884a9.86 9.86 0 0 0 1.51 5.26l-.999 3.648 3.978-1.052z"></path></svg>
 </a>
 
@@ -1076,24 +1158,24 @@
 <div data-si="fichaAbierta" hidden>
   <div class="ficha" role="dialog" aria-modal="true" data-screen-label="Ficha de propiedad">
     <div class="ficha__barra">
-      <button type="button" class="ficha__ico" data-click="cerrarFicha" aria-label="Cerrar la ficha"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" style="width:18px;height:18px"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
+      <button type="button" class="ficha__ico btn-anim" data-click="cerrarFicha" aria-label="Cerrar la ficha"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" style="width:18px;height:18px"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
       <div class="ficha__barra-titulo"><b data-txt="mTitulo"></b><small><span data-txt="mUbicacion"></span> · <span data-txt="mPrecio"></span></small></div>
       <div class="ficha__barra-der">
-        <span data-si="mHayNav" hidden><span class="ficha__nav">
-          <button type="button" data-click="mAnterior" aria-label="Propiedad anterior"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px"><path d="m15 18-6-6 6-6"></path></svg></button>
-          <span data-txt="mPos"></span>
-          <button type="button" data-click="mSiguiente" aria-label="Propiedad siguiente"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px"><path d="m9 18 6-6-6-6"></path></svg></button>
+        <span data-si="mVariasFotos" hidden><span class="ficha__nav">
+          <button type="button" class="btn-anim" data-click="fotoAnterior" aria-label="Foto anterior"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px"><path d="m15 18-6-6 6-6"></path></svg></button>
+          <span data-txt="mFotoCuenta"></span>
+          <button type="button" class="btn-anim" data-click="fotoSiguiente" aria-label="Foto siguiente"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px"><path d="m9 18 6-6-6-6"></path></svg></button>
         </span></span>
-        <button type="button" class="ficha__ico" data-click="compartirFicha" aria-label="Compartir la ficha"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:17px;height:17px"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"></path></svg></button>
-        <button type="button" class="ficha__ico" data-click="guardarFicha" data-attr-aria-pressed="mEsFav" data-attr-aria-label="mFavTxt"><svg viewBox="0 0 24 24" data-attr-fill="mFavFill" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8Z"></path></svg></button>
-        <a class="ficha__consultar" data-href="mWa" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor" style="width:17px;height:17px"><path d="M.057 24l1.687-6.163a11.867 11.867 0 0 1-1.587-5.946C.16 5.335 5.495 0 12.05 0a11.817 11.817 0 0 1 8.413 3.488 11.824 11.824 0 0 1 3.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 0 1-5.688-1.448L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884a9.86 9.86 0 0 0 1.51 5.26l-.999 3.648 3.978-1.052z"></path></svg><span>Consultar</span></a>
+        <button type="button" class="ficha__ico btn-anim" data-click="compartirFicha" aria-label="Compartir la ficha"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:17px;height:17px"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"></path></svg></button>
+        <button type="button" class="ficha__ico btn-anim" data-click="guardarFicha" data-attr-aria-pressed="mEsFav" data-attr-aria-label="mFavTxt"><svg viewBox="0 0 24 24" data-attr-fill="mFavFill" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8Z"></path></svg></button>
+        <a class="ficha__consultar btn-anim" data-href="mWa" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor" style="width:17px;height:17px"><path d="M.057 24l1.687-6.163a11.867 11.867 0 0 1-1.587-5.946C.16 5.335 5.495 0 12.05 0a11.817 11.817 0 0 1 8.413 3.488 11.824 11.824 0 0 1 3.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 0 1-5.688-1.448L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884a9.86 9.86 0 0 0 1.51 5.26l-.999 3.648 3.978-1.052z"></path></svg><span>Consultar</span></a>
       </div>
     </div>
     <div id="fichaCaja" class="ficha__scroll">
       <div class="ficha__mosaico" id="fichaFotoCaja">
         <div data-si="mFoto" hidden>
           <template data-lista="mMosaico" data-alias="m"><button type="button" data-attr-class="m.clase" data-click="m.ver" aria-label="Ver la foto en grande"><img data-src="m.src" alt="" data-attr-loading="m.carga" /></button></template>
-          <div data-si="mVariasFotos" hidden><button type="button" class="mosaico__todas" data-click="verTodas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:15px;height:15px"><rect x="3" y="5" width="18" height="14" rx="2"></rect><circle cx="12" cy="12" r="3.5"></circle></svg><span data-txt="mFotosTxt"></span></button></div>
+          <div data-si="mVariasFotos" hidden><button type="button" class="mosaico__todas btn-anim" data-click="verTodas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:15px;height:15px"><rect x="3" y="5" width="18" height="14" rx="2"></rect><circle cx="12" cy="12" r="3.5"></circle></svg><span data-txt="mFotosTxt"></span></button></div>
         </div>
         <div data-si="mSinFoto" hidden><div class="mosaico__sinfoto">fotos en la consulta</div></div>
         <span class="mosaico__estado" data-estilo="mBadgeEstilo"><span data-txt="mBadge"></span></span>
@@ -1114,39 +1196,13 @@
           <div><span style="display:inline-flex;align-items:center;gap:6px;margin-top:10px;font-size:12.5px;font-weight:600;color:var(--naranja-oscuro);background:var(--naranja-suave);padding:5px 11px;border-radius:7px"><span data-txt="mCuota"></span></span></div>
         </div>
         <p data-estilo="mEstadoEstilo"><span data-estilo="mPuntoEstilo"></span><span data-txt="mEstadoTxt"></span></p>
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-top:22px">
-          <template data-lista="mQuick" data-alias="q">
-            <div style="background:var(--hueso);border:1px solid var(--borde);border-radius:10px;padding:12px 13px">
-              <b style="display:block;font-size:16px;font-weight:600;line-height:1.25"><span data-txt="q.v"></span></b>
-              <span style="display:block;font-size:11.5px;color:var(--gris);margin-top:2px"><span data-txt="q.k"></span></span>
-            </div>
+        <div class="datos ficha__sec">
+          <template data-lista="mDatos" data-alias="d">
+            <div class="dato"><span class="dato__ico" data-attr-data-ico="d.ico"></span><b data-txt="d.v"></b><small data-txt="d.k"></small></div>
           </template>
         </div>
 
-        <div style="margin-top:26px;padding-top:22px;border-top:1px solid var(--borde)">
-          <h4 style="margin:0 0 14px;font-family:'Libre Caslon Text',Georgia,serif;font-size:19px;font-weight:700">Ubicación</h4>
-          <div id="fichaMapa" data-estilo="mMapaEstilo"></div>
-          <p style="margin:11px 0 0;font-size:12.5px;color:var(--gris);line-height:1.55;display:flex;gap:8px;align-items:flex-start">
-            <svg viewBox="0 0 24 24" fill="none" stroke="var(--verde-claro)" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px;flex:none;margin-top:2px"><circle cx="12" cy="12" r="9"></circle><path d="M12 16v-4M12 8h.01"></path></svg>
-            <span data-txt="mMapaNota"></span></p>
-          <div data-si="mZonaDesc" hidden>
-            <p style="font-size:13.5px;color:var(--tinta-suave);line-height:1.6;margin:14px 0 0;padding-left:14px;border-left:2px solid var(--borde-fuerte)"><span data-txt="mZonaDesc"></span></p>
-          </div>
-        </div>
-
-        <div style="margin-top:26px;padding-top:22px;border-top:1px solid var(--borde)">
-          <h4 style="margin:0 0 8px;font-family:'Libre Caslon Text',Georgia,serif;font-size:19px;font-weight:700">Características</h4>
-          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:0 30px">
-            <template data-lista="mCarac" data-alias="c">
-              <div style="display:flex;justify-content:space-between;align-items:baseline;gap:14px;padding:10px 0;border-bottom:1px solid var(--borde-5)">
-                <span style="font-size:13.5px;color:var(--gris);flex:none"><span data-txt="c.k"></span></span>
-                <span style="font-size:13.5px;font-weight:600;text-align:right"><span data-txt="c.v"></span></span>
-              </div>
-            </template>
-          </div>
-        </div>
-
-        <div style="margin-top:26px;padding-top:22px;border-top:1px solid var(--borde)">
+        <div class="ficha__sec" style="margin-top:26px;padding-top:22px;border-top:1px solid var(--borde)">
           <h4 style="margin:0 0 12px;font-family:'Libre Caslon Text',Georgia,serif;font-size:19px;font-weight:700">Descripción</h4>
           <p class="ficha__lead"><span data-txt="mDescLead"></span></p>
           <div data-si="mDescAbierta" hidden>
@@ -1157,8 +1213,33 @@
           <div data-si="mDescLarga" hidden><button type="button" class="ficha__leermas" data-click="mLeerMas">Leer la descripción completa</button></div>
         </div>
 
+        <div class="ficha__sec" style="margin-top:26px;padding-top:22px;border-top:1px solid var(--borde)">
+          <h4 style="margin:0 0 14px;font-family:'Libre Caslon Text',Georgia,serif;font-size:19px;font-weight:700">Características</h4>
+          <div class="carac">
+            <template data-lista="mCarac" data-alias="c">
+              <div class="carac__item"><small data-txt="c.k"></small><b data-txt="c.v"></b></div>
+            </template>
+          </div>
+          <div data-si="mHayTiene" hidden>
+            <div class="tiene">
+              <template data-lista="mTiene" data-alias="t"><span class="tiene__chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px"><path d="M20 6 9 17l-5-5"></path></svg><span data-txt="t"></span></span></template>
+            </div>
+          </div>
+        </div>
+
+        <div class="ficha__sec" style="margin-top:26px;padding-top:22px;border-top:1px solid var(--borde)">
+          <h4 style="margin:0 0 14px;font-family:'Libre Caslon Text',Georgia,serif;font-size:19px;font-weight:700">Ubicación</h4>
+          <div id="fichaMapa" data-estilo="mMapaEstilo"></div>
+          <p style="margin:11px 0 0;font-size:12.5px;color:var(--gris);line-height:1.55;display:flex;gap:8px;align-items:flex-start">
+            <svg viewBox="0 0 24 24" fill="none" stroke="var(--verde-claro)" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px;flex:none;margin-top:2px"><circle cx="12" cy="12" r="9"></circle><path d="M12 16v-4M12 8h.01"></path></svg>
+            <span data-txt="mMapaNota"></span></p>
+          <div data-si="mZonaDesc" hidden>
+            <p style="font-size:13.5px;color:var(--tinta-suave);line-height:1.6;margin:14px 0 0;padding-left:14px;border-left:2px solid var(--borde-fuerte)"><span data-txt="mZonaDesc"></span></p>
+          </div>
+        </div>
+
         <div data-si="mHaySimilares" hidden>
-          <div style="margin-top:26px;padding-top:22px;border-top:1px solid var(--borde)">
+          <div class="ficha__sec" style="margin-top:26px;padding-top:22px;border-top:1px solid var(--borde)">
             <h4 style="margin:0 0 14px;font-family:'Libre Caslon Text',Georgia,serif;font-size:19px;font-weight:700">Te puede interesar también</h4>
             <div class="fila-reco fila-reco--grilla">
               <template data-lista="mSimilares" data-alias="s">
@@ -1182,21 +1263,7 @@
           </div>
         </div>
       </div>
-      <aside class="ficha__lado">
-        <div data-si="mHayVecinas" hidden>
-          <div class="ficha__vecinas">
-            <div class="ficha__vecinas-cab"><b data-txt="mVecinasTitulo"></b><button type="button" data-click="mVerZona">Ver todas →</button></div>
-            <template data-lista="mVecinas" data-alias="v">
-              <button type="button" class="vecina" data-click="v.abrir">
-                <span class="vecina__foto"><span data-si="v.foto" hidden><img data-src="v.foto" alt="" loading="lazy" /></span></span>
-                <span class="vecina__texto"><b data-txt="v.titulo"></b><small><span data-txt="v.tipo"></span></small><span class="vecina__precio" data-txt="v.precio"></span></span>
-              </button>
-            </template>
-          </div>
-        </div>
-      </aside>
       </div>
-      <p class="ficha__corredor-linea">Comercializa Francisco Molins · Corredor inmobiliario matriculado · CUCIS 251 · Grupo LPZ-Molins</p>
       <div data-si="esMovil" hidden>
         <div class="ficha-acciones">
           <a data-href="mWa" target="_blank" rel="noopener" style="background:var(--whatsapp);color:var(--verde-noche)"><svg viewBox="0 0 24 24" fill="currentColor" style="width:17px;height:17px"><path d="M.057 24l1.687-6.163a11.867 11.867 0 0 1-1.587-5.946C.16 5.335 5.495 0 12.05 0a11.817 11.817 0 0 1 8.413 3.488 11.824 11.824 0 0 1 3.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 0 1-5.688-1.448L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884a9.86 9.86 0 0 0 1.51 5.26l-.999 3.648 3.978-1.052z"></path></svg>Consultar por WhatsApp</a>
@@ -1205,12 +1272,21 @@
       </div>
     </div>
     <div data-si="mVisor" hidden>
-      <div class="visor" data-click="cerrarVisorFondo" role="dialog" aria-modal="true" aria-label="Fotos">
-        <button type="button" class="visor__cerrar" data-click="cerrarVisor" aria-label="Cerrar las fotos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" style="width:20px;height:20px"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
-        <span class="visor__n"><span data-txt="mFotoCuenta"></span></span>
-        <button type="button" class="visor__flecha visor__flecha--izq" data-click="fotoAnterior" aria-label="Foto anterior"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:22px;height:22px"><path d="m15 18-6-6 6-6"></path></svg></button>
-        <div class="visor__marco" id="visorMarco"><img class="visor__foto" data-src="mFoto" data-attr-alt="mTitulo" /></div>
-        <button type="button" class="visor__flecha visor__flecha--der" data-click="fotoSiguiente" aria-label="Foto siguiente"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:22px;height:22px"><path d="m9 18 6-6-6-6"></path></svg></button>
+      <div class="visor" data-attr-class="visorClase" data-click="cerrarVisorFondo" role="dialog" aria-modal="true" aria-label="Fotos">
+        <div class="visor__barra">
+          <div class="visor__titulo"><b data-txt="mTitulo"></b><small><span data-txt="mFotoCuenta"></span> · <span data-txt="mPrecio"></span></small></div>
+          <div class="visor__botones">
+            <button type="button" class="visor__btn btn-anim" data-click="compartirFicha" aria-label="Compartir el enlace"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"></path></svg></button>
+            <button type="button" class="visor__btn btn-anim" data-click="guardarFicha" data-attr-aria-pressed="mEsFav" aria-label="Guardar"><svg viewBox="0 0 24 24" data-attr-fill="mFavFill" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8Z"></path></svg></button>
+            <button type="button" class="visor__btn btn-anim" data-click="alternarZoom" data-attr-aria-pressed="visorZoom" aria-label="Ver al tamaño real"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5M11 8v6M8 11h6"></path></svg></button>
+            <button type="button" class="visor__btn btn-anim" data-click="alternarPantalla" data-attr-aria-pressed="visorFull" aria-label="Pantalla completa"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px"><path d="M8 3H5a2 2 0 0 0-2 2v3M21 8V5a2 2 0 0 0-2-2h-3M3 16v3a2 2 0 0 0 2 2h3M16 21h3a2 2 0 0 0 2-2v-3"></path></svg></button>
+            <a class="visor__consultar btn-anim" data-href="mWa" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor" style="width:17px;height:17px"><path d="M.057 24l1.687-6.163a11.867 11.867 0 0 1-1.587-5.946C.16 5.335 5.495 0 12.05 0a11.817 11.817 0 0 1 8.413 3.488 11.824 11.824 0 0 1 3.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 0 1-5.688-1.448L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884a9.86 9.86 0 0 0 1.51 5.26l-.999 3.648 3.978-1.052z"></path></svg><span>Consultar</span></a>
+            <button type="button" class="visor__btn visor__btn--cerrar btn-anim" data-click="cerrarVisor" aria-label="Cerrar las fotos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" style="width:18px;height:18px"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
+          </div>
+        </div>
+        <button type="button" class="visor__flecha visor__flecha--izq btn-anim" data-click="fotoAnterior" aria-label="Foto anterior"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:22px;height:22px"><path d="m15 18-6-6 6-6"></path></svg></button>
+        <div class="visor__marco" id="visorMarco"><img class="visor__foto" id="visorFoto" data-src="mFoto" data-attr-alt="mTitulo" /></div>
+        <button type="button" class="visor__flecha visor__flecha--der btn-anim" data-click="fotoSiguiente" aria-label="Foto siguiente"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:22px;height:22px"><path d="m9 18 6-6-6-6"></path></svg></button>
         <div class="visor__tira" id="fichaThumbs"><template data-lista="mThumbs" data-alias="th"><button data-click="th.ver" aria-label="Ver foto" data-attr-class="th.clase" data-attr-aria-current="th.activa"><img data-src="th.src" alt="" loading="lazy" /></button></template></div>
       </div>
     </div>
@@ -1221,9 +1297,9 @@
 </div>
 
 
-<script src="src/pintor.js?v=20260905k"></script>
-<script src="src/medicion.js?v=20260905k"></script>
-<script src="src/app.js?v=20260905k"></script>
-<script src="src/reel.js?v=20260905k"></script>
+<script src="src/pintor.js?v=20260906a"></script>
+<script src="src/medicion.js?v=20260906a"></script>
+<script src="src/app.js?v=20260906a"></script>
+<script src="src/reel.js?v=20260906a"></script>
 </body>
 </html>
