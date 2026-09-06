@@ -94,9 +94,9 @@
   function set(cambios) { for (var k in cambios) S[k] = cambios[k]; pintar(); }
   function pintar() {
     window.Pintor.pintar(vista());
-    var capa = !!S.ficha || S.vista !== "inicio";
+    var capa = !!S.ficha || S.vista === "buscar";
     document.documentElement.classList.toggle("con-capa", capa);
-    document.body.style.overflow = capa ? "hidden" : "";
+    document.body.style.overflow = (capa || S.vista !== "inicio") ? "hidden" : "";
     if (window.observarTarjetas) observarTarjetas();
     if (window.observarSecciones) observarSecciones();
   }
@@ -434,8 +434,8 @@
     var cod = decodeURIComponent(m[1]);
     if (prop(cod)) abrirFicha(cod); else urlFicha(null);
   }
-  function compartir() {
-    var p = prop(S.ficha);
+  function compartir() { var p = prop(S.ficha); if (p) compartirCodigo(p.codigo, p); }
+  function compartirCodigo(codigo, p) {
     if (!p) return;
     var url = location.origin + location.pathname + "?ficha=" + encodeURIComponent(p.codigo);
     var texto = p.titulo + " · " + ubicCorta(p) + " · " + (p.precio > 0 ? money(p.moneda, p.precio) : "Consultar") + (p.operacion === "Alquiler" && p.precio > 0 ? " por mes" : "") + "\n" + url;
@@ -495,6 +495,8 @@
   }
 
   function irAConsultar(ctx, busca, p) {
+    /* Viene de una ficha: el mensaje ya arranca escrito, con la propiedad y el código. */
+    if (p && !S.formMensaje.trim()) S.formMensaje = "Hola, quiero consultar por " + p.titulo + " (" + p.codigo + ").";
     set({ ctx: ctx, ctxProp: p || null, formBusca: busca || S.formBusca, enviado: false, formError: "" });
     if (window.VISITAS) VISITAS.anotar("form_abierto", ctx || "contacto", p ? p.codigo : null);
     abrirVista("contacto");
@@ -575,6 +577,8 @@
         favEstilo: "position:absolute;top:44px;right:11px;width:34px;height:34px;border-radius:50%;border:none;cursor:pointer;display:grid;place-items:center;transition:transform .18s,background .2s;background:" + (fav ? "var(--naranja)" : "rgba(255,255,255,.92)") + ";color:" + (fav ? "#fff" : "var(--verde)"),
         guardar: function (ev) { ev.stopPropagation(); alternarFav(p.codigo); var b = ev.currentTarget; if (b) { b.classList.remove("late"); void b.offsetWidth; b.classList.add("late"); } },
         tipoLinea: p.tipo + (p.sinDireccion ? "" : " · " + p.zona),
+        linea: [p.tipo, p.dorm > 0 ? p.dorm + " dorm." : null, p.banos > 0 ? p.banos + (p.banos === 1 ? " baño" : " baños") : null, p.m2 > 0 ? num(p.m2) + " m²" : null].filter(Boolean).join(" · "),
+        compartir: function (ev) { ev.stopPropagation(); compartirCodigo(p.codigo, p); },
         operacion: p.operacion,
         foto: p.fotos[0] || "", sinFoto: !p.fotos.length,
         badge: b.t,
@@ -805,8 +809,9 @@
       escribirWa: function (ev) { S.formWa = ev.target.value; pintarSuave(); },
       escribirMail: function (ev) { S.formMail = ev.target.value; pintarSuave(); },
       escribirBusca: function (ev) { set({ formBusca: ev.target.value }); },
-      buscaOpciones: ["Para vivir", "Para invertir", "Alquilar", "Un terreno", "Aires de San Lorenzo", "Edificio La Torre", "Vender mi propiedad", "Todavía estoy viendo"].map(function (t) {
-        return { t: t, activa: S.formBusca === t ? "true" : "false", clase: "chip-busca" + (S.formBusca === t ? " es-activa" : ""), elegir: function () { set({ formBusca: t }); } };
+      buscaOpciones: [["Para vivir", "casa"], ["Para invertir", "inversion"], ["Alquilar", "llave"], ["Un terreno", "terreno"], ["Aires de San Lorenzo", "aires"], ["Edificio La Torre", "torre"], ["Vender mi propiedad", "vender"], ["Todavía estoy viendo", "ojo"]].map(function (o) {
+        var t = o[0];
+        return { t: t, ico: o[1], activa: S.formBusca === t ? "true" : "false", clase: "chip-busca" + (S.formBusca === t ? " es-activa" : ""), elegir: function () { set({ formBusca: t }); } };
       }),
       formZona: S.formZona, escribirZona: function (ev) { set({ formZona: ev.target.value }); },
       formMensaje: S.formMensaje, escribirMensaje: function (ev) { S.formMensaje = ev.target.value; },
@@ -923,9 +928,20 @@
     }
 
     /* La tira del visor como el Dock: cada miniatura crece según la distancia al mouse. */
+    var tiraAuto = 0, tiraEl = null, tiraCola = false;
+    function tiraDeslizar() {
+      if (!tiraAuto || !tiraEl) { tiraCola = false; return; }
+      tiraEl.scrollLeft += tiraAuto;
+      requestAnimationFrame(tiraDeslizar);
+    }
     document.addEventListener("mousemove", function (ev) {
-      var tira = ev.target.closest && ev.target.closest(".visor__tira"); if (!tira) return;
-      var x = ev.clientX;
+      var tira = ev.target.closest && ev.target.closest(".visor__tira"); if (!tira) { tiraAuto = 0; return; }
+      var x = ev.clientX, rt = tira.getBoundingClientRect();
+      /* Cerca del borde, la tira se desliza sola y muestra las que siguen. */
+      var borde = 110;
+      tiraAuto = x > rt.right - borde ? Math.min(9, (x - (rt.right - borde)) / 12 + 2) : x < rt.left + borde ? -Math.min(9, ((rt.left + borde) - x) / 12 + 2) : 0;
+      tiraEl = tira;
+      if (tiraAuto && !tiraCola) { tiraCola = true; requestAnimationFrame(tiraDeslizar); }
       tira.querySelectorAll("button").forEach(function (b) {
         var r = b.getBoundingClientRect(), d = Math.abs(x - (r.left + r.width / 2));
         var k = Math.max(0, 1 - d / 230), esc = 1 + 0.9 * k * k;
@@ -936,6 +952,7 @@
     document.addEventListener("mouseout", function (ev) {
       var tira = ev.target.closest && ev.target.closest(".visor__tira");
       if (!tira || (ev.relatedTarget && tira.contains(ev.relatedTarget))) return;
+      tiraAuto = 0;
       tira.querySelectorAll("button").forEach(function (b) { b.style.transform = ""; b.style.zIndex = ""; });
     });
 
@@ -1042,7 +1059,7 @@
     } else bloques.forEach(function (b) { b.classList.add("es-visto"); });
     if (!quieto && bloques.length) {
       var enColaP = false;
-      var torreEl = document.querySelector(".bloque--torre"), airesEl = document.querySelector(".bloque--aires");
+      var torreEl = document.querySelector(".bloque--torre"), airesEl = document.querySelector(".bloque--aires"), cierreEl = document.querySelector("main .cierre");
       function paralaje() {
         bloques.forEach(function (b) {
           var f = b.querySelector(".bloque__fondo"); if (!f) return;
@@ -1052,12 +1069,15 @@
           f.style.transform = "translate3d(0," + (t * -6).toFixed(2) + "%,0) scale(1.14)";
         });
         /* Aires se apila sobre La Torre: mientras la cubre, La Torre se encoge y se oscurece. */
-        if (torreEl && airesEl && innerWidth >= 900) {
-          var ra = airesEl.getBoundingClientRect(), rt = torreEl.getBoundingClientRect();
-          var k = Math.min(1, Math.max(0, 1 - ra.top / Math.max(1, rt.height)));
-          torreEl.style.transform = "scale(" + (1 - 0.06 * k).toFixed(3) + ")";
-          torreEl.style.filter = "brightness(" + (1 - 0.4 * k).toFixed(3) + ")";
-          torreEl.style.borderRadius = (k * 24).toFixed(1) + "px";
+        if (innerWidth >= 900) {
+          [[torreEl, airesEl], [airesEl, cierreEl]].forEach(function (par) {
+            var abajo = par[0], arriba = par[1]; if (!abajo || !arriba) return;
+            var ra = arriba.getBoundingClientRect(), rb = abajo.getBoundingClientRect();
+            var k = Math.min(1, Math.max(0, 1 - ra.top / Math.max(1, rb.height)));
+            abajo.style.transform = "scale(" + (1 - 0.06 * k).toFixed(3) + ")";
+            abajo.style.filter = "brightness(" + (1 - 0.4 * k).toFixed(3) + ")";
+            abajo.style.borderRadius = (k * 24).toFixed(1) + "px";
+          });
         }
       }
       addEventListener("scroll", function () { if (enColaP) return; enColaP = true; requestAnimationFrame(function () { enColaP = false; paralaje(); }); }, { passive: true });

@@ -22,7 +22,7 @@
   .hero-paneo{animation:paneo 24s ease-in-out infinite alternate;will-change:transform}
   @media (prefers-reduced-motion:reduce){.hero-paneo{animation:none}}
   /* ── la búsqueda y las tarjetas ── */
-  .tarjeta:hover{transform:translateY(-4px);box-shadow:0 18px 40px rgba(17,60,61,.14)}
+  .tarjeta:hover{transform:scale(1.025);box-shadow:0 22px 50px rgba(17,60,61,.18);z-index:3}
   .tarjeta:hover .tarjeta__foto{transform:scale(1.05)}
   .tarjeta:focus-visible{outline:3px solid var(--naranja);outline-offset:2px}
   .tarjeta .fav:hover{transform:scale(1.08)}
@@ -135,7 +135,7 @@
   .buscador__ir{flex:none;display:inline-flex;align-items:center;gap:8px;background:var(--naranja);color:var(--verde-noche);border:none;border-radius:999px;font-weight:600;font-size:14.5px;min-height:48px;padding:0 20px;cursor:pointer;transition:transform .15s,background .2s,box-shadow .2s;box-shadow:0 6px 16px rgba(246,101,3,.3)}
   .buscador__ir:hover{background:var(--naranja-claro)}
   .buscador__ir:active{transform:scale(.97)}
-  .buscador.es-pegado{max-width:780px;top:calc(var(--barra,64px) + 6px)}
+  .buscador.es-pegado{max-width:780px;top:calc(var(--barra,64px) + 4px);transition:top .45s cubic-bezier(.2,.8,.2,1),max-width .55s cubic-bezier(.2,.8,.2,1),transform .45s cubic-bezier(.2,.8,.2,1),opacity .3s}
   .buscador.es-pegado .buscador__caja{min-height:54px;padding:4px 4px 4px 16px;box-shadow:0 24px 60px rgba(9,30,31,.32),0 4px 14px rgba(9,30,31,.14),0 1px 0 rgba(255,255,255,.9) inset;border:1px solid var(--borde-2);background:#fff}
   .buscador.es-pegado .buscador__ir{min-height:42px;padding:0 16px}
   .buscador.es-pegado .buscador__sel{min-height:40px}
@@ -261,7 +261,7 @@
   .barra.es-solida .marca b{color:var(--tinta);text-shadow:none}.barra.es-solida .marca small{color:var(--gris)}
   .barra.es-solida .barra__linea{background:var(--tinta)}
   html.es-bajando .barra{transform:translateY(-100%)}
-  html.es-bajando .buscador.es-pegado{transform:translateY(calc(-100% - var(--barra,64px) - 24px));opacity:0;pointer-events:none}
+  html.es-bajando .buscador.es-pegado{top:8px}
   html.con-capa .barra,html.con-capa main,html.con-capa footer,html.con-capa .fab{visibility:hidden}
   .btn-anim{transition:transform .22s cubic-bezier(.2,.8,.2,1),background .2s,color .2s,border-color .2s,box-shadow .2s,filter .2s}
   .btn-anim:hover{transform:translateY(-1px) scale(1.05)}
@@ -279,8 +279,15 @@
   .tarjeta__sinfoto{position:absolute;inset:0;display:grid;place-items:center;font-family:monospace;font-size:12px;color:var(--tinta-suave);background:repeating-linear-gradient(45deg,var(--verde-suave),var(--verde-suave) 12px,var(--verde-palido) 12px,var(--verde-palido) 24px)}
   .tarjeta__arriba{position:absolute;top:10px;left:10px;display:flex;gap:6px;z-index:2}
   .tarjeta__nueva{font-size:11px;font-weight:700;padding:5px 10px;border-radius:100px;color:var(--verde-noche);background:var(--naranja);display:inline-block}
-  .tarjeta .fav{position:absolute;top:10px;right:10px;z-index:2}
-  .tarjeta__abajo{position:absolute;left:14px;right:14px;bottom:64px;z-index:2;display:flex;flex-direction:column;align-items:flex-start;gap:7px;color:#fff}
+  .tarjeta .fav{position:absolute;top:8px;right:8px;z-index:2;width:32px;height:32px}
+  .tarjeta .fav--compartir{right:46px;background:rgba(255,255,255,.22)!important;color:#fff!important}
+  .tarjeta .fav--compartir:hover{background:rgba(255,255,255,.4)!important}
+  .tarjeta .fav svg{transition:transform .25s cubic-bezier(.2,.8,.2,1),fill .3s}
+  .tarjeta .fav[aria-pressed="true"] svg{animation:pintar .55s cubic-bezier(.2,.8,.2,1)}
+  @keyframes pintar{0%{transform:scale(.5);clip-path:inset(100% 0 0 0)}45%{transform:scale(1.35);clip-path:inset(0)}70%{transform:scale(.92)}100%{transform:scale(1)}}
+  .tarjeta__wa{transition:transform .25s cubic-bezier(.2,.8,.2,1),box-shadow .25s}
+  .tarjeta__wa:hover{transform:scale(1.12) rotate(-6deg);box-shadow:0 8px 18px rgba(37,211,102,.45);color:#fff}
+  .tarjeta__abajo{position:absolute;left:14px;right:14px;bottom:62px;z-index:2;display:flex;flex-direction:column;align-items:flex-start;gap:7px;color:#fff}
   .tarjeta__nombre{display:flex;flex-direction:column;min-width:0}
   .tarjeta__nombre b{font-family:'Libre Caslon Text',Georgia,serif;font-size:17px;font-weight:700;line-height:1.2;text-shadow:0 1px 10px rgba(0,0,0,.35)}
   .tarjeta__nombre small{font-size:11.5px;color:rgba(255,255,255,.82);margin-top:2px}
@@ -289,14 +296,7 @@
   .tarjeta .fav{background:rgba(255,255,255,.22)!important;border:1px solid rgba(255,255,255,.5);color:#fff!important;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);box-shadow:0 4px 14px rgba(0,0,0,.18)}
   .tarjeta .fav[aria-pressed="true"]{background:var(--naranja)!important;border-color:var(--naranja);color:#fff!important}
   .tarjeta:hover .minigal__foto.es-activa,.reco:hover .minigal__foto.es-activa{transform:scale(1.07)}
-  .tarjeta__i{width:24px;height:24px;border-radius:50%;background:var(--verde-suave);color:var(--verde);font-family:'Libre Caslon Text',Georgia,serif;font-style:italic;font-weight:700;font-size:13px;display:grid;place-items:center;flex:none;transition:background .2s,color .2s}
-  .tarjeta:hover .tarjeta__i,.tarjeta:focus-within .tarjeta__i{background:var(--verde);color:#fff}
-  .tarjeta__detalle{max-height:0;overflow:hidden;transition:max-height .45s cubic-bezier(.2,.8,.2,1)}
-  .tarjeta:hover .tarjeta__detalle,.tarjeta:focus-within .tarjeta__detalle{max-height:120px}
-  .tarjeta__detalle-in{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:0 14px 12px;border-top:1px solid var(--borde-5);padding-top:10px;margin:0 0 0}
-  .tarjeta__spec{font-size:12px;font-weight:600;color:var(--tinta-suave);background:var(--hueso-3);border:1px solid var(--borde-suave);padding:4px 9px;border-radius:8px}
-  .tarjeta__ver{margin-left:auto;font-size:12.5px;font-weight:600;color:var(--verde-claro)}
-  @media (hover:none){.tarjeta__detalle{max-height:120px}}
+  .tarjeta__tipo{font-weight:500;color:var(--tinta-suave)}
   .tarjeta__pie{display:flex;align-items:center;gap:8px;padding:10px 12px 10px 14px;font-size:12px;color:var(--gris);min-height:52px;box-sizing:border-box;margin-top:auto}
   .tarjeta__tipo{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .tarjeta__cuota{font-weight:600;color:var(--naranja-oscuro);background:var(--naranja-suave);padding:3px 8px;border-radius:7px;white-space:nowrap}
@@ -330,9 +330,8 @@
   .ficha__mosaico .mosaico__foto{aspect-ratio:4/3;background:var(--verde-noche);min-height:0}
   .ficha__mosaico .mosaico__foto img{object-fit:contain}
   .mosaico__foto:not(.es-grande) img{animation:fotoEntra .6s ease both}
-  .mosaico__rotulo{position:absolute;left:0;right:0;bottom:0;padding:70px 22px 22px;background:linear-gradient(180deg,rgba(9,30,31,0),rgba(9,30,31,.82));color:#fff;text-align:left;pointer-events:none;display:flex;flex-direction:column;gap:4px}
-  .mosaico__rotulo b{font-family:'Libre Caslon Text',Georgia,serif;font-size:clamp(22px,2.4vw,34px);line-height:1.1;text-shadow:0 2px 14px rgba(0,0,0,.4)}
-  .mosaico__rotulo small{font-size:14px;color:rgba(255,255,255,.88)}
+  .ficha__principal > h3{font-size:clamp(28px,3.6vw,46px)!important;letter-spacing:-.01em}
+  .ficha__principal > h3 + div + div{font-size:clamp(30px,4.2vw,44px)!important}
   .ficha__mosaico > [data-si]{display:contents}
   .mosaico__foto{position:relative;border:none;padding:0;background:var(--verde-suave);border-radius:10px;overflow:hidden;cursor:zoom-in;min-width:0;min-height:0}
   .mosaico__foto img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .6s cubic-bezier(.22,.61,.36,1)}
@@ -378,7 +377,7 @@
   .tiene{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
   .tiene__chip{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:600;color:var(--verde);background:var(--verde-suave);border:1px solid var(--borde-4);padding:7px 12px;border-radius:999px}
   .ficha__corredor-linea{max-width:1400px;margin:0 auto;padding:0 clamp(14px,2.5vw,28px) 40px;font-size:12px;color:var(--gris)}
-  @media (max-width:899px){.ficha__mosaico{grid-template-columns:1fr;grid-template-rows:1fr;height:min(76vh,640px);margin-top:0;padding:0}.mosaico__foto.es-grande img{object-fit:cover}.mosaico__rotulo b{font-size:22px}.mosaico__rotulo{padding:60px 16px 60px}.mosaico__foto{border-radius:0!important}.mosaico__foto:not(.es-grande){display:none}.mosaico__foto.es-grande{grid-row:auto}.mosaico__todas{right:12px}.mosaico__estado{left:12px}.ficha__barra-der .ficha__consultar span{display:none}.ficha__barra-der .ficha__consultar{padding:0 12px}.ficha__nav span{display:none}}
+  @media (max-width:899px){.ficha__mosaico{grid-template-columns:1fr;grid-template-rows:1fr;height:min(76vh,640px);margin-top:0;padding:0}.mosaico__foto.es-grande img{object-fit:cover}.mosaico__foto{border-radius:0!important}.mosaico__foto:not(.es-grande){display:none}.mosaico__foto.es-grande{grid-row:auto}.mosaico__todas{right:12px}.mosaico__estado{left:12px}.ficha__barra-der .ficha__consultar span{display:none}.ficha__barra-der .ficha__consultar{padding:0 12px}.ficha__nav span{display:none}}
   #fichaMapa{position:relative;overflow:hidden;isolation:isolate}
   /* el visor de fotos */
   .visor{position:fixed;inset:0;z-index:600;background:rgba(6,18,19,.985);display:block;animation:fadein .22s ease both}
@@ -445,11 +444,12 @@
   .etiqueta-seccion::before{content:"";width:22px;height:2px;background:var(--naranja);border-radius:2px}
   .etiqueta-seccion--clara{color:var(--naranja-palido)}
   /* ── las ventanas (preguntas, contacto) ── */
-  .panel{position:fixed;inset:0;z-index:520;background:rgba(9,30,31,.58);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);display:grid;place-items:center;padding:24px;animation:fadein .25s ease both}
-  .panel__caja{position:relative;width:min(1080px,100%);max-height:calc(100vh - 48px);overflow:auto;border-radius:24px;background:#fff;box-shadow:0 40px 100px rgba(0,0,0,.4);animation:popEntra .38s cubic-bezier(.2,.8,.2,1) both;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+  .panel{position:fixed;inset:0;z-index:520;background:rgba(9,30,31,.32);backdrop-filter:blur(5px) saturate(.9);-webkit-backdrop-filter:blur(5px) saturate(.9);display:grid;place-items:center;padding:24px;animation:fadein .25s ease both}
+  .panel__caja{position:relative;width:min(1080px,100%);max-height:calc(100vh - 48px);overflow:auto;border-radius:26px;background:transparent;box-shadow:0 40px 100px rgba(0,0,0,.45);animation:popEntra .38s cubic-bezier(.2,.8,.2,1) both;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
   @keyframes popEntra{from{opacity:0;transform:translateY(22px) scale(.96)}to{opacity:1;transform:none}}
   .panel__x{position:absolute;top:14px;right:14px;z-index:4;width:40px;height:40px;border-radius:50%;border:1px solid var(--borde);background:rgba(255,255,255,.92);color:var(--tinta);cursor:pointer;display:grid;place-items:center;box-shadow:0 4px 14px rgba(0,0,0,.12)}
-  .panel .contacto{padding:0;margin:0}.panel .contacto > div{padding:0;max-width:none}.panel .contacto__caja{border-radius:0;box-shadow:none}
+  .panel .contacto{padding:0;margin:0}.panel .contacto > div{padding:0;max-width:none}.panel .contacto__caja{border-radius:26px;box-shadow:none;overflow:hidden}
+  .panel .preguntas{background:var(--hueso);border-radius:26px}
   .panel .contacto__izq,.panel .contacto__form{padding:clamp(22px,3vw,36px)}.panel .contacto__izq h2{font-size:clamp(22px,2.4vw,30px)}.panel .contacto__izq > p{margin-bottom:18px}
   .panel .canal{padding:10px 12px}.panel .contacto__form h3{font-size:21px}
   .panel .preguntas{padding:clamp(22px,3vw,40px)}.panel .preguntas > div{padding:0;max-width:none}.panel .preguntas__intro{position:static}
@@ -465,7 +465,8 @@
   .grilla{display:grid;grid-template-columns:repeat(auto-fill,minmax(380px,1fr));gap:18px}
   @media (max-width:699px){.grilla{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.tarjeta{border-radius:12px}.tarjeta__media::after{display:none}.tarjeta__abajo{position:static;padding:9px 10px 0;color:var(--tinta);flex-direction:column;align-items:flex-start;gap:3px}.tarjeta__nombre b{font-size:13.5px;text-shadow:none;line-height:1.2}.tarjeta__nombre small{font-size:10.5px;color:var(--gris)}.tarjeta__precio{background:none;padding:0;font-size:15px;flex-direction:row;align-items:baseline;gap:4px;border-radius:0}.tarjeta__precio small{font-size:10px}.tarjeta__pildora{display:none}.tarjeta__arriba{top:7px;left:7px;gap:4px}.tarjeta__arriba span span,.tarjeta__nueva{font-size:9.5px;padding:3px 7px}.tarjeta .fav{top:7px;right:7px;width:28px;height:28px}.tarjeta__pie{padding:6px 8px 8px;font-size:10.5px;gap:6px}.tarjeta__wa{width:26px;height:26px}.tarjeta__cuota{display:none}}
   .buscador.es-fuera{transform:translateY(-140%);opacity:0;pointer-events:none}
-  .cierre{padding:clamp(52px,6.5vw,92px) 20px}
+  .cierre{padding:clamp(52px,6.5vw,92px) 20px;background:var(--hueso);position:relative}
+  @media (min-width:900px){main .cierre{position:sticky;top:0;z-index:3;border-radius:32px 32px 0 0;box-shadow:0 -30px 80px rgba(0,0,0,.28);min-height:60vh;display:flex;align-items:center}main .cierre .cierre__caja{width:100%}}
   .cierre__caja{max-width:1400px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr);gap:clamp(24px,4vw,60px);align-items:center;background:radial-gradient(120% 90% at 100% 0%,rgba(246,101,3,.22),transparent 55%),linear-gradient(160deg,var(--verde-hondo),var(--verde-noche));color:#fff;border-radius:24px;padding:clamp(28px,4.5vw,56px);box-shadow:0 30px 80px rgba(9,30,31,.22)}
   .cierre h2{margin:14px 0 10px;font-family:'Libre Caslon Text',Georgia,serif;font-weight:700;font-size:clamp(24px,3vw,36px);line-height:1.12;color:#fff}
   .cierre p{margin:0;font-size:15.5px;line-height:1.6;color:rgba(255,255,255,.78);max-width:48ch}
@@ -522,11 +523,25 @@
   .contacto__form h3{margin:0;font-family:'Libre Caslon Text',Georgia,serif;font-size:24px;font-weight:700}
   .contacto__sub{margin:4px 0 20px;font-size:14px;color:var(--gris)}
   .contacto__ctx{display:flex;gap:9px;align-items:center;margin:-8px 0 18px;font-size:13px;color:var(--verde-claro);background:var(--verde-suave);border:1px solid var(--borde-4);border-radius:10px;padding:9px 12px}
-  .chips-busca{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 18px}
-  .chip-busca{border:1.5px solid var(--borde-fuerte);background:#fff;color:var(--tinta-suave);font-size:13.5px;font-weight:600;padding:9px 14px;border-radius:999px;cursor:pointer;min-height:40px;transition:background .2s,color .2s,border-color .2s,transform .15s;font-family:inherit}
-  .chip-busca:hover{border-color:var(--verde)}
-  .chip-busca:active{transform:scale(.96)}
-  .chip-busca.es-activa{background:var(--verde);border-color:var(--verde);color:#fff}
+  .chips-busca{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:8px 0 18px}
+  .chip-busca{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:8px;border:1.5px solid var(--borde);background:#fff;color:var(--tinta);font-size:12.5px;font-weight:600;padding:10px 10px 9px;border-radius:14px;cursor:pointer;min-height:70px;text-align:left;line-height:1.2;transition:background .25s,color .25s,border-color .25s,transform .2s cubic-bezier(.2,.8,.2,1),box-shadow .25s;font-family:inherit}
+  .chip-busca:hover{border-color:var(--verde);transform:translateY(-2px);box-shadow:0 10px 24px rgba(17,60,61,.1)}
+  .chip-busca:active{transform:scale(.97)}
+  .chip-busca.es-activa{background:var(--verde);border-color:var(--verde);color:#fff;box-shadow:0 12px 28px rgba(17,60,61,.25)}
+  .chip-busca__ico{width:28px;height:28px;border-radius:8px;background:var(--verde-suave) center/16px no-repeat;display:block;transition:background-color .25s,filter .25s}
+  .chip-busca.es-activa .chip-busca__ico{background-color:rgba(255,255,255,.18);filter:brightness(0) invert(1)}
+  .chip-busca__tilde{position:absolute;top:8px;right:8px;width:18px;height:18px;border-radius:50%;background:#fff;color:var(--verde);display:grid;place-items:center;transform:scale(0);transition:transform .3s cubic-bezier(.2,.8,.2,1)}
+  .chip-busca__tilde svg{width:11px;height:11px}
+  .chip-busca.es-activa .chip-busca__tilde{transform:scale(1)}
+  .chip-busca__ico[data-ico=casa]{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23113c3d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 11 12 4l9 7M5 10v10h14V10M10 20v-6h4v6'/%3E%3C/svg%3E")}
+  .chip-busca__ico[data-ico=inversion]{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23113c3d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 17l6-6 4 4 8-8M14 7h7v7'/%3E%3C/svg%3E")}
+  .chip-busca__ico[data-ico=llave]{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23113c3d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='8' cy='15' r='4'/%3E%3Cpath d='M10.9 12.1 21 2M15 8l3 3M18 5l3 3'/%3E%3C/svg%3E")}
+  .chip-busca__ico[data-ico=terreno]{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23113c3d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 20h18M4 20l4-9 4 5 3-3 5 7'/%3E%3C/svg%3E")}
+  .chip-busca__ico[data-ico=aires]{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23113c3d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 21c-4 0-7-3-7-7 0-5 7-11 7-11s7 6 7 11c0 4-3 7-7 7ZM12 21v-8'/%3E%3C/svg%3E")}
+  .chip-busca__ico[data-ico=torre]{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23113c3d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='6' y='3' width='12' height='18' rx='1'/%3E%3Cpath d='M9 7h2M13 7h2M9 11h2M13 11h2M9 15h2M13 15h2M10 21v-3h4v3'/%3E%3C/svg%3E")}
+  .chip-busca__ico[data-ico=vender]{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23113c3d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 12 12 20l-8-8V4h8l8 8Z'/%3E%3Ccircle cx='8' cy='8' r='1.5'/%3E%3C/svg%3E")}
+  .chip-busca__ico[data-ico=ojo]{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23113c3d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12Z'/%3E%3Ccircle cx='12' cy='12' r='3'/%3E%3C/svg%3E")}
+  @media (max-width:899px){.chips-busca{grid-template-columns:repeat(2,minmax(0,1fr))}}
   .campos-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
   .campo-f{position:relative;display:block;margin-bottom:12px}
   .campo-f input,.campo-f textarea,.campo-f select{width:100%;box-sizing:border-box;padding:24px 40px 10px 14px;border:1.5px solid var(--borde-fuerte);border-radius:12px;font-size:15px;color:var(--tinta);background:var(--hueso);min-height:58px;font-family:inherit;transition:border-color .2s,box-shadow .2s,background .2s;-webkit-appearance:none;appearance:none}
@@ -540,10 +555,14 @@
   .campo-f__ok{position:absolute;right:13px;top:50%;transform:translateY(-50%) scale(.6);width:22px;height:22px;border-radius:50%;background:var(--ok-suave);color:var(--ok);display:grid;place-items:center;opacity:0;animation:okEntra .35s cubic-bezier(.22,.61,.36,1) forwards}
   .campo-f__ok svg{width:13px;height:13px}
   @keyframes okEntra{to{opacity:1;transform:translateY(-50%) scale(1)}}
-  .contacto__enviar{width:100%;margin-top:4px;display:inline-flex;align-items:center;justify-content:center;gap:10px;background:var(--naranja);color:var(--verde-noche);border:none;border-radius:12px;font-weight:600;font-size:15.5px;min-height:54px;cursor:pointer;transition:transform .15s,background .2s,box-shadow .2s;box-shadow:0 10px 26px rgba(246,101,3,.28);font-family:inherit}
-  .contacto__enviar:hover{background:var(--naranja-claro)}
+  .contacto__enviar{position:relative;width:100%;margin-top:4px;display:inline-flex;align-items:center;justify-content:center;gap:10px;background:linear-gradient(135deg,var(--naranja),var(--naranja-claro));color:var(--verde-noche);border:none;border-radius:14px;font-weight:700;font-size:15.5px;min-height:56px;cursor:pointer;transition:transform .2s cubic-bezier(.2,.8,.2,1),box-shadow .25s,filter .2s;box-shadow:0 14px 30px rgba(246,101,3,.32),inset 0 1px 0 rgba(255,255,255,.4);font-family:inherit;overflow:hidden}
+  .contacto__enviar::before{content:"";position:absolute;inset:0;background:linear-gradient(120deg,transparent 30%,rgba(255,255,255,.35) 50%,transparent 70%);transform:translateX(-120%);transition:transform .7s ease}
+  .contacto__enviar:hover::before{transform:translateX(120%)}
+  .contacto__enviar:hover{transform:translateY(-2px);box-shadow:0 18px 36px rgba(246,101,3,.4),inset 0 1px 0 rgba(255,255,255,.4)}
   .contacto__enviar:active{transform:scale(.98)}
-  .contacto__enviar[disabled]{opacity:.7;cursor:progress}
+  .contacto__enviar[disabled]{cursor:progress;filter:saturate(.7)}
+  .contacto__enviar[disabled] svg{animation:girar .8s linear infinite}
+  @keyframes girar{to{transform:rotate(360deg)}}
   .contacto__enviar svg{transition:transform .2s}.contacto__enviar:hover svg{transform:translateX(3px)}
   .contacto__ok{text-align:center;padding:24px 6px}
   .contacto__ok .tilde{width:64px;height:64px;border-radius:50%;background:var(--ok-suave);color:var(--ok);display:grid;place-items:center;margin:0 auto 16px}
@@ -594,7 +613,7 @@
     document.head.appendChild(cf);
   }
 </script>
-<link rel="stylesheet" href="src/estilos.css?v=20260906h">
+<link rel="stylesheet" href="src/estilos.css?v=20260906i">
 </head>
 <body>
 
@@ -872,6 +891,7 @@
               <span data-si="p.hayBadge" hidden><span data-estilo="p.badgeEstilo"><span data-txt="p.badge"></span></span></span>
               <span data-si="p.nueva" hidden><span class="tarjeta__nueva">Nueva</span></span>
             </span>
+            <button type="button" class="fav fav--compartir" data-click="p.compartir" aria-label="Copiar el enlace"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"></path></svg></button>
             <button type="button" class="fav" data-click="p.guardar" data-estilo="p.favEstilo" data-attr-aria-label="p.favAria" data-attr-aria-pressed="p.esFav">
               <svg viewBox="0 0 24 24" data-attr-fill="p.favFill" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8Z"></path></svg>
             </button>
@@ -881,17 +901,9 @@
             <span class="tarjeta__precio"><span data-txt="p.precioTxt"></span><small data-txt="p.precioSufijo"></small></span>
           </div>
           <div class="tarjeta__pie">
-            <span data-si="p.haySpecs" hidden><span class="tarjeta__i" aria-hidden="true">i</span></span>
-            <span class="tarjeta__tipo" data-txt="p.tipoLinea"></span>
+            <span class="tarjeta__tipo" data-txt="p.linea"></span>
             <span data-si="p.nFotos" hidden><span class="tarjeta__nfotos" data-txt="p.nFotos"></span></span>
             <a data-href="p.wa" target="_blank" rel="noopener" aria-label="Consultar por WhatsApp" data-click="frenarBurbuja" class="tarjeta__wa"><svg viewBox="0 0 24 24" fill="currentColor" style="width:16px;height:16px"><path d="M.057 24l1.687-6.163a11.867 11.867 0 0 1-1.587-5.946C.16 5.335 5.495 0 12.05 0a11.817 11.817 0 0 1 8.413 3.488 11.824 11.824 0 0 1 3.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 0 1-5.688-1.448L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884a9.86 9.86 0 0 0 1.51 5.26l-.999 3.648 3.978-1.052z"></path></svg></a>
-          </div>
-          <div class="tarjeta__detalle">
-            <div class="tarjeta__detalle-in">
-              <template data-lista="p.specs" data-alias="s"><span class="tarjeta__spec" data-txt="s"></span></template>
-              <span data-si="p.cuota" hidden><span class="tarjeta__cuota" data-txt="p.cuota"></span></span>
-              <span class="tarjeta__ver">Ver la ficha →</span>
-            </div>
           </div>
         </article>
       </template>
@@ -902,34 +914,6 @@
         <p style="margin:0;font-size:15px;color:var(--tinta-suave);font-weight:600"><span data-txt="vacioTitulo"></span></p>
         <p style="margin:8px 0 0;font-size:14px;color:var(--gris)"><span data-txt="vacioTexto"></span></p>
         <button data-click="avisarmeZona" style="margin-top:16px;background:#fff;border:1.5px solid var(--borde-fuerte);color:var(--verde);font-weight:600;font-size:13.5px;padding:10px 18px;border-radius:10px;cursor:pointer;transition:border-color .2s" data-fx="fx-5">Avisame cuando entre algo así</button>
-      </div>
-    </div>
-
-    <div data-si="hayRecomendadas" hidden>
-      <div style="margin-top:34px;padding-top:26px;border-top:1px solid var(--borde)">
-        <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:12px">
-          <h3 style="margin:0;font-family:'Libre Caslon Text',Georgia,serif;font-size:21px;font-weight:700">Te puede interesar</h3>
-          <span style="font-size:13px;color:var(--gris)"><span data-txt="recomendadasTxt"></span></span>
-        </div>
-        <div class="fila-reco">
-          <template data-lista="recomendadas" data-alias="r">
-            <button type="button" class="reco" data-click="r.abrir">
-              <span class="reco__foto">
-                <span data-si="r.foto" hidden><span class="minigal" data-n="0">
-                <template data-lista="r.fotos" data-alias="f"><img data-attr-class="f.clase" data-src="f.srcAhora" data-attr-data-lazy="f.src" alt="" loading="lazy" /></template>
-                <span data-si="r.variasFotos" hidden><span class="minigal__puntos"><template data-lista="r.fotos" data-alias="f"><i data-attr-class="f.punto"></i></template></span></span>
-              </span></span>
-                <span data-si="r.sinFoto" hidden><span class="reco__sinfoto">fotos en la consulta</span></span>
-              </span>
-              <span class="reco__texto">
-                <span class="reco__zona"><span data-txt="r.ubicacion"></span></span>
-                <span class="reco__titulo"><span data-txt="r.titulo"></span></span>
-                <span class="reco__specs"><span data-txt="r.tipo"></span><span data-si="r.specs" hidden> · <span data-txt="r.specs"></span></span></span>
-                <span class="reco__precio"><span data-txt="r.precio"></span></span>
-              </span>
-            </button>
-          </template>
-        </div>
       </div>
     </div>
 
@@ -1103,7 +1087,7 @@
           <label class="campo-f"><span class="campo-f__rotulo">¿Qué estás buscando?</span></label>
           <div class="chips-busca" role="group" aria-label="Qué estás buscando">
             <template data-lista="buscaOpciones" data-alias="o">
-              <button type="button" data-attr-class="o.clase" data-attr-aria-pressed="o.activa" data-click="o.elegir"><span data-txt="o.t"></span></button>
+              <button type="button" data-attr-class="o.clase" data-attr-aria-pressed="o.activa" data-click="o.elegir"><i class="chip-busca__ico" data-attr-data-ico="o.ico"></i><span data-txt="o.t"></span><em class="chip-busca__tilde"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></em></button>
             </template>
           </div>
 
@@ -1275,6 +1259,7 @@
               <span data-si="p.hayBadge" hidden><span data-estilo="p.badgeEstilo"><span data-txt="p.badge"></span></span></span>
               <span data-si="p.nueva" hidden><span class="tarjeta__nueva">Nueva</span></span>
             </span>
+            <button type="button" class="fav fav--compartir" data-click="p.compartir" aria-label="Copiar el enlace"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"></path></svg></button>
             <button type="button" class="fav" data-click="p.guardar" data-estilo="p.favEstilo" data-attr-aria-label="p.favAria" data-attr-aria-pressed="p.esFav">
               <svg viewBox="0 0 24 24" data-attr-fill="p.favFill" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8Z"></path></svg>
             </button>
@@ -1284,17 +1269,9 @@
             <span class="tarjeta__precio"><span data-txt="p.precioTxt"></span><small data-txt="p.precioSufijo"></small></span>
           </div>
           <div class="tarjeta__pie">
-            <span data-si="p.haySpecs" hidden><span class="tarjeta__i" aria-hidden="true">i</span></span>
-            <span class="tarjeta__tipo" data-txt="p.tipoLinea"></span>
+            <span class="tarjeta__tipo" data-txt="p.linea"></span>
             <span data-si="p.nFotos" hidden><span class="tarjeta__nfotos" data-txt="p.nFotos"></span></span>
             <a data-href="p.wa" target="_blank" rel="noopener" aria-label="Consultar por WhatsApp" data-click="frenarBurbuja" class="tarjeta__wa"><svg viewBox="0 0 24 24" fill="currentColor" style="width:16px;height:16px"><path d="M.057 24l1.687-6.163a11.867 11.867 0 0 1-1.587-5.946C.16 5.335 5.495 0 12.05 0a11.817 11.817 0 0 1 8.413 3.488 11.824 11.824 0 0 1 3.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 0 1-5.688-1.448L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884a9.86 9.86 0 0 0 1.51 5.26l-.999 3.648 3.978-1.052z"></path></svg></a>
-          </div>
-          <div class="tarjeta__detalle">
-            <div class="tarjeta__detalle-in">
-              <template data-lista="p.specs" data-alias="s"><span class="tarjeta__spec" data-txt="s"></span></template>
-              <span data-si="p.cuota" hidden><span class="tarjeta__cuota" data-txt="p.cuota"></span></span>
-              <span class="tarjeta__ver">Ver la ficha →</span>
-            </div>
           </div>
         </article>
       </template>
@@ -1380,7 +1357,7 @@
     <div id="fichaCaja" class="ficha__scroll">
       <div class="ficha__mosaico" id="fichaFotoCaja">
         <div data-si="mFoto" hidden>
-          <template data-lista="mMosaico" data-alias="m"><button type="button" data-attr-class="m.clase" data-click="m.ver" aria-label="Ver la foto en grande"><img data-src="m.src" alt="" data-attr-loading="m.carga" /><span data-si="m.esGrande" hidden><span class="mosaico__rotulo"><b data-txt="mTitulo"></b><small><span data-txt="mUbicacion"></span> · <span data-txt="mPrecio"></span></small></span></span></button></template>
+          <template data-lista="mMosaico" data-alias="m"><button type="button" data-attr-class="m.clase" data-click="m.ver" aria-label="Ver la foto en grande"><img data-src="m.src" alt="" data-attr-loading="m.carga" /></button></template>
           <div data-si="mVariasFotos" hidden><button type="button" class="mosaico__todas btn-anim" data-click="verTodas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:15px;height:15px"><rect x="3" y="5" width="18" height="14" rx="2"></rect><circle cx="12" cy="12" r="3.5"></circle></svg><span data-txt="mFotosTxt"></span></button></div>
         </div>
         <div data-si="mSinFoto" hidden><div class="mosaico__sinfoto">fotos en la consulta</div></div>
@@ -1517,9 +1494,9 @@
 </div>
 
 
-<script src="src/pintor.js?v=20260906h"></script>
-<script src="src/medicion.js?v=20260906h"></script>
-<script src="src/app.js?v=20260906h"></script>
-<script src="src/reel.js?v=20260906h"></script>
+<script src="src/pintor.js?v=20260906i"></script>
+<script src="src/medicion.js?v=20260906i"></script>
+<script src="src/app.js?v=20260906i"></script>
+<script src="src/reel.js?v=20260906i"></script>
 </body>
 </html>
