@@ -65,7 +65,7 @@
     favs: leerLS("molins_favs", []), recientes: leerLS("molins_vistas", []),
     bOper: "todo", bZona: "",
     menuOpen: false, ancho: 1200,
-    ficha: null, fotoN: 1, visor: false, visorZoom: false, visorFull: false, vista: "inicio", toast: "",
+    ficha: null, fotoN: 1, visor: false, mosaicoPaso: 0, visorZoom: false, visorFull: false, vista: "inicio", toast: "",
     formNombre: "", formWa: "", formMail: "", formBusca: "Para vivir", formZona: "", formMensaje: "",
     formError: "", enviado: false, enviando: false, okMsg: "", ctx: "", ctxProp: null,
     calcPrecio: 75000, calcAnt: 30, calcCuotas: 60,
@@ -338,7 +338,8 @@
   /* ── ficha ───────────────────────────────────────────────────────────── */
   function abrirFicha(codigo) {
     anotarVista(codigo);
-    set({ ficha: codigo, fotoN: 1, descLarga: false, visor: false, visorZoom: false });
+    set({ ficha: codigo, fotoN: 1, descLarga: false, visor: false, visorZoom: false, mosaicoPaso: 0 });
+    girarMosaico();
     precargarFotos(codigo, 1);
     urlFicha(codigo);
     if (window.VISITAS) VISITAS.anotar("ficha", codigo, codigo);
@@ -349,12 +350,25 @@
   function cerrarFicha() {
     if (document.fullscreenElement) try { document.exitFullscreen(); } catch (e) {}
     set({ ficha: null, visor: false, visorZoom: false, visorFull: false });
+    clearTimeout(relojMosaico);
     urlFicha(null);
     if (mapa) { try { mapa.remove(); } catch (e) {} mapa = null; }
   }
   /* El visor abre con la foto "creciendo" desde donde estaba (la baldosa del
      mosaico o la miniatura de la tira): un FLIP con la Web Animations API. */
   var visorDesde = null;
+  /* Las tres fotos chicas del mosaico van pasando solas mientras la ficha está abierta. */
+  var relojMosaico = null;
+  function girarMosaico() {
+    clearTimeout(relojMosaico);
+    if (matchMedia("(prefers-reduced-motion:reduce)").matches) return;
+    relojMosaico = setTimeout(function () {
+      if (!S.ficha || S.visor || document.hidden) { girarMosaico(); return; }
+      var p = prop(S.ficha); if (!p || p.fotos.length < 6) return;
+      set({ mosaicoPaso: (S.mosaicoPaso + 4) % p.fotos.length });
+      girarMosaico();
+    }, 4200);
+  }
   function abrirVisor(n, rect) { visorDesde = rect || null; set({ visor: true, fotoN: n, visorZoom: false }); precargarFotos(S.ficha, n); animarVisor(); }
   function cerrarVisor() { if (document.fullscreenElement) try { document.exitFullscreen(); } catch (e) {} set({ visor: false, visorZoom: false, visorFull: false }); }
   function animarVisor() {
@@ -387,6 +401,7 @@
     if (caja) { caja.classList.remove("foto-entra"); void caja.offsetWidth; caja.classList.add("foto-entra"); }
     var grande = document.querySelector(".mosaico__foto.es-grande img");
     if (grande) { grande.style.animation = "none"; void grande.offsetWidth; grande.style.animation = ""; }
+    document.querySelectorAll(".ficha__nav span, .visor__titulo small").forEach(function (x) { x.classList.remove("cambia"); void x.offsetWidth; x.classList.add("cambia"); });
     var th = document.querySelector("#fichaThumbs [aria-current='true']");
     if (th && th.scrollIntoView) try { th.scrollIntoView({ block: "nearest", inline: "center", behavior: "smooth" }); } catch (e) {}
   }
@@ -457,14 +472,14 @@
     return [s1 + " " + s2 + " " + s3, "Se muestra con turno coordinado. Escribinos con el código " + p.codigo + " y vemos qué día te queda cómodo. La operación se hace con corredor matriculado, y con escribano en la escritura."];
   }
 
-  function similaresDe(p) {
+  function similaresDe(p, n) {
     return S.props.filter(function (x) { return x.codigo !== p.codigo; }).map(function (x) {
       var s = 0;
       if (x.zona === p.zona) s += 3.5;
       if (x.tipo === p.tipo) s += 2.5;
       if (x.operacion === p.operacion) s += 2;
       return { p: x, s: s };
-    }).sort(function (a, b) { return b.s - a.s; }).slice(0, 3).map(function (o) { return o.p; });
+    }).sort(function (a, b) { return b.s - a.s; }).slice(0, n || 8).map(function (o) { return o.p; });
   }
 
   var relojSuave = null;
@@ -544,12 +559,13 @@
     function badgeDe(p) {
       if (p.estado === "reservada") return { t: (p.tipo === "Casa" || p.tipo === "Finca" || p.tipo === "Oficina") ? "Reservada" : "Reservado", bg: "rgba(9,30,31,.72)" };
       if (p.operacion === "Alquiler") return { t: "En alquiler", bg: "var(--verde-claro)" };
-      return { t: "Disponible", bg: "var(--ok-fuerte)" };
+      return null;
     }
 
     var tarjetas = visibles.map(function (p, i) {
-      var b = badgeDe(p), cuota = cuotaRef(p), fav = esFav(p.codigo);
+      var b = badgeDe(p) || { t: "", bg: "transparent" }, cuota = cuotaRef(p), fav = esFav(p.codigo);
       return {
+        hayBadge: !!badgeDe(p),
         codigo: p.codigo, titulo: p.titulo, ubicacion: ubicCorta(p),
         fotos: fotosMini(p), variasFotos: p.fotos.length > 1,
         nueva: p.nueva && p.estado !== "reservada", nFotos: p.fotos.length > 1 ? p.fotos.length + " fotos" : "",
@@ -604,7 +620,7 @@
     var fp = S.ficha ? prop(S.ficha) : null;
     var ficha = {};
     if (fp) {
-      var b = badgeDe(fp), geo = ZONA_GEO[fp.zona], cuota = cuotaRef(fp), sim = similaresDe(fp);
+      var b = badgeDe(fp) || { t: "Disponible", bg: "var(--ok-fuerte)" }, geo = ZONA_GEO[fp.zona], cuota = cuotaRef(fp), sim = similaresDe(fp, S.ancho <= 699 ? 6 : 8);
       /* Para moverse sin cerrar: la lista es la que está filtrada en pantalla
          (o toda la cartera si la ficha vino por enlace y no está en ella). */
       var lista = visibles.some(function (x) { return x.codigo === fp.codigo; }) ? visibles : S.props;
@@ -625,11 +641,11 @@
         mVariasFotos: fp.fotos.length > 1, mFotoCuenta: S.fotoN + " de " + fp.fotos.length,
         mMosaico: (function () {
           var n = fp.fotos.length, out = [];
-          for (var i = 0; i < Math.min(4, n); i++) {
+          for (var i = 0; i < Math.min(5, n); i++) {
             (function (idx, i) {
-              out.push({ src: fp.fotos[idx], clase: "mosaico__foto" + (i === 0 ? " es-grande" : ""), carga: i === 0 ? "eager" : "lazy",
+              out.push({ src: fp.fotos[idx], esGrande: i === 0, clase: "mosaico__foto" + (i === 0 ? " es-grande" : ""), carga: i === 0 ? "eager" : "lazy",
                 ver: function (ev) { abrirVisor(idx + 1, ev && ev.currentTarget ? ev.currentTarget.getBoundingClientRect() : null); } });
-            })((S.fotoN - 1 + i) % n, i);
+            })(i === 0 ? S.fotoN - 1 : (S.fotoN - 1 + i + S.mosaicoPaso) % n, i);
           }
           return out;
         })(),
@@ -657,7 +673,7 @@
         mWa: waLink(fp),
         mEsFav: esFav(fp.codigo) ? "true" : "false", mFavFill: esFav(fp.codigo) ? "currentColor" : "none", mFavTxt: esFav(fp.codigo) ? "Guardada" : "Guardar",
         mFavEstilo: "display:inline-flex;align-items:center;gap:8px;font-weight:600;font-size:14.5px;padding:12px 18px;border-radius:10px;cursor:pointer;min-height:46px;transition:background .2s,border-color .2s;border:1.5px solid " + (esFav(fp.codigo) ? "var(--naranja)" : "var(--borde-fuerte)") + ";background:" + (esFav(fp.codigo) ? "var(--naranja-suave)" : "#fff") + ";color:" + (esFav(fp.codigo) ? "var(--naranja-oscuro)" : "var(--verde)"),
-        guardarFicha: function () { alternarFav(fp.codigo); },
+        guardarFicha: function (ev) { alternarFav(fp.codigo); var b = ev && ev.currentTarget; if (b) { b.classList.remove("late"); void b.offsetWidth; b.classList.add("late"); } },
         mEstadoEstilo: "margin:14px 0 0;font-size:13px;display:flex;gap:8px;align-items:center;color:" + (fp.estado === "reservada" ? "var(--naranja-oscuro)" : "var(--verde-claro)"),
         mPuntoEstilo: "width:8px;height:8px;border-radius:50%;flex:none;" + (fp.estado === "reservada" ? "background:var(--naranja);box-shadow:0 0 0 3px var(--naranja-suave)" : "background:var(--ok);box-shadow:0 0 0 3px var(--ok-suave)"),
         mEstadoTxt: fp.estado === "reservada" ? "Reservada: hay una oferta en curso. Podés dejar tus datos por si se libera." : "Disponible hoy. El estado sale del sistema en vivo: si se reserva, acá cambia.",
@@ -912,8 +928,8 @@
       var x = ev.clientX;
       tira.querySelectorAll("button").forEach(function (b) {
         var r = b.getBoundingClientRect(), d = Math.abs(x - (r.left + r.width / 2));
-        var k = Math.max(0, 1 - d / 190), esc = 1 + 1.05 * k * k;
-        b.style.transform = "scale(" + esc.toFixed(3) + ") translateY(" + (-(esc - 1) * 14).toFixed(1) + "px)";
+        var k = Math.max(0, 1 - d / 230), esc = 1 + 0.9 * k * k;
+        b.style.transform = "scale(" + esc.toFixed(3) + ") translateY(" + (-(esc - 1) * 18).toFixed(1) + "px)";
         b.style.zIndex = k > 0 ? "2" : "";
       });
     });
@@ -1001,13 +1017,18 @@
         var enColaH = false;
         function paralajePortada() {
           var y = window.scrollY, h = portada.offsetHeight;
-          if (y > h) return;
-          reelEl.style.transform = "translate3d(0," + (y * 0.28).toFixed(1) + "px,0)";
+          var k = Math.min(1, Math.max(0, y / (h * 0.6)));
+          document.documentElement.style.setProperty("--crece", k.toFixed(3));
+          if (y > h * 1.2) return;
+          /* Al bajar, la foto se encoge y se redondea como una tarjeta, y el rótulo se desvanece. */
+          reelEl.style.transform = "translate3d(0," + (y * 0.16).toFixed(1) + "px,0) scale(" + (1 - 0.07 * k).toFixed(3) + ")";
+          reelEl.style.borderRadius = (k * 28).toFixed(1) + "px";
           var op = Math.max(0, 1 - y / (h * 0.55)).toFixed(3);
           if (pieEl) pieEl.style.opacity = op;
           if (marcaEl) marcaEl.style.opacity = op;
         }
         addEventListener("scroll", function () { if (enColaH) return; enColaH = true; requestAnimationFrame(function () { enColaH = false; paralajePortada(); }); }, { passive: true });
+        paralajePortada();
       }
     }
 
@@ -1021,6 +1042,7 @@
     } else bloques.forEach(function (b) { b.classList.add("es-visto"); });
     if (!quieto && bloques.length) {
       var enColaP = false;
+      var torreEl = document.querySelector(".bloque--torre"), airesEl = document.querySelector(".bloque--aires");
       function paralaje() {
         bloques.forEach(function (b) {
           var f = b.querySelector(".bloque__fondo"); if (!f) return;
@@ -1029,6 +1051,14 @@
           var t = (r.top + r.height / 2 - innerHeight / 2) / innerHeight; // -1..1
           f.style.transform = "translate3d(0," + (t * -6).toFixed(2) + "%,0) scale(1.14)";
         });
+        /* Aires se apila sobre La Torre: mientras la cubre, La Torre se encoge y se oscurece. */
+        if (torreEl && airesEl && innerWidth >= 900) {
+          var ra = airesEl.getBoundingClientRect(), rt = torreEl.getBoundingClientRect();
+          var k = Math.min(1, Math.max(0, 1 - ra.top / Math.max(1, rt.height)));
+          torreEl.style.transform = "scale(" + (1 - 0.06 * k).toFixed(3) + ")";
+          torreEl.style.filter = "brightness(" + (1 - 0.4 * k).toFixed(3) + ")";
+          torreEl.style.borderRadius = (k * 24).toFixed(1) + "px";
+        }
       }
       addEventListener("scroll", function () { if (enColaP) return; enColaP = true; requestAnimationFrame(function () { enColaP = false; paralaje(); }); }, { passive: true });
       paralaje();
