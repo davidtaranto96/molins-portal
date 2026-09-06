@@ -42,9 +42,11 @@
   var pie = document.querySelector(".reel__pie");
   /* Al lado de la foto asoma la siguiente propiedad; tocarla adelanta. */
   var prox = document.querySelector(".reel__prox");
+  var proxM = document.querySelector(".reel__prox-m"); // la pastilla del celular
   function pintarProx(n) {
-    if (!prox) return;
     var d = REEL[(n + 1) % REEL.length], r = rotulo(d);
+    if (proxM) { var imM = proxM.querySelector("img"), bM = proxM.querySelector("b"); if (imM && imM.getAttribute("src") !== d.img) imM.src = d.img; if (bM) bM.textContent = r.t; }
+    if (!prox) return;
     var im = prox.querySelector(".reel__prox-foto"), b = prox.querySelector("b");
     if (im && im.getAttribute("src") !== d.img) {
       im.style.transition = "none"; im.style.opacity = "0"; im.style.transform = "translateX(60px)";
@@ -54,6 +56,7 @@
     if (b) b.textContent = r.t;
   }
   if (prox) prox.addEventListener("click", function () { ir((i + 1) % REEL.length); });
+  if (proxM) proxM.addEventListener("click", function () { ir((i + 1) % REEL.length); });
   var puntos = pie ? pie.querySelector(".reel__puntos") : null;
   var quieto = matchMedia("(prefers-reduced-motion:reduce)").matches;
 

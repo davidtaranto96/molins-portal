@@ -27,3 +27,16 @@ GitHub Pages desde `main`. `git push` es el deploy. Dominio propio: pendiente (v
 
 - Fotos: se sirven desde el CRM (`/api/publico/fotos/<id>`). No hay carpeta `fotos/`.
 - Datos: no hay ninguna propiedad escrita a mano. Si hace falta una, se carga en el sistema.
+
+## Videos y renders de los emprendimientos
+
+- `video/torre-render.mp4` (y su `torre-render.jpg`) se arma con ffmpeg a partir de cinco renders de
+  `molins-torres/img` (paneo lento y fundidos, 960×540, ~1 MB). No es un video del desarrollador: si
+  llega uno real, se reemplaza el archivo y listo.
+- `video/aires-duplex.mp4` y `video/aires-calle.mp4` son copias de `BERNI/aires_sanlorenzo/assets/video`.
+- `img/torre/render-N.webp` y `plano-N.webp` son las cuatro tipologías de La Torre (1 Horizonte,
+  2 Evolución, 3 Esencia, 4 Cúspide), a 1400 px, para la previa de cada unidad.
+- `img/og-molins.jpg` es la vista previa al compartir (escudo sobre verde noche), generada con PIL.
+
+Los videos llevan `preload="none"` y `data-src`: se cargan y arrancan recién cuando se ven.
+

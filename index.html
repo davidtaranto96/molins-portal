@@ -203,8 +203,8 @@
   .editorial.es-visto .editorial__bajada{opacity:1}
   @media (prefers-reduced-motion:reduce){.editorial__sobre,.editorial__bajada{opacity:1!important;transform:none!important}.editorial__palabra{transform:none!important}.tipeo__c{opacity:1}.tipeo__cursor{display:none}}
   /* ── los bloques de La Torre y Aires ── */
-  .bloque{position:relative;overflow:hidden;color:#fff;margin-top:14px;isolation:isolate;transform-origin:50% 100%;will-change:transform}
-  @media (min-width:900px){#proyectos .bloque{position:sticky;top:0;margin-top:0}#proyectos .bloque--aires{z-index:2;box-shadow:0 -30px 80px rgba(0,0,0,.35)}}
+  .bloque{position:relative;overflow:hidden;color:#fff;margin-top:0;isolation:isolate;transform-origin:50% 100%;will-change:transform}
+  #proyectos .bloque{position:sticky;top:0;margin-top:0}#proyectos .bloque--aires{z-index:2;box-shadow:0 -30px 80px rgba(0,0,0,.35)}
   .bloque__fondo{position:absolute;inset:-8% 0;background-size:cover;background-position:center;transform:scale(1.14);will-change:transform;z-index:-2}
   .bloque__velo{position:absolute;inset:0;z-index:-1}
   .bloque--torre{background:var(--torre-noche)}
@@ -271,7 +271,9 @@
   .torre-u{display:flex;align-items:center;justify-content:center;min-height:38px;border-radius:9px;border:1px solid rgba(243,235,221,.45);color:var(--torre-crema);font-weight:700;font-size:13.5px;letter-spacing:.04em;background:rgba(243,235,221,.06);transition:background .2s,transform .15s,border-color .2s}
   .torre-u:hover{background:rgba(243,235,221,.2);transform:translateY(-2px);border-color:var(--torre-crema);color:#fff}
   .torre-u.es-reservada{background:var(--torre-terracota);border-color:transparent;color:var(--torre-crema);opacity:.9}
-  .torre-leyenda{margin-top:6px;font-size:11.5px;color:rgba(255,255,255,.6);display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+  .torre-leyenda{margin-top:8px;font-size:11.5px;color:rgba(255,255,255,.6);display:flex;align-items:center;gap:4px 14px;flex-wrap:wrap}
+  .torre-leyenda span{display:inline-flex;align-items:center;gap:6px}
+  .torre-leyenda__ayuda{flex-basis:100%;color:rgba(255,255,255,.5)}
   .torre-leyenda i{width:10px;height:10px;border-radius:3px;border:1px solid rgba(243,235,221,.5);display:inline-block}
   .torre-leyenda i.es-reservada{background:var(--torre-terracota);border-color:transparent}
   .bloque__galeria .bloque__foto:nth-child(2){transition-delay:.3s;aspect-ratio:16/8}
@@ -459,7 +461,7 @@
   @media (max-width:899px){.ficha__mosaico{grid-template-columns:1fr;grid-template-rows:1fr;height:min(76vh,640px);margin-top:0;padding:0}.mosaico__foto.es-grande img{object-fit:cover}.mosaico__foto{border-radius:0!important}.mosaico__foto:not(.es-grande){display:none}.mosaico__foto.es-grande{grid-row:auto}.mosaico__todas{right:12px}.mosaico__estado{left:12px}.ficha__barra-der .ficha__consultar span{display:none}.ficha__barra-der .ficha__consultar{padding:0 12px}.ficha__nav span{display:none}}
   #fichaMapa{position:relative;overflow:hidden;isolation:isolate}
   /* el visor de fotos */
-  .visor{position:fixed;inset:0;z-index:600;background:rgba(6,18,19,.985);display:block;animation:fadein .22s ease both}
+  .visor{position:fixed;inset:0;z-index:600;background:#061213;display:block;animation:fadein .22s ease both}
   .visor__barra{position:absolute;top:0;left:0;right:0;z-index:3;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px clamp(14px,2vw,24px);color:#fff;background:linear-gradient(180deg,rgba(0,0,0,.65),rgba(0,0,0,0))}
   .visor__titulo{position:absolute;left:50%;top:12px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;text-align:center;min-width:0;max-width:46vw;line-height:1.2;text-shadow:0 2px 12px rgba(0,0,0,.45)}
   .visor__titulo b{font-family:'Libre Caslon Text',Georgia,serif;font-size:22px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
@@ -564,10 +566,11 @@
   .buscar__cuerpo{max-width:1400px;margin:0 auto;padding:94px clamp(14px,2.5vw,28px) 60px}
   /* la cuadrícula: más productos a la vista, estilo tienda */
   .grilla{display:grid;grid-template-columns:repeat(auto-fill,minmax(380px,1fr));gap:18px}
-  @media (max-width:699px){.grilla{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.tarjeta{border-radius:12px}.tarjeta__media::after{display:none}.tarjeta__abajo{position:static;padding:9px 10px 0;color:var(--tinta);flex-direction:column;align-items:flex-start;gap:3px}.tarjeta__nombre b{font-size:13.5px;text-shadow:none;line-height:1.2}.tarjeta__nombre small{font-size:10.5px;color:var(--gris)}.tarjeta__precio{background:none;padding:0;font-size:15px;flex-direction:row;align-items:baseline;gap:4px;border-radius:0}.tarjeta__precio small{font-size:10px}.tarjeta__pildora{display:none}.tarjeta__arriba{top:7px;left:7px;gap:4px}.tarjeta__arriba span span,.tarjeta__nueva{font-size:9.5px;padding:3px 7px}.tarjeta .fav{top:7px;right:7px;width:28px;height:28px}.tarjeta .fav--compartir{top:41px}.tarjeta__pie{padding:6px 8px 8px;font-size:10.5px;gap:6px}.tarjeta__wa{width:26px;height:26px}.tarjeta__cuota{display:none}}
+  @media (max-width:699px){.grilla{grid-template-columns:1fr;gap:14px}.tarjeta{border-radius:18px}.tarjeta__abajo{left:14px;right:14px;bottom:60px;gap:8px}.tarjeta__nombre b{font-size:20px}.tarjeta__nombre small{font-size:12.5px}.tarjeta__precio{font-size:20px}.tarjeta .fav--compartir{display:none}.tarjeta .fav{opacity:1;transform:none;width:38px;height:38px;top:10px;right:10px}.tarjeta__arriba{top:10px;left:10px}.tarjeta__pie{padding:10px 12px 10px 14px;font-size:12.5px}.tarjeta__cuota{display:none}.minigal__puntos{display:none}}
+  @media (min-width:600px) and (max-width:699px){.grilla{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.tarjeta__nombre b{font-size:16px}.tarjeta__precio{font-size:16px}}
   .buscador.es-fuera{transform:translateY(-140%);opacity:0;pointer-events:none}
   .cierre{padding:clamp(52px,6.5vw,92px) 20px;background:var(--hueso);position:relative}
-  @media (min-width:900px){#proyectos::after{content:"";display:block;height:var(--hoja,0px)}main .cierre{position:relative;z-index:3;margin-top:calc(-1 * var(--hoja,0px));min-height:min(calc(100vh - var(--pie,0px)),640px);display:flex;flex-direction:column;justify-content:center;border-radius:32px 32px 0 0;box-shadow:0 -30px 80px rgba(0,0,0,.28);padding:clamp(36px,4.5vw,60px) 20px}footer[data-screen-label="Pie"]{position:relative;z-index:3}}
+  #proyectos::after{content:"";display:block;height:var(--hoja,0px)}main .cierre{position:relative;z-index:3;margin-top:calc(-1 * var(--hoja,0px));min-height:min(calc(100vh - var(--pie,0px)),640px);display:flex;flex-direction:column;justify-content:center;border-radius:32px 32px 0 0;box-shadow:0 -30px 80px rgba(0,0,0,.28);padding:clamp(36px,4.5vw,60px) 20px}footer[data-screen-label="Pie"]{position:relative;z-index:3}
   .cierre__caja{max-width:1400px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr);gap:clamp(24px,4vw,60px);align-items:center;background:radial-gradient(120% 90% at 100% 0%,rgba(246,101,3,.22),transparent 55%),linear-gradient(160deg,var(--verde-hondo),var(--verde-noche));color:#fff;border-radius:24px;padding:clamp(28px,4.5vw,56px);box-shadow:0 30px 80px rgba(9,30,31,.22)}
   .cierre h2{margin:14px 0 10px;font-family:'Libre Caslon Text',Georgia,serif;font-weight:700;font-size:clamp(24px,3vw,36px);line-height:1.12;color:#fff}
   .cierre p{margin:0;font-size:15.5px;line-height:1.6;color:rgba(255,255,255,.78);max-width:48ch}
@@ -676,6 +679,308 @@
   input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:var(--verde);cursor:pointer;border:3px solid #fff;box-shadow:0 2px 7px rgba(17,60,61,.35)}
   input[type=range]::-moz-range-thumb{width:19px;height:19px;border-radius:50%;background:var(--verde);cursor:pointer;border:3px solid #fff}
   @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+
+  /* ══ Ronda trece: el celular ══ */
+  .fila-solapas__segs{display:contents}
+  .reel__fondo{display:none}
+  .reel__prox-m{display:none}
+  .solo-ancho{display:inline}
+  /* Proyectos en la barra: desplegable */
+  .barra__desp{position:relative;display:inline-flex}
+  .barra__desp > a{display:inline-flex;align-items:center}
+  .barra__menu{position:absolute;left:50%;top:100%;padding-top:10px;transform:translate(-50%,6px);opacity:0;pointer-events:none;transition:opacity .22s ease,transform .3s cubic-bezier(.2,.8,.2,1);z-index:5;width:340px}
+  .barra__desp:hover .barra__menu,.barra__desp:focus-within .barra__menu{opacity:1;transform:translate(-50%,0);pointer-events:auto}
+  .barra__menu-caja{background:rgba(255,255,255,.96);backdrop-filter:blur(18px) saturate(1.4);-webkit-backdrop-filter:blur(18px) saturate(1.4);border:1px solid var(--borde);border-radius:18px;box-shadow:0 30px 70px rgba(9,30,31,.22),0 4px 14px rgba(9,30,31,.08);padding:8px;display:flex;flex-direction:column;gap:2px}
+  .barra__menu-item{display:grid;grid-template-columns:54px 1fr 18px;align-items:center;gap:12px;padding:8px;border-radius:12px;color:var(--tinta)!important;font-size:14px!important;font-weight:600!important;transition:background .2s}
+  .barra__menu-item img{width:54px;height:40px;object-fit:cover;border-radius:8px;display:block}
+  .barra__menu-item span{display:flex;flex-direction:column;min-width:0;line-height:1.25}
+  .barra__menu-item b{font-family:'Libre Caslon Text',Georgia,serif;font-size:15px}
+  .barra__menu-item small{font-size:11.5px;color:var(--gris);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .barra__menu-item i{font-style:normal;color:var(--gris);transition:transform .2s}
+  .barra.es-solida .barra__menu-item:hover,.barra__menu-item:hover{background:var(--hueso-3)!important;color:var(--tinta)!important}
+  .barra__menu-item:hover i{transform:translate(2px,-2px);color:var(--naranja-oscuro)}
+  .barra__menu-todo{display:block;text-align:center;padding:9px 8px 6px!important;font-size:12.5px!important;font-weight:600!important;color:var(--naranja-oscuro)!important;border-top:1px solid var(--borde);margin-top:4px;border-radius:0!important}
+  .barra__menu-todo:hover{background:none!important;color:var(--naranja)!important}
+  /* El video de cada emprendimiento */
+  .bloque__video{aspect-ratio:16/9;background:#000;cursor:default}
+  .bloque__video video{width:100%;height:100%;object-fit:cover;display:block}
+  .bloque__video--movil{display:none}
+  .bloque__texto > .bloque__video{opacity:0;transform:translateY(16px)}
+  .bloque.es-visto .bloque__texto > .bloque__video{opacity:1;transform:none}
+  .bloque--aires .bloque__galeria .bloque__video{aspect-ratio:16/9}
+  /* Las unidades de La Torre son botones */
+  .torre-u{font-family:inherit;cursor:pointer;padding:0}
+  .torre-u:focus-visible{outline:2px solid var(--torre-crema);outline-offset:2px}
+  /* La previa de una unidad */
+  .previa{position:fixed;inset:0;z-index:525;background:rgba(9,30,31,.5);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:grid;place-items:center;padding:24px;animation:fadein .22s ease both}
+  .previa__caja{position:relative;width:min(560px,100%);max-height:calc(100vh - 48px);overflow:auto;border-radius:22px;background:var(--torre-noche);color:#fff;box-shadow:0 40px 100px rgba(0,0,0,.5);animation:popEntra .38s cubic-bezier(.2,.8,.2,1) both;overscroll-behavior:contain}
+  .previa__x{position:absolute;top:12px;left:12px;z-index:3;width:40px;height:40px;border-radius:50%;border:1px solid rgba(255,255,255,.3);background:rgba(20,16,14,.55);color:#fff;cursor:pointer;display:grid;place-items:center;backdrop-filter:blur(8px)}
+  .previa__x:hover{background:var(--torre-terracota)}
+  .previa__media{position:relative;aspect-ratio:16/9;background:#000;overflow:hidden}
+  .previa__media img{width:100%;height:100%;object-fit:cover;display:block;animation:fotoEntra .45s ease both}
+  .previa__media img.es-plano{object-fit:contain;background:#fff}
+  .previa__vistas{position:absolute;right:12px;bottom:12px;display:flex;gap:4px;padding:4px;border-radius:999px;background:rgba(20,16,14,.6);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.18)}
+  .previa__vistas button{border:none;background:transparent;color:rgba(255,255,255,.8);font-family:inherit;font-size:12.5px;font-weight:600;padding:6px 12px;border-radius:999px;cursor:pointer;transition:background .2s,color .2s}
+  .previa__vistas button[aria-selected="true"]{background:var(--torre-crema);color:var(--torre-tinta)}
+  .previa__estado{position:absolute;left:14px;bottom:16px;font-size:11.5px;font-weight:700;padding:5px 11px;border-radius:999px;color:#fff;background:rgba(30,138,80,.9)}
+  .previa__estado.es-reservada{background:var(--torre-terracota)}
+  .previa__cuerpo{padding:20px 22px 22px}
+  .previa__rotulo{display:block;font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--torre-terracota-claro)}
+  .previa__titulo{margin:6px 0 0;font-family:'Libre Caslon Text',Georgia,serif;font-size:26px;font-weight:700;line-height:1.1;color:var(--torre-crema)}
+  .previa__precio{margin-top:10px;font-family:'Libre Caslon Text',Georgia,serif;font-size:24px;font-weight:700;display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+  .previa__precio small{font-family:'Archivo',sans-serif;font-size:12px;font-weight:500;color:rgba(255,255,255,.65)}
+  .previa__datos{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:16px}
+  .previa__dato{display:flex;flex-direction:column;gap:2px;padding:10px 12px;border-radius:12px;background:rgba(243,235,221,.07);border:1px solid rgba(243,235,221,.14)}
+  .previa__dato b{font-family:'Libre Caslon Text',Georgia,serif;font-size:17px;line-height:1.1}
+  .previa__dato small{font-size:11px;color:rgba(255,255,255,.65)}
+  .previa__nota{margin:14px 0 0;font-size:13.5px;line-height:1.55;color:rgba(255,255,255,.75)}
+  .previa__ctas{display:flex;flex-direction:column;gap:8px;margin-top:18px}
+  .previa__wa{display:inline-flex;align-items:center;justify-content:center;gap:9px;min-height:48px;border-radius:12px;background:var(--whatsapp);color:var(--verde-noche);font-weight:600;font-size:14.5px}
+  .previa__wa:hover{color:var(--verde-noche);filter:brightness(1.05)}
+  .previa__web{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:46px;border-radius:12px;border:1px solid rgba(243,235,221,.4);color:var(--torre-crema);font-weight:600;font-size:14px}
+  .previa__web i{font-style:normal;transition:transform .2s}.previa__web:hover{color:#fff;background:rgba(243,235,221,.08)}.previa__web:hover i{transform:translate(2px,-2px)}
+  /* La barra de la ficha cuando se bajó de la foto: sólida, con el título */
+  .ficha__barra{transition:background .3s,box-shadow .3s}
+  .ficha__barra-titulo{opacity:0;transform:translateY(6px);transition:opacity .25s,transform .3s cubic-bezier(.2,.8,.2,1);color:var(--tinta)}
+  .ficha__barra-titulo b{color:var(--tinta)}.ficha__barra-titulo small{color:var(--gris);font-weight:600}
+  .ficha.es-baja .ficha__barra{background:rgba(255,255,255,.94);backdrop-filter:blur(16px) saturate(1.3);-webkit-backdrop-filter:blur(16px) saturate(1.3);box-shadow:0 6px 24px rgba(9,30,31,.08)}
+  .ficha.es-baja .ficha__barra-titulo{opacity:1;transform:none}
+  .ficha.es-baja .ficha__ico,.ficha.es-baja .ficha__nav{background:#fff;color:var(--tinta);border-color:var(--borde);box-shadow:none;text-shadow:none}
+  .ficha.es-baja .ficha__nav button{color:var(--tinta)}.ficha.es-baja .ficha__nav button:hover{background:var(--hueso-3)}
+  .ficha.es-baja .ficha__ico[data-click=guardarFicha][aria-pressed="true"]{background:var(--corazon)!important;color:#fff!important;border-color:var(--corazon)!important}
+  .mosaico__contador{display:none}
+  /* Las ventanas: cabecera del celular */
+  .panel__cab{display:none}
+  /* El pie */
+  .pie{background:var(--verde);color:rgba(255,255,255,.64);padding:54px 0 22px}
+  .pie__in{max-width:1400px;margin:0 auto;padding:0 20px}
+  .pie__grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:34px;padding-bottom:30px;border-bottom:1px solid rgba(255,255,255,.1)}
+  .pie__marca{min-width:260px}
+  .pie__logo{display:flex;align-items:center;gap:14px}
+  .pie__logo img{width:56px;height:56px;border-radius:11px;object-fit:cover}
+  .pie__logo b{color:#fff;font-family:'Libre Caslon Text',Georgia,serif;font-size:23px;font-weight:700;letter-spacing:.02em;display:block;line-height:1}
+  .pie__logo small{display:block;font-size:9.5px;font-weight:600;letter-spacing:.18em;color:rgba(255,255,255,.7);margin-top:4px}
+  .pie__marca p{font-size:13.5px;color:rgba(255,255,255,.64);margin:14px 0 0;max-width:38ch}
+  .pie__marca .pie__matricula{font-size:12.5px;color:var(--naranja-claro)}
+  .pie__col h4{color:#fff;font-size:13px;margin:0 0 12px;font-weight:700}
+  .pie__col a,.pie__col span{display:block;font-size:13.5px;color:rgba(255,255,255,.64);padding:5px 0}
+  .pie__col a:hover{color:#fff}
+  .pie__abajo{display:flex;justify-content:space-between;align-items:center;gap:12px;padding-top:18px;font-size:12.5px;color:rgba(255,255,255,.55);flex-wrap:wrap}
+  .pie__lpz{display:inline-flex;align-items:center;gap:12px;color:rgba(255,255,255,.75)}
+  .pie__lpz span{text-align:right;line-height:1.35}.pie__lpz small{font-size:11.5px;color:rgba(255,255,255,.55)}
+  .pie__lpz img{height:58px;width:auto;opacity:.92;filter:brightness(0) invert(1)}
+  /* El menú del celular */
+  .menu{position:fixed;inset:0;z-index:300;background:var(--hueso);display:flex;flex-direction:column;padding:14px 20px 20px;animation:fadein .2s ease both;overflow-y:auto}
+  .menu__cab{display:flex;align-items:center;justify-content:space-between}
+  .menu__marca{display:flex;align-items:center;gap:11px}
+  .menu__marca img{width:42px;height:42px;border-radius:9px;object-fit:cover}
+  .menu__marca b{font-family:'Libre Caslon Text',Georgia,serif;font-size:19px;letter-spacing:.01em}
+  .menu__x{width:44px;height:44px;border-radius:50%;border:1px solid var(--borde);background:#fff;cursor:pointer;display:grid;place-items:center;color:var(--tinta)}
+  .menu__nav{display:flex;flex-direction:column;margin-top:22px}
+  .menu__item{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;text-align:left;font-family:'Libre Caslon Text',Georgia,serif;font-size:24px;font-weight:700;color:var(--tinta);padding:16px 4px;border:none;border-bottom:1px solid var(--borde);background:none;cursor:pointer;opacity:0;transform:translateY(16px);animation:menuItem .5s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--i,0) * 60ms + 60ms)}
+  @keyframes menuItem{to{opacity:1;transform:none}}
+  .menu__item i{font-style:normal;font-size:20px;color:var(--gris);transition:transform .25s,color .25s}
+  .menu__item:active i{transform:translateX(4px);color:var(--naranja-oscuro)}
+  .menu__chev{width:32px;height:32px;border-radius:50%;background:var(--hueso-3);display:grid;place-items:center;transition:transform .3s cubic-bezier(.2,.8,.2,1),background .2s}
+  .menu__chev svg{width:16px;height:16px}
+  .menu__item[aria-expanded="true"] .menu__chev{transform:rotate(180deg);background:var(--verde);color:#fff}
+  .menu__sub{display:flex;flex-direction:column;gap:8px;padding:10px 0 14px;border-bottom:1px solid var(--borde);animation:rise .35s cubic-bezier(.2,.8,.2,1) both}
+  .menu__proy{display:grid;grid-template-columns:64px 1fr 20px;align-items:center;gap:12px;padding:8px;border-radius:14px;background:#fff;border:1px solid var(--borde);color:var(--tinta);transition:transform .15s,border-color .2s}
+  .menu__proy:active{transform:scale(.985)}
+  .menu__proy img{width:64px;height:48px;object-fit:cover;border-radius:9px;display:block}
+  .menu__proy span{display:flex;flex-direction:column;min-width:0;line-height:1.25}
+  .menu__proy b{font-family:'Libre Caslon Text',Georgia,serif;font-size:16px}
+  .menu__proy small{font-size:12px;color:var(--gris)}
+  .menu__proy i{font-style:normal;color:var(--gris)}
+  .menu__proy-todo{display:block;text-align:center;font-size:13px;font-weight:600;color:var(--naranja-oscuro);padding:6px}
+  .menu__pie{margin-top:auto;display:flex;flex-direction:column;gap:10px;padding-top:22px;animation:rise .5s cubic-bezier(.2,.8,.2,1) .3s both}
+  .menu__buscar{display:inline-flex;align-items:center;justify-content:center;gap:10px;background:var(--naranja);color:var(--verde-noche);border:none;font-family:inherit;font-weight:600;font-size:15px;min-height:52px;border-radius:14px;cursor:pointer;box-shadow:0 10px 26px rgba(246,101,3,.28)}
+  .menu__wa{display:inline-flex;align-items:center;justify-content:center;gap:10px;background:#fff;border:1px solid var(--borde);color:var(--tinta);font-weight:600;font-size:14.5px;min-height:48px;border-radius:14px}
+  .menu__wa svg{color:var(--whatsapp)}
+  .menu__nota{font-size:12px;color:var(--gris);line-height:1.5;text-align:center;margin-top:4px}
+  /* Sin mouse no hay hover: nada se levanta ni se agranda al tocar */
+  @media (hover:none){
+    .tarjeta:hover,.js-reveal .tarjeta.es-visto:hover{transform:none;box-shadow:none;z-index:auto}
+    .tarjeta:hover .tarjeta__abajo{transform:none}
+    .tarjeta:active{transform:scale(.985);transition-duration:.08s}
+    .tarjeta .fav:hover{transform:none}
+    .tarjeta .fav:not(.fav--compartir):hover{background:rgba(9,30,31,.42)!important;border-color:rgba(255,255,255,.4)!important}
+    .tarjeta .fav[aria-pressed="true"]{background:var(--corazon)!important;border-color:var(--corazon)!important}
+    .tarjeta .fav:not(.fav--compartir):hover svg{animation:none}
+    .grilla{transform:none!important}
+    .reco:hover,.bloque__tipo:hover,.bloque__enlace:hover,.canal:hover,.dato:hover,.segmento[data-k]:hover,.chip-busca:hover,.preguntas__wa:hover,.btn-anim:hover{transform:none;box-shadow:none}
+    .bloque__foto:hover img,.mosaico__foto:hover img{transform:none}
+    .brilla:hover::before{transform:translateX(-130%)}
+  }
+  @media (max-width:899px){
+    /* la portada: la foto entera sobre su propio desenfoque, el texto encima */
+    .portada{display:block;height:auto;min-height:0;padding:0;background:var(--verde-noche)}
+    .reel{position:relative;width:100%!important;max-width:none;height:min(74svh,620px);min-height:440px;aspect-ratio:auto;transition:none;-webkit-mask-image:none;mask-image:none;border-radius:0!important;transform:none!important}
+    .reel__fondo{display:block;position:absolute;inset:-12%;width:124%;height:124%;object-fit:cover;filter:blur(28px) brightness(.5) saturate(1.15)}
+    .reel__img{object-fit:contain;object-position:50% 24%}
+    .reel::after{content:"";position:absolute;left:0;right:0;bottom:0;height:64%;background:linear-gradient(180deg,rgba(12,43,44,0),rgba(12,43,44,.5) 40%,rgba(12,43,44,.97));pointer-events:none;z-index:1}
+    .reel__velo{background:linear-gradient(180deg,rgba(9,30,31,.55) 0%,rgba(9,30,31,0) 30%)}
+    .portada__texto{position:absolute;left:0;right:0;bottom:0;z-index:3;margin:0;padding:0 20px 46px;pointer-events:none;background:none}
+    .reel__pie{gap:2px;opacity:1!important;transform:none!important}
+    .reel__n{font-size:10.5px;margin-bottom:4px}
+    .reel__t{font-size:clamp(30px,8.4vw,40px);line-height:1;letter-spacing:-.015em}
+    .reel__s{font-size:14px;margin-top:8px}
+    .reel__cta{margin-top:12px;min-height:38px;font-size:13px;padding:0 14px 0 16px}
+    .reel__mando{margin-top:14px;gap:8px}
+    .reel__prev,.reel__next{width:32px;height:32px}
+    .reel__punto{width:5px;height:5px}.reel__punto.es-activo{width:18px}
+    .reel__mando{flex-wrap:nowrap}
+    .reel__prox-m{display:inline-flex;align-items:center;gap:8px;margin-left:auto;min-width:0;flex:0 1 auto;overflow:hidden;padding:4px 12px 4px 4px;border-radius:999px;background:rgba(9,30,31,.45);border:1px solid rgba(255,255,255,.28);color:#fff;font-family:inherit;cursor:pointer;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);text-align:left;min-height:40px}
+    .reel__prox-m img{position:static;inset:auto;width:44px;height:32px;object-fit:cover;border-radius:999px 7px 7px 999px;display:block;filter:none;transition:none;transform:none!important;opacity:1!important}
+    .reel__prox-m span{display:flex;flex-direction:column;line-height:1.15;min-width:0;flex:1 1 auto}
+    .reel__prox-m small{font-size:9px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--naranja-palido)}
+    .reel__prox-m b{font-size:11.5px;font-weight:600;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .portada__bajar,.portada__buscar,.reel__prox{display:none}
+    .portada::after{display:none}
+    .grilla{transform:none!important}
+    .barra.es-arriba .marca{transform:translate(2px,10px) scale(1.16)}
+    /* los filtros en una sola fila deslizable; abajo el conteo, el orden y los filtros */
+    .fila-solapas{flex-wrap:wrap;gap:10px 8px;margin-bottom:12px}
+    .fila-solapas__segs{display:flex;gap:8px;flex:0 0 calc(100% + 40px);width:calc(100% + 40px);overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;margin:0 -20px;padding:2px 20px 4px;scroll-snap-type:x proximity;box-sizing:border-box}
+    .fila-solapas__segs::-webkit-scrollbar{display:none}
+    .fila-solapas__segs .segmento[data-k]{flex:none;scroll-snap-align:start;min-height:42px;font-size:14px;padding:0 13px 0 10px;gap:7px}
+    .fila-solapas__segs .segmento[data-k]::before{width:20px;height:20px;background-size:13px}
+    .fila-solapas__der{flex:0 0 100%;width:100%;margin:0;display:flex;align-items:center;gap:8px;flex-wrap:nowrap}
+    .fila-solapas__n{margin-right:auto;font-size:13px;white-space:nowrap}
+    .selector--chico{flex:0 1 auto;max-width:46vw;min-height:38px;border-radius:999px;font-size:12.5px;padding:6px 28px 6px 12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .filtros-btn{min-height:38px!important;padding:0 12px!important;font-size:12.5px!important;border-radius:999px!important}
+    #propiedades{padding-top:20px!important}
+    /* la ficha */
+    .ficha__mosaico{height:auto;aspect-ratio:4/3;max-height:52svh;grid-template-columns:1fr;grid-template-rows:1fr}
+    .ficha__barra{padding:10px 12px;gap:8px}
+    .ficha__barra-der .ficha__nav,.ficha__barra-der .ficha__consultar{display:none}
+    .ficha__ico{width:40px;height:40px}
+    .ficha__barra-titulo b{font-size:14.5px}.ficha__barra-titulo small{font-size:12px}
+    .mosaico__contador{display:inline-block;position:absolute;left:12px;bottom:14px;font-size:11.5px;font-weight:700;color:#fff;background:rgba(9,30,31,.55);backdrop-filter:blur(6px);padding:5px 10px;border-radius:999px;letter-spacing:.03em}
+    .mosaico__todas{bottom:12px;right:12px;font-size:12.5px;padding:8px 12px}
+    .mosaico__estado{top:auto;bottom:48px;left:12px}
+    .ficha__cuerpo{margin-top:-18px;border-radius:22px 22px 0 0;padding:22px 18px 24px;box-shadow:0 -16px 40px rgba(0,0,0,.18)}
+    .ficha__principal > span:first-child{font-size:11.5px}
+    .ficha__principal > h3{font-size:25px!important;margin-top:5px!important}
+    .ficha__principal > h3 + div{margin-top:9px!important}
+    .ficha__principal > h3 + div + div{font-size:27px!important;margin-top:10px!important}
+    .ficha__principal > p[data-estilo]{font-size:12.5px!important;margin-top:10px!important}
+    .datos{flex-wrap:wrap;overflow:visible;gap:8px;margin-top:14px;padding-bottom:0}
+    .dato{padding:7px 12px 7px 7px;gap:8px;animation:none}
+    .dato b{font-size:16px}.dato small{font-size:11px}.dato__ico{width:28px;height:28px;background-size:16px}
+    .ficha__dos{gap:0}
+    .ficha__dos > .ficha__sec{margin-top:20px!important;padding-top:18px!important}
+    .ficha__dos > .ficha__sec:nth-child(2){padding:16px 16px 6px!important;margin-top:18px!important}
+    .ficha__sec h4{font-size:18px!important;margin-bottom:10px!important}
+    .ficha__lead,.ficha__dos .ficha__lead{font-size:16px;line-height:1.6;font-weight:400;margin:0 0 12px}
+    .ficha__parrafo,.ficha__dos .ficha__parrafo{font-size:15px;line-height:1.65;margin:0 0 12px}
+    .ficha__leermas{font-size:13.5px}
+    .carac__item{padding:8px 0}.carac__item small{font-size:12px}.carac__item b{font-size:13.5px}
+    .tiene__chip{font-size:12px;padding:6px 10px}
+    #fichaMapa{height:220px!important}
+    .fila-reco--grilla{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+    .reco__titulo{font-size:14px}.reco__precio{font-size:15px}.reco__texto{padding:9px 10px 11px}
+    .ficha__pie{padding:24px 18px 28px}
+    .ficha__pie-links{margin-left:0;gap:6px 16px}
+    .ficha-acciones{padding:10px 12px calc(10px + env(safe-area-inset-bottom))}
+    .ficha-acciones a,.ficha-acciones button{font-size:14px;min-height:46px;white-space:nowrap;gap:7px}
+    .solo-ancho{display:none}
+    /* el visor: la foto entre el título y la tira, nunca debajo */
+    .visor__marco{top:104px;bottom:104px}
+    .visor__foto{max-height:100%;max-width:100%}
+    .visor__titulo{top:64px}
+    /* La Torre y Aires */
+    .bloque__caja{padding:34px 20px 40px;gap:0}
+    .bloque__etiqueta{padding:0;border:none;background:none!important;font-size:10.5px;letter-spacing:.14em;white-space:normal;line-height:1.4;gap:8px}
+    .bloque__titulo{font-size:38px;margin:12px 0 8px}
+    .bloque__bajada{font-size:15px;line-height:1.55}
+    .bloque__video--movil{display:block;margin:18px 0 0;border-radius:16px}
+    .bloque__galeria,.bloque__video--esc{display:none}
+    .bloque__dato{margin-top:16px;font-size:13.5px}
+    .bloque__desde{font-size:16px}
+    .torre-grilla{max-width:none;margin-top:14px;gap:6px}
+    .torre-fila{grid-template-columns:30px 1fr 1fr}
+    .torre-u{min-height:42px;font-size:14px}
+    .torre-leyenda{font-size:11px}
+    .bloque__tipos{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+    .bloque__tipo{min-width:0;padding:10px 12px}
+    .bloque__acciones{margin-top:18px;flex-direction:column;gap:8px}
+    .bloque__enlace{min-width:0;padding:13px 14px}
+    .bloque__enlace span{font-size:14.5px}.bloque__enlace small{font-size:11.5px}
+    main .cierre{min-height:0;border-radius:26px 26px 0 0;padding:32px 16px 40px;box-shadow:0 -24px 60px rgba(0,0,0,.3)}
+    .cierre__caja{padding:26px 20px 24px;border-radius:20px;gap:18px}
+    .cierre h2{font-size:24px;margin:10px 0 8px}
+    .cierre p{font-size:14.5px}
+    .cierre__btn{min-height:50px;font-size:14.5px}
+    /* las ventanas de Contacto y Preguntas: hoja con cabecera fija */
+    .panel{padding:0;place-items:end;background:rgba(9,30,31,.45)}
+    .panel__caja{height:calc(100svh - 28px);max-height:none;border-radius:24px 24px 0 0;display:flex;flex-direction:column;background:var(--hueso);overflow:hidden;width:100%}
+    .panel__caja > .panel__x{display:none}
+    .panel__cab{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 12px 12px 20px;border-bottom:1px solid var(--borde);background:var(--hueso);flex:none}
+    .panel__cab b{font-family:'Libre Caslon Text',Georgia,serif;font-size:19px;color:var(--tinta)}
+    .panel__cab .panel__x{position:static;width:40px;height:40px;background:#fff}
+    .panel__cuerpo{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+    .panel .contacto{padding:0!important}
+    .panel .contacto__caja{display:flex;flex-direction:column;border-radius:0;background:var(--hueso);box-shadow:none}
+    .panel .contacto__form{order:1;padding:18px 18px 10px;background:var(--hueso)}
+    .panel .contacto__izq{order:2;padding:24px 18px 30px;border-radius:24px 24px 0 0;margin-top:8px}
+    .panel .contacto__izq h2{font-size:21px;margin:8px 0 8px;line-height:1.2}
+    .panel .contacto__izq > p{font-size:14px;margin-bottom:14px;line-height:1.5}
+    .panel .contacto__form h3{font-size:20px}
+    .contacto__sub{margin:2px 0 12px;font-size:13.5px}
+    .contacto__ctx{font-size:12.5px;margin:-4px 0 12px}
+    .chips-busca{gap:7px;margin:6px 0 14px}
+    .chip-busca{min-height:0;padding:9px 10px;font-size:12.5px;gap:8px;flex-direction:row;align-items:center}
+    .chip-busca__tilde{top:auto;bottom:auto;right:8px}
+    .campo-f{margin-bottom:10px}
+    .campo-f input,.campo-f textarea,.campo-f select{min-height:54px;font-size:16px;padding:22px 40px 8px 14px}
+    .campo-f textarea{min-height:84px}
+    .campo-f__rotulo{top:17px;font-size:14px}
+    .campo-f input:focus ~ .campo-f__rotulo,.campo-f input:not(:placeholder-shown) ~ .campo-f__rotulo,.campo-f textarea:focus ~ .campo-f__rotulo,.campo-f textarea:not(:placeholder-shown) ~ .campo-f__rotulo,.campo-f__rotulo--fijo{top:8px;font-size:11px}
+    .contacto__enviar{min-height:52px;font-size:15px}
+    .canales{gap:8px}
+    .canal{padding:10px 12px;grid-template-columns:40px 1fr 18px;gap:10px}
+    .canal__icono{width:40px;height:40px;border-radius:10px}
+    .canal__texto b{font-size:14px}.canal__texto span{font-size:13px}.canal__texto small{display:none}
+    .contacto__matricula{margin-top:16px;font-size:11.5px}
+    .panel .preguntas{padding:16px 16px 28px;border-radius:0;background:var(--hueso)}
+    .preguntas__caja{gap:14px}
+    .preguntas__intro .etiqueta-seccion{display:none}
+    .preguntas__intro h2{font-size:22px;margin:4px 0 6px}
+    .preguntas__intro p{font-size:14px}
+    .preguntas__wa{margin:12px 0 4px;padding:10px 12px;width:100%;box-sizing:border-box}
+    .preguntas__lista{gap:8px}
+    .pregunta{border-radius:14px}
+    .pregunta summary{grid-template-columns:26px 1fr 26px;gap:10px;padding:13px 12px 13px 14px;font-size:15px;line-height:1.3}
+    .pregunta__n{font-size:11px}
+    .pregunta__mas{width:26px;height:26px}.pregunta__mas::before,.pregunta__mas::after{width:10px}
+    .pregunta__a{padding:0 14px 14px 50px}
+    .pregunta__a p{font-size:14px;line-height:1.6}
+    /* la previa de La Torre, como hoja */
+    .previa{padding:0;place-items:end}
+    .previa__caja{width:100%;max-height:calc(100svh - 24px);border-radius:22px 22px 0 0}
+    .previa__cuerpo{padding:18px 18px calc(20px + env(safe-area-inset-bottom))}
+    .previa__titulo{font-size:24px}.previa__precio{font-size:22px}
+    .previa__datos{grid-template-columns:repeat(2,minmax(0,1fr))}
+    /* el pie, en columnas y más chico */
+    .pie{padding:34px 0 18px}
+    .pie__grid{grid-template-columns:1fr 1fr;gap:22px 16px;padding-bottom:20px}
+    .pie__marca{grid-column:1 / -1;min-width:0}
+    .pie__logo img{width:44px;height:44px;border-radius:9px}
+    .pie__logo b{font-size:19px}
+    .pie__marca p{font-size:12.5px;margin-top:10px}
+    .pie__marca .pie__matricula{font-size:11.5px;margin-top:8px}
+    .pie__col h4{font-size:12px;margin-bottom:6px}
+    .pie__col a,.pie__col span{font-size:12.5px;padding:4px 0}
+    .pie__abajo{flex-direction:column;align-items:flex-start;gap:12px;padding-top:14px;font-size:11.5px}
+    .pie__lpz{gap:10px}.pie__lpz span{text-align:left}.pie__lpz img{height:44px}
+    /* el editorial */
+    .editorial__sobre{font-size:10.5px;letter-spacing:.18em}
+    .editorial__titulo{font-size:clamp(40px,12vw,56px)}
+    .editorial__bajada{font-size:14.5px}
+    #proyectos{padding-top:44px!important}
+  }
+  @media (max-width:899px) and (prefers-reduced-motion:reduce){.menu__item,.menu__pie,.menu__sub{animation:none;opacity:1;transform:none}}
 </style>
 
 <title>Francisco Molins — Real Estate · Salta</title>
@@ -684,7 +989,13 @@
 <meta property="og:type" content="website" />
 <meta property="og:title" content="Francisco Molins — Real Estate · Salta" />
 <meta property="og:description" content="Casas, departamentos, locales y terrenos en Salta. Cartera propia, atendida por un corredor matriculado." />
-<meta property="og:image" content="https://franciscomolins.com/img/hero-MOL-204329.jpg" />
+<meta property="og:image" content="https://franciscomolins.com/img/og-molins.jpg?v=2" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="Escudo de Francisco Molins, Real Estate · Salta" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="https://franciscomolins.com/img/og-molins.jpg?v=2" />
+<meta name="theme-color" content="#0C2B2C" />
 <meta property="og:url" content="https://franciscomolins.com/" />
 <meta property="og:locale" content="es_AR" />
 <link rel="canonical" href="https://franciscomolins.com/" />
@@ -715,7 +1026,7 @@
     document.head.appendChild(cf);
   }
 </script>
-<link rel="stylesheet" href="src/estilos.css?v=20260906u">
+<link rel="stylesheet" href="src/estilos.css?v=20260906v">
 </head>
 <body>
 
@@ -734,7 +1045,14 @@
     <div data-si="noEsMovil" hidden style="flex:1 1 auto;display:flex;align-items:center;justify-content:center;gap:22px">
       <nav class="barra__nav">
         <button type="button" class="barra__buscar" data-click="abrirBuscar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" style="width:17px;height:17px"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg><span class="barra__buscar-largo">Buscar entre todas las propiedades</span><span class="barra__buscar-corto">Buscar</span></button>
-        <a href="#proyectos">Proyectos</a>
+        <span class="barra__desp">
+          <a href="#proyectos" aria-haspopup="true">Proyectos<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px;margin-left:5px"><path d="m6 9 6 6 6-6"></path></svg></a>
+          <div class="barra__menu"><div class="barra__menu-caja">
+            <a class="barra__menu-item" href="https://edificiolatorre.com/" target="_blank" rel="noopener"><img src="img/torre-frente.webp" alt="" loading="lazy" /><span><b>La Torre</b><small>Doce unidades en el centro · edificiolatorre.com</small></span><i>↗</i></a>
+            <a class="barra__menu-item" href="https://airesdesanlorenzo.com/" target="_blank" rel="noopener"><img src="img/aires-laguna.webp" alt="" loading="lazy" /><span><b>Aires de San Lorenzo</b><small>Dúplex, oficinas y locales · airesdesanlorenzo.com</small></span><i>↗</i></a>
+            <a class="barra__menu-todo" href="#proyectos">Ver los dos en el portal →</a>
+          </div></div>
+        </span>
         <a href="#preguntas">Preguntas</a>
         <a href="#contacto">Contacto</a>
       </nav>
@@ -750,25 +1068,28 @@
 </header>
 
 <div data-si="menuAbierto" hidden>
-  <div style="position:fixed;inset:0;z-index:300;background:var(--hueso);display:flex;flex-direction:column;padding:20px;animation:fadein .2s ease both">
-    <div style="display:flex;align-items:center;justify-content:space-between">
-      <div style="display:flex;align-items:center;gap:11px">
-        <img loading="lazy" src="img/logo-molins.png" alt="" style="width:42px;height:42px;border-radius:9px;object-fit:cover" />
-        <b style="font-family:'Libre Caslon Text',Georgia,serif;font-size:19px;letter-spacing:.01em">Francisco Molins</b>
-      </div>
-      <button data-click="alternarMenu" aria-label="Cerrar el menú" style="width:44px;height:44px;border-radius:50%;border:1px solid var(--borde);background:#fff;cursor:pointer;display:grid;place-items:center">
-        <svg viewBox="0 0 24 24" fill="none" stroke="var(--tinta)" stroke-width="2.2" stroke-linecap="round" style="width:18px;height:18px"><path d="M18 6 6 18M6 6l12 12"></path></svg>
-      </button>
+  <div class="menu">
+    <div class="menu__cab">
+      <div class="menu__marca"><img loading="lazy" src="img/logo-molins.png" alt="" /><b>Francisco Molins</b></div>
+      <button data-click="alternarMenu" aria-label="Cerrar el menú" class="menu__x btn-anim"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" style="width:18px;height:18px"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
     </div>
-    <nav style="display:flex;flex-direction:column;margin-top:26px">
-      <a href="#propiedades" data-click="cerrarMenu" style="font-family:'Libre Caslon Text',Georgia,serif;font-size:22px;font-weight:700;color:var(--tinta);padding:15px 4px;border-bottom:1px solid var(--borde)">Propiedades</a>
-      <a href="#proyectos" data-click="cerrarMenu" style="font-family:'Libre Caslon Text',Georgia,serif;font-size:22px;font-weight:700;color:var(--tinta);padding:15px 4px;border-bottom:1px solid var(--borde)">Proyectos</a>
-      <a href="#preguntas" data-click="cerrarMenu" style="font-family:'Libre Caslon Text',Georgia,serif;font-size:22px;font-weight:700;color:var(--tinta);padding:15px 4px;border-bottom:1px solid var(--borde)">Preguntas</a>
-      <a href="#contacto" data-click="cerrarMenu" style="font-family:'Libre Caslon Text',Georgia,serif;font-size:22px;font-weight:700;color:var(--tinta);padding:15px 4px;border-bottom:1px solid var(--borde)">Contacto</a>
+    <nav class="menu__nav">
+      <a class="menu__item" href="#propiedades" data-click="cerrarMenu" style="--i:0">Propiedades<i>→</i></a>
+      <button type="button" class="menu__item" data-click="alternarMenuProy" data-attr-aria-expanded="menuProyAria" style="--i:1">Proyectos<i class="menu__chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg></i></button>
+      <div data-si="menuProy" hidden>
+        <div class="menu__sub">
+          <a class="menu__proy" href="https://edificiolatorre.com/" target="_blank" rel="noopener"><img src="img/torre-frente.webp" alt="" loading="lazy" /><span><b>La Torre</b><small>Doce unidades en el centro de Salta</small></span><i>↗</i></a>
+          <a class="menu__proy" href="https://airesdesanlorenzo.com/" target="_blank" rel="noopener"><img src="img/aires-laguna.webp" alt="" loading="lazy" /><span><b>Aires de San Lorenzo</b><small>Dúplex, oficinas y locales, Etapa 1</small></span><i>↗</i></a>
+          <a class="menu__proy-todo" href="#proyectos" data-click="cerrarMenu">Ver los dos en el portal →</a>
+        </div>
+      </div>
+      <a class="menu__item" href="#preguntas" data-click="cerrarMenu" style="--i:2">Preguntas<i>→</i></a>
+      <a class="menu__item" href="#contacto" data-click="cerrarMenu" style="--i:3">Contacto<i>→</i></a>
     </nav>
-    <div style="margin-top:auto;display:flex;flex-direction:column;gap:12px;padding-bottom:10px">
-      <a href="#contacto" data-click="cerrarMenu" style="background:var(--naranja);color:var(--verde-noche);font-weight:600;font-size:15px;padding:14px 20px;border-radius:10px;text-align:center">Reservar una visita</a>
-      <span style="font-size:12px;color:var(--gris);line-height:1.5">20 de Febrero 1705, Of. 7 — Salta<br />CUCIS 251 · Grupo LPZ-Molins</span>
+    <div class="menu__pie">
+      <button type="button" class="menu__buscar brilla" data-click="abrirBuscar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" style="width:17px;height:17px"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>Buscar entre todas las propiedades</button>
+      <a class="menu__wa" href="https://wa.me/5493874153669?text=Hola%2C%20vi%20el%20sitio%20y%20quiero%20consultar." target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor" style="width:17px;height:17px"><path d="M.057 24l1.687-6.163a11.867 11.867 0 0 1-1.587-5.946C.16 5.335 5.495 0 12.05 0a11.817 11.817 0 0 1 8.413 3.488 11.824 11.824 0 0 1 3.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 0 1-5.688-1.448L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884a9.86 9.86 0 0 0 1.51 5.26l-.999 3.648 3.978-1.052z"></path></svg><span>WhatsApp · 387 415 3669</span></a>
+      <span class="menu__nota">20 de Febrero 1705, Of. 7 — Salta<br />CUCIS 251 · Grupo LPZ-Molins</span>
     </div>
   </div>
 </div>
@@ -791,6 +1112,7 @@
       <button type="button" class="reel__prev" aria-label="Anterior"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px"><path d="m15 18-6-6 6-6"></path></svg></button>
       <div class="reel__puntos" role="tablist" aria-label="Diapositivas"></div>
       <button type="button" class="reel__next" aria-label="Siguiente"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px"><path d="m9 18 6-6-6-6"></path></svg></button>
+      <button type="button" class="reel__prox-m" aria-label="Ver la siguiente propiedad"><img class="reel__prox-foto" src="img/hero-227812.webp" alt="" loading="lazy" /><span><small>Siguiente</small><b>Finca en Jardines de San Lorenzo</b></span></button>
     </div>
   </div>
   <a class="portada__bajar" href="#propiedades" aria-label="Bajar a las propiedades"><span data-txt="resumenCartera"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px"><path d="M12 5v14M5 12l7 7 7-7"></path></svg></a>
@@ -918,9 +1240,11 @@
 <section id="propiedades" data-screen-label="Propiedades" style="padding:24px 0 0">
   <div style="max-width:1400px;margin:0 auto;padding:0 20px">
     <div class="fila-solapas" role="group" aria-label="Filtrar por operación">
+      <span class="fila-solapas__segs">
       <template data-lista="segmentos" data-alias="s" data-clave="s.k">
         <button class="segmento" data-click="s.elegir" data-attr-data-k="s.k" data-attr-aria-pressed="s.activo"><span data-txt="s.t"></span><span class="segmento__n"><span data-txt="s.n"></span></span></button>
       </template>
+      </span>
       <span class="fila-solapas__der">
         <span class="fila-solapas__n"><span data-txt="resultadoTxt"></span></span>
         <select class="selector selector--chico" data-valor="fOrden" data-change="cambiarOrden" aria-label="Ordenar">
@@ -1023,7 +1347,6 @@
       </div>
     </div>
 
-    <p style="margin:26px 0 0;font-size:14px;color:var(--tinta-suave)">¿No está lo que buscás? <a href="#contacto" data-click="avisarmeZona" style="color:var(--naranja-oscuro);font-weight:600">Avisame cuando entre algo en mi zona</a>. Dejás el WhatsApp y te escribimos cuando aparezca, antes de publicarlo.</p>
   </div>
 </section>
 
@@ -1047,6 +1370,7 @@
         <span class="bloque__etiqueta">Edificio · Balcarce y Aniceto Latorre</span>
         <h3 class="bloque__titulo">La Torre</h3>
         <p class="bloque__bajada">Doce unidades en dos torres, en el centro de Salta. Un edificio con la escala justa, para vivir o para renta.</p>
+        <div class="bloque__foto bloque__video bloque__video--movil"><video data-src="video/torre-render.mp4" poster="video/torre-render.jpg" muted loop playsinline preload="none" aria-label="Renders del Edificio La Torre" disablepictureinpicture disableremoteplayback></video><span>El edificio · render</span></div>
         <div data-si="hayTorre" hidden>
           <p class="bloque__dato"><span class="bloque__punto"></span><span data-txt="torreLinea"></span><span class="bloque__desde" data-txt="torreDesde"></span></p>
           <div class="torre-grilla" aria-label="Las doce unidades, por piso">
@@ -1054,11 +1378,11 @@
               <div class="torre-fila">
                 <span class="torre-piso" data-txt="f.piso"></span>
                 <template data-lista="f.unidades" data-alias="u">
-                  <a data-attr-class="u.clase" href="https://edificiolatorre.com/#unidades" target="_blank" rel="noopener" data-attr-title="u.titulo"><span data-txt="u.k"></span></a>
+                  <button type="button" data-attr-class="u.clase" data-click="u.abrir" data-attr-title="u.titulo"><span data-txt="u.k"></span></button>
                 </template>
               </div>
             </template>
-            <div class="torre-leyenda"><i></i> Disponible <i class="es-reservada"></i> Reservada · tocá una unidad para verla en la web</div>
+            <div class="torre-leyenda"><span><i></i> Disponible</span><span><i class="es-reservada"></i> Reservada</span><span class="torre-leyenda__ayuda">Tocá una unidad para ver el render y el plano</span></div>
           </div>
         </div>
         <div class="bloque__acciones">
@@ -1066,10 +1390,7 @@
           <button type="button" class="bloque__enlace bloque__enlace--suave" data-click="consultarTorre"><span>Consultar por La Torre</span><small>Te contestamos por WhatsApp</small><i>→</i></button>
         </div>
       </div>
-      <a class="bloque__foto" href="https://edificiolatorre.com/" target="_blank" rel="noopener" aria-label="La Torre, la llegada de noche">
-        <img src="img/torre-llegada.webp" alt="" loading="lazy" width="2000" height="1125" />
-        <span>La llegada, de noche · render</span>
-      </a>
+      <div class="bloque__foto bloque__video bloque__video--esc"><video data-src="video/torre-render.mp4" poster="video/torre-render.jpg" muted loop playsinline preload="none" aria-label="Renders del Edificio La Torre" disablepictureinpicture disableremoteplayback></video><span>El edificio · render</span></div>
     </div>
   </article>
 
@@ -1082,6 +1403,7 @@
         <span class="bloque__etiqueta">Etapa 1 · San Lorenzo, Salta</span>
         <h3 class="bloque__titulo">Aires de San Lorenzo</h3>
         <p class="bloque__bajada">Un barrio nuevo en la zona verde de Salta: dúplex, oficinas y locales alrededor de la laguna, con financiación directa del desarrollo.</p>
+        <div class="bloque__foto bloque__video bloque__video--movil"><video data-src="video/aires-duplex.mp4" poster="img/aires-conjunto.webp" muted loop playsinline preload="none" aria-label="Recorrido por los dúplex de Aires de San Lorenzo" disablepictureinpicture disableremoteplayback></video><span>El barrio · render</span></div>
         <div data-si="hayAires" hidden>
           <p class="bloque__dato"><span class="bloque__punto"></span><span data-txt="airesLinea"></span></p>
           <div class="bloque__tipos">
@@ -1096,7 +1418,7 @@
         </div>
       </div>
       <div class="bloque__galeria">
-        <a class="bloque__foto" href="https://airesdesanlorenzo.com/" target="_blank" rel="noopener" aria-label="Aires de San Lorenzo, el masterplan"><img src="img/aires-conjunto.webp" alt="" loading="lazy" width="1400" height="788" /><span>El masterplan · render</span></a>
+        <div class="bloque__foto bloque__video bloque__video--esc"><video data-src="video/aires-duplex.mp4" poster="img/aires-conjunto.webp" muted loop playsinline preload="none" aria-label="Recorrido por los dúplex de Aires de San Lorenzo" disablepictureinpicture disableremoteplayback></video><span>El barrio · render</span></div>
         <a class="bloque__foto" href="https://airesdesanlorenzo.com/#etapa1" target="_blank" rel="noopener" aria-label="Aires de San Lorenzo, los dúplex"><img src="img/aires-duplex.webp" alt="" loading="lazy" width="1400" height="788" /><span>Los dúplex · render</span></a>
       </div>
     </div>
@@ -1125,6 +1447,8 @@
   <div class="panel" data-click="cerrarVistaFondo" role="dialog" aria-modal="true" aria-label="Preguntas frecuentes" data-screen-label="Ventana Preguntas">
     <div class="panel__caja">
     <button type="button" class="panel__x btn-anim" data-click="cerrarVista" aria-label="Cerrar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" style="width:18px;height:18px"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
+    <div class="panel__cab"><b>Preguntas frecuentes</b><button type="button" class="panel__x btn-anim" data-click="cerrarVista" aria-label="Cerrar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" style="width:18px;height:18px"><path d="M18 6 6 18M6 6l12 12"></path></svg></button></div>
+    <div class="panel__cuerpo">
 <!-- ══ PREGUNTAS ══ -->
 <section id="preguntas" data-screen-label="Preguntas frecuentes" class="preguntas">
   <div style="max-width:1400px;margin:0 auto;padding:0 20px">
@@ -1148,6 +1472,7 @@
     </div>
   </div>
 </section>
+    </div>
 
     </div>
   </div>
@@ -1156,6 +1481,8 @@
   <div class="panel" data-click="cerrarVistaFondo" role="dialog" aria-modal="true" aria-label="Contacto" data-screen-label="Ventana Contacto">
     <div class="panel__caja">
     <button type="button" class="panel__x btn-anim" data-click="cerrarVista" aria-label="Cerrar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" style="width:18px;height:18px"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
+    <div class="panel__cab"><b>Contacto</b><button type="button" class="panel__x btn-anim" data-click="cerrarVista" aria-label="Cerrar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" style="width:18px;height:18px"><path d="M18 6 6 18M6 6l12 12"></path></svg></button></div>
+    <div class="panel__cuerpo">
 <!-- ══ CONTACTO ══ -->
 <section id="contacto" data-screen-label="Contacto" class="contacto">
   <div style="max-width:1400px;margin:0 auto;padding:0 20px">
@@ -1251,6 +1578,7 @@
     </div>
   </div>
 </section>
+    </div>
 
     </div>
   </div>
@@ -1290,9 +1618,11 @@
     <div class="buscar__scroll">
       <div class="buscar__cuerpo">
     <div class="fila-solapas" role="group" aria-label="Filtrar por operación">
+      <span class="fila-solapas__segs">
       <template data-lista="segmentos" data-alias="s" data-clave="s.k">
         <button class="segmento" data-click="s.elegir" data-attr-data-k="s.k" data-attr-aria-pressed="s.activo"><span data-txt="s.t"></span><span class="segmento__n"><span data-txt="s.n"></span></span></button>
       </template>
+      </span>
       <span class="fila-solapas__der">
         <span class="fila-solapas__n"><span data-txt="resultadoTxt"></span></span>
         <select class="selector selector--chico" data-valor="fOrden" data-change="cambiarOrden" aria-label="Ordenar">
@@ -1399,43 +1729,68 @@
     </div>
   </div>
 </div>
+<div data-si="torrePrevia" hidden>
+  <div class="previa" data-click="cerrarPreviaFondo" role="dialog" aria-modal="true" aria-label="Unidad de La Torre" data-screen-label="Previa La Torre">
+    <div class="previa__caja">
+      <button type="button" class="previa__x btn-anim" data-click="cerrarPrevia" aria-label="Cerrar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" style="width:18px;height:18px"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
+      <div class="previa__media">
+        <img data-src="tpImg" alt="" data-attr-class="tpImgClase" />
+        <div class="previa__vistas" role="tablist" aria-label="Render o plano">
+          <button type="button" role="tab" data-click="tpVerRender" data-attr-aria-selected="tpEsRender">Render</button>
+          <button type="button" role="tab" data-click="tpVerPlano" data-attr-aria-selected="tpEsPlano">Plano</button>
+        </div>
+        <span data-attr-class="tpEstadoClase" data-txt="tpEstado"></span>
+      </div>
+      <div class="previa__cuerpo">
+        <span class="previa__rotulo" data-txt="tpRotulo"></span>
+        <h3 class="previa__titulo" data-txt="tpTitulo"></h3>
+        <div class="previa__precio"><span data-txt="tpPrecio"></span><small data-txt="tpPrecioNota"></small></div>
+        <div class="previa__datos">
+          <template data-lista="tpDatos" data-alias="d" data-clave="d.k"><div class="previa__dato"><b data-txt="d.v"></b><small data-txt="d.k"></small></div></template>
+        </div>
+        <p class="previa__nota" data-txt="tpNota"></p>
+        <div class="previa__ctas">
+          <a class="previa__wa btn-anim brilla" data-href="tpWa" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor" style="width:17px;height:17px"><path d="M.057 24l1.687-6.163a11.867 11.867 0 0 1-1.587-5.946C.16 5.335 5.495 0 12.05 0a11.817 11.817 0 0 1 8.413 3.488 11.824 11.824 0 0 1 3.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 0 1-5.688-1.448L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884a9.86 9.86 0 0 0 1.51 5.26l-.999 3.648 3.978-1.052z"></path></svg><span>Consultar por WhatsApp</span></a>
+          <a class="previa__web btn-anim" href="https://edificiolatorre.com/#unidades" target="_blank" rel="noopener">Verla en edificiolatorre.com<i>↗</i></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 <div data-si="toast" hidden><div class="toast"><span data-txt="toastTxt"></span></div></div>
 
 <!-- ══ FOOTER · Molins grande, Grupo LPZ chico ══ -->
-<footer data-screen-label="Pie" style="background:var(--verde);color:rgba(255,255,255,.64);padding:54px 0 22px">
-  <div style="max-width:1400px;margin:0 auto;padding:0 20px">
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:34px;padding-bottom:30px;border-bottom:1px solid rgba(255,255,255,.1)">
-      <div style="grid-column:span 1;min-width:260px">
-        <div style="display:flex;align-items:center;gap:14px">
-          <img loading="lazy" src="img/logo-molins.png" alt="Escudo de Molins" style="width:56px;height:56px;border-radius:11px;object-fit:cover" />
-          <div>
-            <b style="color:#fff;font-family:'Libre Caslon Text',Georgia,serif;font-size:23px;font-weight:700;letter-spacing:.02em;display:block;line-height:1">MOLINS</b>
-            <small style="display:block;font-size:9.5px;font-weight:600;letter-spacing:.18em;color:rgba(255,255,255,.7);margin-top:4px">NEGOCIOS INMOBILIARIOS</small>
-          </div>
+<footer data-screen-label="Pie" class="pie">
+  <div class="pie__in">
+    <div class="pie__grid">
+      <div class="pie__marca">
+        <div class="pie__logo">
+          <img loading="lazy" src="img/logo-molins.png" alt="Escudo de Molins" />
+          <div><b>MOLINS</b><small>NEGOCIOS INMOBILIARIOS</small></div>
         </div>
-        <p style="font-size:13.5px;color:rgba(255,255,255,.64);margin:14px 0 0;max-width:38ch">Compra, venta y alquiler de inmuebles en Salta. Cartera propia y comercialización de emprendimientos.</p>
-        <p style="margin:14px 0 0;font-size:12.5px;color:var(--naranja-claro)">Francisco Molins — Corredor inmobiliario matriculado · CUCIS 251</p>
+        <p>Compra, venta y alquiler de inmuebles en Salta. Cartera propia y comercialización de emprendimientos.</p>
+        <p class="pie__matricula">Francisco Molins — Corredor inmobiliario matriculado · CUCIS 251</p>
       </div>
-      <div>
-        <h4 style="color:#fff;font-size:13px;margin:0 0 12px;font-weight:700">Propiedades</h4>
-        <a href="#propiedades" style="display:block;font-size:13.5px;color:rgba(255,255,255,.64);padding:5px 0">Toda la cartera</a>
-        <a href="#proyectos" style="display:block;font-size:13.5px;color:rgba(255,255,255,.64);padding:5px 0">Aires de San Lorenzo</a>
-        <a href="https://edificiolatorre.com/" style="display:block;font-size:13.5px;color:rgba(255,255,255,.64);padding:5px 0">Edificio La Torre</a>
-        <a href="#preguntas" style="display:block;font-size:13.5px;color:rgba(255,255,255,.64);padding:5px 0">Preguntas frecuentes</a>
+      <div class="pie__col">
+        <h4>Propiedades</h4>
+        <a href="#propiedades">Toda la cartera</a>
+        <a href="https://airesdesanlorenzo.com/" target="_blank" rel="noopener">Aires de San Lorenzo</a>
+        <a href="https://edificiolatorre.com/" target="_blank" rel="noopener">Edificio La Torre</a>
+        <a href="#preguntas">Preguntas frecuentes</a>
       </div>
-      <div>
-        <h4 style="color:#fff;font-size:13px;margin:0 0 12px;font-weight:700">Contacto</h4>
-        <a href="tel:+543874153669" style="display:block;font-size:13.5px;color:rgba(255,255,255,.64);padding:5px 0">387 415 3669</a>
-        <a href="https://wa.me/5493874153669" target="_blank" rel="noopener" style="display:block;font-size:13.5px;color:rgba(255,255,255,.64);padding:5px 0">WhatsApp</a>
-        <a href="https://instagram.com/molins.negociosinmobilarios" target="_blank" rel="noopener" style="display:block;font-size:13.5px;color:rgba(255,255,255,.64);padding:5px 0">@molins.negociosinmobilarios</a>
-        <span style="display:block;font-size:13.5px;color:rgba(255,255,255,.64);padding:5px 0">20 de Febrero 1705, Of. 7 — Salta</span>
+      <div class="pie__col">
+        <h4>Contacto</h4>
+        <a href="tel:+543874153669">387 415 3669</a>
+        <a href="https://wa.me/5493874153669" target="_blank" rel="noopener">WhatsApp</a>
+        <a href="https://instagram.com/molins.negociosinmobilarios" target="_blank" rel="noopener">@molins.negociosinmobilarios</a>
+        <span>20 de Febrero 1705, Of. 7 — Salta</span>
       </div>
     </div>
-    <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;padding-top:18px;font-size:12.5px;color:rgba(255,255,255,.55);flex-wrap:wrap">
+    <div class="pie__abajo">
       <span>© 2026 Francisco Molins · Real Estate · Salta — CUCIS 251 · Grupo LPZ-Molins</span>
-      <a href="https://wa.me/5493875030113" target="_blank" rel="noopener" aria-label="Grupo LPZ, Luis López, por WhatsApp" style="display:inline-flex;align-items:center;gap:12px;color:rgba(255,255,255,.75)">
-        <span style="text-align:right;line-height:1.35">Grupo LPZ-Molins<br><small style="font-size:11.5px;color:rgba(255,255,255,.55)">Luis López · 387 503 0113</small></span>
-        <img loading="lazy" src="img/logo-lpz.png" alt="Grupo LPZ" width="731" height="900" style="height:58px;width:auto;opacity:.92;filter:brightness(0) invert(1)" /></a>
+      <a href="https://wa.me/5493875030113" target="_blank" rel="noopener" aria-label="Grupo LPZ, Luis López, por WhatsApp" class="pie__lpz">
+        <span>Grupo LPZ-Molins<br><small>Luis López · 387 503 0113</small></span>
+        <img loading="lazy" src="img/logo-lpz.png" alt="Grupo LPZ" width="731" height="900" /></a>
     </div>
   </div>
 </footer>
@@ -1453,7 +1808,7 @@
   <div class="ficha" role="dialog" aria-modal="true" data-screen-label="Ficha de propiedad">
     <div class="ficha__barra">
       <button type="button" class="ficha__ico ficha__ico--cerrar btn-anim" data-click="cerrarFicha" aria-label="Cerrar la ficha"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" style="width:18px;height:18px"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
-      <div class="ficha__barra-titulo"></div>
+      <div class="ficha__barra-titulo"><b data-txt="mTitulo"></b><small data-txt="mPrecio"></small></div>
       <div class="ficha__barra-der">
         <span data-si="mVariasFotos" hidden><span class="ficha__nav">
           <button type="button" class="btn-anim" data-click="fotoAnterior" aria-label="Foto anterior"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px"><path d="m15 18-6-6 6-6"></path></svg></button>
@@ -1473,6 +1828,7 @@
         </div>
         <div data-si="mSinFoto" hidden><div class="mosaico__sinfoto">fotos en la consulta</div></div>
         <span data-si="mHayBadge" hidden><span class="mosaico__estado" data-estilo="mBadgeEstilo"><span data-txt="mBadge"></span></span></span>
+        <span data-si="mVariasFotos" hidden><span class="mosaico__contador" data-txt="mFotoCuenta"></span></span>
       </div>
       <div class="ficha__cuerpo">
       <div class="ficha__principal">
@@ -1574,7 +1930,7 @@
       </div>
       <div data-si="esMovil" hidden>
         <div class="ficha-acciones">
-          <a data-href="mWa" target="_blank" rel="noopener" style="background:var(--whatsapp);color:var(--verde-noche)"><svg viewBox="0 0 24 24" fill="currentColor" style="width:17px;height:17px"><path d="M.057 24l1.687-6.163a11.867 11.867 0 0 1-1.587-5.946C.16 5.335 5.495 0 12.05 0a11.817 11.817 0 0 1 8.413 3.488 11.824 11.824 0 0 1 3.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 0 1-5.688-1.448L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884a9.86 9.86 0 0 0 1.51 5.26l-.999 3.648 3.978-1.052z"></path></svg>Consultar por WhatsApp</a>
+          <a data-href="mWa" target="_blank" rel="noopener" style="background:var(--whatsapp);color:var(--verde-noche)"><svg viewBox="0 0 24 24" fill="currentColor" style="width:17px;height:17px"><path d="M.057 24l1.687-6.163a11.867 11.867 0 0 1-1.587-5.946C.16 5.335 5.495 0 12.05 0a11.817 11.817 0 0 1 8.413 3.488 11.824 11.824 0 0 1 3.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 0 1-5.688-1.448L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884a9.86 9.86 0 0 0 1.51 5.26l-.999 3.648 3.978-1.052z"></path></svg><span class="solo-ancho">Consultar por </span>WhatsApp</a>
           <button type="button" data-click="dejarDatos" style="background:#fff;color:var(--verde);border:1.5px solid var(--borde-fuerte)">Dejar mis datos</button>
         </div>
       </div>
@@ -1605,9 +1961,9 @@
 </div>
 
 
-<script src="src/pintor.js?v=20260906u"></script>
-<script src="src/medicion.js?v=20260906u"></script>
-<script src="src/app.js?v=20260906u"></script>
-<script src="src/reel.js?v=20260906u"></script>
+<script src="src/pintor.js?v=20260906v"></script>
+<script src="src/medicion.js?v=20260906v"></script>
+<script src="src/app.js?v=20260906v"></script>
+<script src="src/reel.js?v=20260906v"></script>
 </body>
 </html>

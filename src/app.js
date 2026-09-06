@@ -73,7 +73,8 @@
     formNombre: "", formWa: "", formMail: "", formBusca: "Para vivir", formZona: "", formMensaje: "",
     formError: "", enviado: false, enviando: false, okMsg: "", ctx: "", ctxProp: null,
     calcPrecio: 75000, calcAnt: 30, calcCuotas: 60,
-    torre: null, aires: null, filtros: false, descLarga: false
+    torre: null, aires: null, filtros: false, descLarga: false,
+    torrePrevia: null, tpVista: "render", menuProy: false
   };
   var mapa = null;
 
@@ -107,7 +108,8 @@
     window.Pintor.pintar(vista());
     var capa = !!S.ficha || S.vista === "buscar" || !!S.fichaPendiente;
     document.documentElement.classList.toggle("con-capa", capa);
-    document.body.style.overflow = (capa || S.vista !== "inicio") ? "hidden" : "";
+    document.body.style.overflow = (capa || S.vista !== "inicio" || S.torrePrevia) ? "hidden" : "";
+    if (S.ficha) vigilarFicha();
     if (window.observarTarjetas) observarTarjetas();
     if (window.observarSecciones) observarSecciones();
   }
@@ -246,11 +248,12 @@
       u.forEach(function (x) { var pi = x.piso || 0; pisos[pi] = pisos[pi] || []; pisos[pi].push(x); });
       var grilla = Object.keys(pisos).map(Number).sort(function (a, b) { return b - a; }).map(function (pi) {
         return { piso: pi + "º", unidades: pisos[pi].sort(function (a, b) { return String(a.unidad).localeCompare(String(b.unidad)); }).map(function (x) {
-          return { k: (x.piso || "") + (x.unidad || ""), libre: x.estado === "ACTIVA", titulo: (x.tipologia ? x.tipologia + " · " : "") + (x.precio > 0 ? money(x.moneda, x.precio) : "consultar") + (x.estado === "ACTIVA" ? " · disponible" : " · reservada") };
+          return { codigo: x.codigo, k: (x.piso || "") + (x.unidad || ""), libre: x.estado === "ACTIVA", titulo: (x.tipologia ? x.tipologia + " · " : "") + (x.precio > 0 ? money(x.moneda, x.precio) : "consultar") + (x.estado === "ACTIVA" ? " · disponible" : " · reservada") };
         }) };
       });
-      set({ torre: { total: u.length, libres: libres.length, reservadas: u.length - libres.length, desde: precios.length ? Math.min.apply(null, precios) : 0, moneda: (u[0] || {}).moneda || "USD",
+      set({ torre: { unidades: u, total: u.length, libres: libres.length, reservadas: u.length - libres.length, desde: precios.length ? Math.min.apply(null, precios) : 0, moneda: (u[0] || {}).moneda || "USD",
         tipos: Object.keys(tipos).map(function (k) { return { k: k, n: tipos[k].n, libres: tipos[k].libres }; }), grilla: grilla } });
+      if (window.medirHoja) setTimeout(medirHoja, 50);
     });
     traer("aires").then(function (u) {
       if (!u || !u.length) return;
@@ -261,6 +264,7 @@
       var libres = u.filter(function (x) { return x.estado === "ACTIVA"; }).length;
       set({ aires: { total: u.length, libres: libres,
         tipos: ORDEN.filter(function (k) { return tipos[k]; }).map(function (k) { return { k: (NOMBRE[k] || [k, k])[tipos[k].n === 1 ? 0 : 1], n: tipos[k].n, libres: tipos[k].libres }; }) } });
+      if (window.medirHoja) setTimeout(medirHoja, 50);
     });
   }
 
@@ -357,7 +361,16 @@
     if (window.VISITAS) VISITAS.anotar("ficha", codigo, codigo);
     setTimeout(montarMapa, 80);
     setTimeout(montarMapa, 400);
-    setTimeout(function () { var c = document.getElementById("fichaCaja"); if (c) c.scrollTop = 0; }, 30);
+    setTimeout(function () { var c = document.getElementById("fichaCaja"); if (c) c.scrollTop = 0; var f = document.querySelector(".ficha"); if (f) f.classList.remove("es-baja"); }, 30);
+  }
+  function vigilarFicha() {
+    var caja = document.getElementById("fichaCaja"), f = document.querySelector(".ficha");
+    if (!caja || !f || caja.__vigilada) return;
+    caja.__vigilada = true;
+    caja.addEventListener("scroll", function () {
+      var m = document.getElementById("fichaFotoCaja"), lim = (m ? m.offsetHeight : 300) - 72;
+      f.classList.toggle("es-baja", caja.scrollTop > lim);
+    }, { passive: true });
   }
   function cerrarFicha() {
     if (document.fullscreenElement) try { document.exitFullscreen(); } catch (e) {}
@@ -446,6 +459,7 @@
     var cod = decodeURIComponent(m[1]);
     if (prop(cod)) abrirFicha(cod); else { urlFicha(null); set({ fichaPendiente: null }); }
   }
+  function cerrarPrevia() { set({ torrePrevia: null }); }
   function compartir() { var p = prop(S.ficha); if (p) compartirCodigo(p.codigo, p); }
   function compartirCodigo(codigo, p) {
     if (!p) return;
@@ -635,6 +649,10 @@
     var segNombre = { venta: "en venta", terreno: "de terrenos", alquiler: "en alquiler" }[S.seg];
     var anticipo = S.calcPrecio * S.calcAnt / 100, saldo = S.calcPrecio - anticipo;
 
+    /* La previa de una unidad de La Torre: el render y el plano son los de su tipología. */
+    var TIPO_N = { "Horizonte": 1, "Evolución": 2, "Esencia": 3, "Cúspide": 4 };
+    var tu = S.torrePrevia && S.torre ? S.torre.unidades.filter(function (x) { return x.codigo === S.torrePrevia; })[0] : null;
+    var tpN = tu ? (TIPO_N[tu.tipologia] || 3) : 3;
     var fp = S.ficha ? prop(S.ficha) : null;
     var ficha = {};
     if (fp) {
@@ -746,7 +764,8 @@
       esMovil: esMovil, noEsMovil: !esMovil,
       menuAbierto: S.menuOpen && esMovil,
       alternarMenu: function () { set({ menuOpen: !S.menuOpen }); },
-      cerrarMenu: function () { set({ menuOpen: false }); },
+      cerrarMenu: function () { set({ menuOpen: false, menuProy: false }); },
+      menuProy: S.menuProy, menuProyAria: S.menuProy ? "true" : "false", alternarMenuProy: function () { set({ menuProy: !S.menuProy }); },
 
       heroInstitucional: true, heroPanel: false, heroBuscador: false,
       heroFoto: "img/hero-MOL-209940.jpg",
@@ -794,7 +813,27 @@
       torreLinea: S.torre ? (S.torre.libres + " de " + S.torre.total + " unidades disponibles" + (S.torre.reservadas ? " · " + S.torre.reservadas + (S.torre.reservadas === 1 ? " reservada" : " reservadas") : "")) : "",
       torreDesde: S.torre && S.torre.desde ? "Desde " + money(S.torre.moneda, S.torre.desde) : "",
       torreTipos: S.torre ? S.torre.tipos.map(function (t) { return { k: t.k, n: t.libres + " de " + t.n }; }) : [],
-      torreGrilla: S.torre ? S.torre.grilla.map(function (f) { return { piso: f.piso, unidades: f.unidades.map(function (x) { return { k: x.k, titulo: x.titulo, clase: "torre-u" + (x.libre ? "" : " es-reservada") }; }) }; }) : [],
+      torreGrilla: S.torre ? S.torre.grilla.map(function (f) { return { piso: f.piso, unidades: f.unidades.map(function (x) { return { k: x.k, titulo: x.titulo, clase: "torre-u" + (x.libre ? "" : " es-reservada"), abrir: function () { set({ torrePrevia: x.codigo, tpVista: "render" }); if (window.VISITAS) VISITAS.anotar("torre_unidad", x.codigo); } }; }) }; }) : [],
+      torrePrevia: !!tu,
+      cerrarPrevia: cerrarPrevia,
+      cerrarPreviaFondo: function (ev) { if (ev.target === ev.currentTarget) cerrarPrevia(); },
+      tpVerRender: function () { set({ tpVista: "render" }); }, tpVerPlano: function () { set({ tpVista: "plano" }); },
+      tpEsRender: S.tpVista === "render" ? "true" : "false", tpEsPlano: S.tpVista === "plano" ? "true" : "false",
+      tpImg: tu ? "img/torre/" + S.tpVista + "-" + tpN + ".webp" : "", tpImgClase: S.tpVista === "plano" ? "es-plano" : "",
+      tpEstado: tu ? (tu.estado === "ACTIVA" ? "Disponible" : "Reservada") : "",
+      tpEstadoClase: "previa__estado" + (tu && tu.estado !== "ACTIVA" ? " es-reservada" : ""),
+      tpRotulo: tu ? "Torre " + (tu.torre || "") + " · " + (tu.piso || "") + ".º piso" : "",
+      tpTitulo: tu ? "Unidad " + (tu.piso || "") + (tu.unidad || "") + (tu.tipologia ? " · " + tu.tipologia : "") : "",
+      tpPrecio: tu ? (tu.precio > 0 ? money(tu.moneda || "USD", tu.precio) : "Consultar") : "",
+      tpPrecioNota: tu && tu.precio > 0 ? "en pozo, con financiación directa" : "",
+      tpDatos: tu ? [
+        tu.supTotal > 0 ? { v: num(tu.supTotal) + " m²", k: "Superficie" } : null,
+        { v: tu.dormitorios > 0 ? String(tu.dormitorios) : "Mono", k: tu.dormitorios > 0 ? (tu.dormitorios === 1 ? "Dormitorio" : "Dormitorios") : "Ambiente" },
+        tu.banos > 0 ? { v: String(tu.banos), k: tu.banos === 1 ? "Baño" : "Baños" } : null,
+        { v: String(tu.piso || ""), k: "Piso" }
+      ].filter(Boolean) : [],
+      tpNota: tu ? (tu.estado === "ACTIVA" ? "El estado sale del sistema en vivo. Se vende en pozo, con financiación directa del desarrollo; el plan de pago se conversa al consultar." : "Está reservada. Podés dejar tus datos por si se libera, o mirar otra unidad de la misma tipología.") : "",
+      tpWa: tu ? "https://wa.me/" + TEL + "?text=" + encodeURIComponent("Hola, quiero consultar por la unidad " + (tu.piso || "") + (tu.unidad || "") + " de La Torre (" + tu.codigo + ")") : "",
       aires: S.aires, hayAires: !!S.aires,
       airesLinea: S.aires ? S.aires.libres + " de " + S.aires.total + " unidades disponibles en la Etapa 1" : "",
       airesTipos: S.aires ? S.aires.tipos.map(function (t) { return { k: t.k, n: String(t.libres), de: t.libres === t.n ? "disponibles" : "de " + t.n }; }) : [],
@@ -914,7 +953,9 @@
       g.dataset.n = n;
     }
     function galParar() { clearTimeout(relojGal); relojGal = null; if (galActiva) { galIr(galActiva, 0); galActiva = null; } }
+    var hayMouse = matchMedia("(hover:hover)").matches;
     document.addEventListener("mouseover", function (ev) {
+      if (!hayMouse) return;
       var g = ev.target.closest && ev.target.closest(".minigal");
       if (!g || g === galActiva || g.querySelectorAll(".minigal__foto").length < 2) return;
       galParar(); galActiva = g;
@@ -1040,8 +1081,25 @@
       if (!cierre || !pie || !innerHeight) return;
       raizE.style.setProperty("--pie", pie.offsetHeight + "px");
       raizE.style.setProperty("--hoja", (cierre.offsetHeight + pie.offsetHeight) + "px");
+      /* Un bloque más alto que la pantalla (el celular) queda fijo recién cuando se leyó
+         entero: el `top` negativo lo clava con su pie al borde de abajo, y el que sigue lo tapa. */
+      document.querySelectorAll("#proyectos .bloque").forEach(function (b) { b.style.top = Math.min(0, innerHeight - b.offsetHeight) + "px"; });
     }
-    medirHoja(); setTimeout(medirHoja, 600); addEventListener("load", medirHoja);
+    medirHoja(); setTimeout(medirHoja, 600); setTimeout(medirHoja, 2500); addEventListener("load", medirHoja);
+    window.medirHoja = medirHoja;
+    /* Los videos de los emprendimientos: se cargan y arrancan al verse, se frenan al irse. */
+    (function () {
+      var vs = document.querySelectorAll("video[data-src]"); if (!vs.length || !("IntersectionObserver" in window)) return;
+      var sinMov = matchMedia("(prefers-reduced-motion:reduce)").matches;
+      var ov = new IntersectionObserver(function (es) {
+        es.forEach(function (e) {
+          var v = e.target;
+          if (e.isIntersecting) { if (!v.getAttribute("src")) { v.src = v.dataset.src; v.load(); } if (!sinMov) { var p = v.play(); if (p && p.catch) p.catch(function () {}); } }
+          else if (!v.paused) v.pause();
+        });
+      }, { threshold: 0.25 });
+      vs.forEach(function (v) { ov.observe(v); });
+    })();
     if (busc) {
       var pegado = false;
       if (lugar && "IntersectionObserver" in window) {
@@ -1115,6 +1173,7 @@
           document.documentElement.style.setProperty("--crece", k.toFixed(3));
           if (y > h * 1.2) return;
           /* Al bajar, la foto se encoge y se redondea como una tarjeta, y el rótulo se desvanece. */
+          if (innerWidth < 900) { reelEl.style.transform = ""; reelEl.style.borderRadius = ""; return; }
           reelEl.style.transform = "translate3d(" + (mx * -12).toFixed(1) + "px," + (y * 0.16 + my * -8).toFixed(1) + "px,0) scale(" + (1 - 0.07 * k).toFixed(3) + ")";
           reelEl.style.borderRadius = (k * 28).toFixed(1) + "px";
           var op = Math.max(0, 1 - y / (h * 0.55)).toFixed(3);
@@ -1170,17 +1229,18 @@
           var t = (r.top + r.height / 2 - innerHeight / 2) / innerHeight; // -1..1
           f.style.transform = "translate3d(0," + (t * -6).toFixed(2) + "%,0) scale(1.14)";
         });
-        /* Aires se apila sobre La Torre: mientras la cubre, La Torre se encoge y se oscurece. */
-        if (innerWidth >= 900) {
-          [[torreEl, airesEl], [airesEl, cierreEl]].forEach(function (par) {
-            var abajo = par[0], arriba = par[1]; if (!abajo || !arriba) return;
-            var ra = arriba.getBoundingClientRect(), rb = abajo.getBoundingClientRect();
-            var k = Math.min(1, Math.max(0, 1 - ra.top / Math.max(1, rb.height)));
-            abajo.style.transform = "scale(" + (1 - 0.06 * k).toFixed(3) + ")";
-            abajo.style.filter = "brightness(" + (1 - 0.4 * k).toFixed(3) + ")";
-            abajo.style.borderRadius = (k * 24).toFixed(1) + "px";
-          });
-        }
+        /* Aires se apila sobre La Torre, y la hoja de contacto sobre Aires: mientras lo cubre,
+           el de abajo se encoge y se oscurece. Vale en todos los anchos: en el celular el
+           bloque es más alto que la pantalla, así que se mide contra lo que se ve de él. */
+        [[torreEl, airesEl], [airesEl, cierreEl]].forEach(function (par) {
+          var abajo = par[0], arriba = par[1]; if (!abajo || !arriba) return;
+          var ra = arriba.getBoundingClientRect(), rb = abajo.getBoundingClientRect();
+          var visto = Math.max(1, Math.min(rb.height, innerHeight));
+          var k = Math.min(1, Math.max(0, (rb.bottom - ra.top) / visto));
+          abajo.style.transform = "scale(" + (1 - 0.06 * k).toFixed(3) + ")";
+          abajo.style.filter = "brightness(" + (1 - 0.4 * k).toFixed(3) + ")";
+          abajo.style.borderRadius = (k * 24).toFixed(1) + "px";
+        });
       }
       addEventListener("scroll", function () { if (enColaP) return; enColaP = true; requestAnimationFrame(function () { enColaP = false; paralaje(); }); }, { passive: true });
       paralaje();
@@ -1205,6 +1265,7 @@
     /* El reel de la portada pide un segmento ("Ver alquileres"). */
     document.addEventListener("molins:segmento", function (ev) { set({ seg: ev.detail, fTipo: "", fZona: "", fDorm: "", fPrecio: "", fTexto: "" }); });
     document.addEventListener("keydown", function (ev) {
+      if (ev.key === "Escape" && S.torrePrevia) { cerrarPrevia(); return; }
       if (ev.key === "Escape" && !S.ficha && S.vista !== "inicio") { cerrarVista(); return; }
       if (!S.ficha) return;
       if (ev.key === "Escape") { if (S.visor) cerrarVisor(); else cerrarFicha(); return; }
