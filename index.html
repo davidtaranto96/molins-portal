@@ -60,7 +60,6 @@
   .esqueleto::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.55),transparent);transform:translateX(-100%);animation:brillo 1.4s infinite}
   @keyframes brillo{to{transform:translateX(100%)}}
   /* ── la ficha ── */
-  #fichaCaja{animation:fichaEntra .32s cubic-bezier(.22,.61,.36,1) both}
   @keyframes fichaEntra{from{opacity:0;transform:translateY(16px) scale(.985)}to{opacity:1;transform:none}}
   .foto-entra > [role=img]{animation:fotoEntra .4s ease both}
   @keyframes fotoEntra{from{opacity:.35;transform:scale(1.02)}to{opacity:1;transform:none}}
@@ -73,7 +72,7 @@
   .boton:active{transform:scale(.97)}
   @media (prefers-reduced-motion:reduce){.tarjeta,.tarjeta__foto,.reco,.reco img,.fav,.chip-activo,#fichaCaja,.foto-entra > [role=img],.tilde,.esqueleto::after{animation:none!important;transition:none!important}.tarjeta:hover{transform:none}}
   /* ── la portada ── */
-  .portada{position:relative;height:min(60vh,620px);min-height:440px;background:var(--verde-noche);color:#fff;overflow:hidden}
+  .portada{position:relative;height:min(74vh,720px);min-height:480px;background:var(--verde-noche);color:#fff;overflow:hidden}
   .reel{position:absolute;inset:0;overflow:hidden}
   .reel__poster{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
   .reel__capa{position:absolute;inset:0;opacity:0;transition:opacity 1.4s ease}
@@ -235,11 +234,89 @@
   .fila-reco > .reco{flex:0 0 250px}
   .fila-reco--grilla{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));overflow:visible;scroll-snap-type:none}
   .fila-reco--grilla > .reco{flex:none}
+  /* ── la barra ── */
+  .marca{display:flex;align-items:center;gap:11px;color:var(--tinta)}
+  .marca img{width:40px;height:40px;border-radius:9px;object-fit:cover;display:block}
+  .marca span{display:flex;flex-direction:column;line-height:1.05}
+  .marca b{font-family:'Libre Caslon Text',Georgia,serif;font-size:17px;font-weight:700;letter-spacing:.01em}
+  .marca small{font-size:10px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--gris);margin-top:3px}
+  /* ── tarjetas compactas: foto, nombre y precio encima, la píldora con el detalle ── */
+  .tarjeta{background:#fff;border:1px solid var(--borde);border-radius:16px;overflow:hidden;display:flex;flex-direction:column;cursor:pointer;transition:transform .25s cubic-bezier(.22,.61,.36,1),box-shadow .25s;animation:rise .4s cubic-bezier(.22,.61,.36,1) both}
+  .tarjeta__media{position:relative;aspect-ratio:4/3;overflow:hidden;background:var(--verde-suave)}
+  .tarjeta__media::after{content:"";position:absolute;left:0;right:0;bottom:0;height:62%;background:linear-gradient(180deg,rgba(9,30,31,0),rgba(9,30,31,.78));pointer-events:none}
+  .tarjeta__sinfoto{position:absolute;inset:0;display:grid;place-items:center;font-family:monospace;font-size:12px;color:var(--tinta-suave);background:repeating-linear-gradient(45deg,var(--verde-suave),var(--verde-suave) 12px,var(--verde-palido) 12px,var(--verde-palido) 24px)}
+  .tarjeta__arriba{position:absolute;top:10px;left:10px;display:flex;gap:6px;z-index:2}
+  .tarjeta__nueva{font-size:11px;font-weight:700;padding:5px 10px;border-radius:100px;color:var(--verde-noche);background:var(--naranja);display:inline-block}
+  .tarjeta .fav{position:absolute;top:10px;right:10px;z-index:2}
+  .tarjeta__abajo{position:absolute;left:14px;right:14px;bottom:12px;z-index:2;display:flex;align-items:flex-end;justify-content:space-between;gap:10px;color:#fff}
+  .tarjeta__nombre{display:flex;flex-direction:column;min-width:0}
+  .tarjeta__nombre b{font-family:'Libre Caslon Text',Georgia,serif;font-size:17px;font-weight:700;line-height:1.2;text-shadow:0 1px 10px rgba(0,0,0,.35)}
+  .tarjeta__nombre small{font-size:11.5px;color:rgba(255,255,255,.82);margin-top:2px}
+  .tarjeta__precio{flex:none;font-family:'Libre Caslon Text',Georgia,serif;font-size:17px;font-weight:700;background:rgba(255,255,255,.94);color:var(--tinta);padding:6px 11px;border-radius:10px;line-height:1.1;display:flex;flex-direction:column;align-items:flex-end}
+  .tarjeta__precio small{font-family:'Archivo',sans-serif;font-size:10.5px;color:var(--gris);font-weight:500}
+  .tarjeta__pildora{position:absolute;left:14px;bottom:64px;z-index:2;display:inline-flex;align-items:center;max-width:34px;height:28px;border-radius:999px;background:rgba(255,255,255,.94);color:var(--tinta);overflow:hidden;transition:max-width .45s cubic-bezier(.2,.8,.2,1),background .2s}
+  .tarjeta__pildora::before{content:"i";flex:none;width:34px;text-align:center;font-family:'Libre Caslon Text',Georgia,serif;font-style:italic;font-weight:700;font-size:14px;color:var(--verde)}
+  .tarjeta__pildora-in{display:inline-flex;gap:0;white-space:nowrap;padding-right:12px;font-size:12px;font-weight:600;opacity:0;transition:opacity .25s .1s}
+  .tarjeta__pildora-in span + span::before{content:"·";margin:0 6px;color:var(--gris)}
+  .tarjeta:hover .tarjeta__pildora,.tarjeta:focus-within .tarjeta__pildora{max-width:100%}
+  .tarjeta:hover .tarjeta__pildora-in,.tarjeta:focus-within .tarjeta__pildora-in{opacity:1}
+  .tarjeta__pie{display:flex;align-items:center;gap:8px;padding:10px 12px 10px 14px;font-size:12px;color:var(--gris)}
+  .tarjeta__tipo{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .tarjeta__cuota{font-weight:600;color:var(--naranja-oscuro);background:var(--naranja-suave);padding:3px 8px;border-radius:7px;white-space:nowrap}
+  .tarjeta__nfotos{white-space:nowrap}
+  .tarjeta__wa{width:32px;height:32px;flex:none;border-radius:9px;display:grid;place-items:center;background:var(--whatsapp);color:#fff;transition:transform .15s}
+  .tarjeta__wa:hover{transform:scale(1.06);color:#fff}
+  @media (hover:none){.tarjeta__pildora{max-width:100%}.tarjeta__pildora-in{opacity:1}}
+  /* ── la ficha, a ventana completa ── */
+  .ficha{position:fixed;inset:0;z-index:500;background:#fff;display:flex;flex-direction:column;animation:fichaEntra .3s cubic-bezier(.22,.61,.36,1) both}
+  .ficha__barra{flex:none;display:flex;align-items:center;gap:12px;padding:10px clamp(14px,2.5vw,28px);border-bottom:1px solid var(--borde);background:rgba(255,255,255,.96);backdrop-filter:blur(10px);min-height:60px}
+  .ficha__barra-titulo{flex:1;min-width:0;display:flex;flex-direction:column;line-height:1.2}
+  .ficha__barra-titulo b{font-family:'Libre Caslon Text',Georgia,serif;font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .ficha__barra-titulo small{font-size:12px;color:var(--gris);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .ficha__barra-der{display:flex;align-items:center;gap:8px;flex:none}
+  .ficha__ico{width:40px;height:40px;border-radius:50%;border:1px solid var(--borde);background:#fff;color:var(--tinta);cursor:pointer;display:grid;place-items:center;transition:background .2s,transform .15s}
+  .ficha__ico:hover{background:var(--hueso-3)}.ficha__ico:active{transform:scale(.94)}
+  .ficha__ico[aria-pressed="true"]{color:var(--naranja);border-color:var(--naranja-borde);background:var(--naranja-suave)}
+  .ficha__nav{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;color:var(--gris);margin-right:6px}
+  .ficha__nav button{width:34px;height:34px;border-radius:50%;border:1px solid var(--borde);background:#fff;color:var(--verde);cursor:pointer;display:grid;place-items:center;transition:background .2s}
+  .ficha__nav button:hover{background:var(--verde-suave)}
+  .ficha__consultar{display:inline-flex;align-items:center;gap:9px;background:var(--whatsapp);color:var(--verde-noche);font-weight:600;font-size:14.5px;min-height:42px;padding:0 18px;border-radius:999px;transition:transform .15s,filter .2s}
+  .ficha__consultar:hover{filter:brightness(1.05);color:var(--verde-noche)}.ficha__consultar:active{transform:scale(.97)}
+  .ficha__scroll{flex:1;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+  .ficha__mosaico{position:relative;max-width:1180px;margin:18px auto 0;padding:0 clamp(14px,2.5vw,28px);display:grid;grid-template-columns:1.6fr 1fr 1fr;grid-template-rows:repeat(2,minmax(0,1fr));gap:8px;height:clamp(300px,54vh,560px)}
+  .ficha__mosaico > [data-si]{display:contents}
+  .mosaico__foto{position:relative;border:none;padding:0;background:var(--verde-suave);border-radius:10px;overflow:hidden;cursor:zoom-in;min-width:0;min-height:0}
+  .mosaico__foto img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .6s cubic-bezier(.22,.61,.36,1)}
+  .mosaico__foto:hover img{transform:scale(1.03)}
+  .mosaico__foto.es-grande{grid-row:1 / span 2;border-radius:16px 10px 10px 16px}
+  .mosaico__foto:nth-child(3){border-radius:10px 16px 10px 10px}.mosaico__foto:nth-child(5){border-radius:10px 10px 16px 10px}
+  .mosaico__todas{position:absolute;right:calc(clamp(14px,2.5vw,28px) + 12px);bottom:12px;display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.94);border:1px solid var(--borde);color:var(--tinta);font-weight:600;font-size:13px;padding:9px 14px;border-radius:999px;cursor:pointer;box-shadow:0 6px 18px rgba(9,30,31,.15);transition:transform .15s,background .2s}
+  .mosaico__todas:hover{background:#fff;transform:translateY(-1px)}
+  .mosaico__sinfoto{grid-column:1 / -1;grid-row:1 / -1;display:grid;place-items:center;border-radius:16px;font-family:monospace;font-size:12px;color:var(--tinta-suave);background:repeating-linear-gradient(45deg,var(--verde-suave),var(--verde-suave) 14px,var(--verde-palido) 14px,var(--verde-palido) 28px)}
+  .mosaico__estado{position:absolute;left:calc(clamp(14px,2.5vw,28px) + 12px);top:12px;font-size:11.5px;font-weight:700;color:#fff;padding:5px 11px;border-radius:100px}
+  .ficha__cuerpo{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:0 40px;padding:26px clamp(14px,2.5vw,28px) 30px;align-items:start;max-width:1180px;margin:0 auto}
+  .ficha__lado{position:sticky;top:14px}
+  .ficha__corredor-linea{max-width:1180px;margin:0 auto;padding:0 clamp(14px,2.5vw,28px) 40px;font-size:12px;color:var(--gris)}
+  @media (max-width:899px){.ficha__mosaico{grid-template-columns:1fr;grid-template-rows:1fr;height:min(62vw,420px);margin-top:0;padding:0}.mosaico__foto{border-radius:0!important}.mosaico__foto:not(.es-grande){display:none}.mosaico__foto.es-grande{grid-row:auto}.mosaico__todas{right:12px}.mosaico__estado{left:12px}.ficha__barra-der .ficha__consultar span{display:none}.ficha__barra-der .ficha__consultar{padding:0 12px}.ficha__nav span{display:none}}
+  #fichaMapa{position:relative;overflow:hidden;isolation:isolate}
+  /* el visor de fotos */
+  .visor{position:fixed;inset:0;z-index:600;background:rgba(6,18,19,.96);display:grid;grid-template-rows:1fr auto;animation:fadein .25s ease both}
+  .visor__marco{display:grid;place-items:center;padding:64px 80px 10px;min-height:0}
+  .visor__foto{max-width:100%;max-height:100%;object-fit:contain;border-radius:6px;box-shadow:0 30px 80px rgba(0,0,0,.6);animation:fotoEntra .35s ease both}
+  .visor__cerrar{position:absolute;top:14px;right:14px;width:44px;height:44px;border-radius:50%;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.08);color:#fff;cursor:pointer;display:grid;place-items:center;transition:background .2s}
+  .visor__cerrar:hover{background:rgba(255,255,255,.2)}
+  .visor__n{position:absolute;top:22px;left:20px;font-size:13px;font-weight:600;color:rgba(255,255,255,.85);letter-spacing:.06em}
+  .visor__flecha{position:absolute;top:50%;transform:translateY(-50%);width:50px;height:50px;border-radius:50%;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.08);color:#fff;cursor:pointer;display:grid;place-items:center;transition:background .2s,transform .15s}
+  .visor__flecha:hover{background:rgba(255,255,255,.2)}.visor__flecha:active{transform:translateY(-50%) scale(.94)}
+  .visor__flecha--izq{left:18px}.visor__flecha--der{right:18px}
+  .visor__tira{display:flex;gap:8px;padding:12px 16px 16px;overflow-x:auto;justify-content:safe center;scrollbar-width:thin}
+  .visor__tira button{flex:none;width:84px;height:60px;border-radius:8px;overflow:hidden;border:2px solid transparent;padding:0;background:none;cursor:pointer;opacity:.55;transition:opacity .2s,border-color .2s,transform .2s}
+  .visor__tira button img{width:100%;height:100%;object-fit:cover;display:block}
+  .visor__tira button:hover{opacity:.9}
+  .visor__tira button.es-activa{opacity:1;border-color:var(--naranja);transform:scale(1.04)}
+  @media (max-width:899px){.visor__marco{padding:60px 8px 8px}.visor__flecha{width:42px;height:42px;top:auto;bottom:96px;transform:none}.visor__flecha:active{transform:scale(.94)}.visor__tira button{width:64px;height:46px}}
   /* ── la ficha en dos columnas ── */
-  #fichaCaja{max-width:1180px}
-  .ficha__cuerpo{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:0 34px;padding:22px 26px 30px;align-items:start}
   .ficha__principal{min-width:0}
-  .ficha__lado{position:sticky;top:14px;display:flex;flex-direction:column;gap:14px}
   .ficha__nav{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:12.5px;font-weight:600;color:var(--gris)}
   .ficha__nav button{width:38px;height:38px;border-radius:50%;border:1px solid var(--borde-fuerte);background:#fff;color:var(--verde);cursor:pointer;display:grid;place-items:center;transition:background .2s,transform .15s}
   .ficha__nav button:hover{background:var(--verde-suave)}.ficha__nav button:active{transform:scale(.94)}
@@ -267,7 +344,7 @@
   .ficha__lead{font-size:16.5px;line-height:1.65;color:var(--tinta);max-width:66ch;margin:0 0 14px;font-weight:500}
   .ficha__leermas{border:none;background:none;color:var(--naranja-oscuro);font-weight:600;font-size:14px;cursor:pointer;padding:6px 0;display:inline-flex;align-items:center;gap:6px}
   .ficha__leermas::after{content:"↓"}
-  @media (max-width:999px){.ficha__cuerpo{grid-template-columns:1fr;padding:18px 18px 24px}.ficha__lado{position:static}}
+  @media (max-width:999px){.ficha__cuerpo{grid-template-columns:1fr;padding:18px 14px 24px}.ficha__lado{position:static}}
   /* ── etiqueta de sección ── */
   .etiqueta-seccion{display:inline-flex;align-items:center;gap:8px;font-size:11.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--naranja-oscuro)}
   .etiqueta-seccion::before{content:"";width:22px;height:2px;background:var(--naranja);border-radius:2px}
@@ -298,7 +375,7 @@
   .pregunta__a p{margin:0;font-size:15px;line-height:1.7;color:var(--tinta-suave);max-width:62ch}
   @media (max-width:899px){.preguntas__caja{grid-template-columns:1fr}.preguntas__intro{position:static}.pregunta summary{grid-template-columns:28px 1fr 28px;padding:15px 14px 15px 16px;font-size:16px}.pregunta__a{padding:0 16px 18px 56px}}
   /* ── contacto ── */
-  .contacto{padding:clamp(56px,7vw,100px) 0 0;margin-top:clamp(56px,7vw,100px)}
+  .contacto{padding:clamp(56px,7vw,100px) 0;margin-top:clamp(56px,7vw,100px)}
   .contacto__caja{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:0;border-radius:24px;overflow:hidden;box-shadow:0 30px 80px rgba(9,30,31,.22);background:#fff}
   .contacto__izq{background:radial-gradient(120% 90% at 100% 0%,rgba(246,101,3,.22),transparent 55%),linear-gradient(160deg,var(--verde-hondo),var(--verde-noche));color:#fff;padding:clamp(28px,4.5vw,56px)}
   .contacto__izq h2{margin:16px 0 12px;font-family:'Libre Caslon Text',Georgia,serif;font-weight:700;font-size:clamp(26px,3.2vw,38px);line-height:1.12;color:#fff}
@@ -389,7 +466,7 @@
     document.head.appendChild(cf);
   }
 </script>
-<link rel="stylesheet" href="src/estilos.css?v=20260905h">
+<link rel="stylesheet" href="src/estilos.css?v=20260905k">
 </head>
 <body>
 
@@ -422,11 +499,12 @@
 
 <!-- NAV : el logo manda -->
 <header style="position:sticky;top:0;z-index:100;background:rgba(250,249,245,.94);backdrop-filter:blur(10px);border-bottom:1px solid var(--borde)">
-  <div style="max-width:1180px;margin:0 auto;padding:0 20px;display:flex;align-items:center;justify-content:space-between;min-height:84px;gap:16px">
+  <div style="max-width:1180px;margin:0 auto;padding:0 20px;display:flex;align-items:center;justify-content:space-between;min-height:64px;gap:16px">
     <!-- Pedido de Fran (5/9): en la barra va sólo el escudo a la izquierda, el menú al
          centro, y el logo de Luis (López Propiedades) a la derecha. -->
-    <a href="#inicio" aria-label="Francisco Molins, inicio" style="display:flex;align-items:center;gap:14px;color:var(--tinta);flex:0 0 auto">
-      <img loading="lazy" src="img/logo-molins.png" alt="Escudo de Molins" style="width:52px;height:52px;border-radius:10px;object-fit:cover;display:block" />
+    <a href="#inicio" aria-label="Francisco Molins, inicio" class="marca" style="flex:0 0 auto">
+      <img src="img/logo-molins.png" alt="Escudo de Molins" width="40" height="40" />
+      <span><b>Francisco Molins</b><small>Real estate · Salta</small></span>
     </a>
     <div data-si="noEsMovil" hidden style="flex:1 1 auto;display:flex;align-items:center;justify-content:center;gap:22px">
       <nav style="display:flex;align-items:center;gap:26px">
@@ -485,12 +563,6 @@
     <div class="reel__capa reel__capa--b"></div>
     <div class="reel__velo"></div>
     <div class="reel__tinte"></div>
-  </div>
-  <div class="portada__marca">
-    <div>
-      <h1>Francisco Molins</h1>
-      <p>Real estate · Salta</p>
-    </div>
   </div>
   <div class="reel__pie" aria-live="polite">
     <span class="reel__n">01 / 09</span>
@@ -687,53 +759,33 @@
 
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:20px">
       <template data-lista="tarjetas" data-alias="p">
-        <article class="tarjeta" data-click="p.abrir" tabindex="0" role="button" data-attr-aria-label="p.aria" data-tpl-style="background:#fff;border:1px solid var(--borde);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;cursor:pointer;transition:transform .22s cubic-bezier(.22,.61,.36,1),box-shadow .22s cubic-bezier(.22,.61,.36,1);animation:rise .4s cubic-bezier(.22,.61,.36,1) both;animation-delay:{p.delay}" data-fx="fx-3">
-          <div style="position:relative;aspect-ratio:4/3;overflow:hidden;background:var(--verde-suave)">
+        <article class="tarjeta" data-click="p.abrir" tabindex="0" role="button" data-attr-aria-label="p.aria" data-tpl-style="animation-delay:{p.delay}">
+          <div class="tarjeta__media">
             <div data-si="p.foto" hidden>
               <span class="minigal" data-n="0">
                 <template data-lista="p.fotos" data-alias="f"><img class="tarjeta__foto" data-attr-class="f.clase" data-src="f.srcAhora" data-attr-data-lazy="f.src" alt="" loading="lazy" /></template>
                 <span data-si="p.variasFotos" hidden><span class="minigal__puntos"><template data-lista="p.fotos" data-alias="f"><i data-attr-class="f.punto"></i></template></span></span>
               </span>
             </div>
-            <div data-si="p.sinFoto" hidden>
-              <div style="position:absolute;inset:0;display:grid;place-items:center;background:repeating-linear-gradient(45deg,var(--verde-suave),var(--verde-suave) 12px,var(--verde-palido) 12px,var(--verde-palido) 24px)"><span style="font-family:monospace;font-size:12px;color:var(--tinta-suave)">fotos en la consulta</span></div>
-            </div>
-            <span style="position:absolute;top:11px;left:11px;display:flex;gap:6px">
+            <div data-si="p.sinFoto" hidden><div class="tarjeta__sinfoto">fotos en la consulta</div></div>
+            <span class="tarjeta__arriba">
               <span data-estilo="p.badgeEstilo"><span data-txt="p.badge"></span></span>
-              <span data-si="p.nueva" hidden><span style="font-size:11px;font-weight:700;padding:5px 10px;border-radius:100px;color:var(--verde-noche);background:var(--naranja);display:inline-block">Nueva</span></span>
+              <span data-si="p.nueva" hidden><span class="tarjeta__nueva">Nueva</span></span>
             </span>
-            <span style="position:absolute;top:11px;right:11px;font-size:11px;font-weight:600;padding:5px 10px;border-radius:100px;background:rgba(255,255,255,.92);color:var(--verde)"><span data-txt="p.operacion"></span></span>
             <button type="button" class="fav" data-click="p.guardar" data-estilo="p.favEstilo" data-attr-aria-label="p.favAria" data-attr-aria-pressed="p.esFav">
-              <svg viewBox="0 0 24 24" data-attr-fill="p.favFill" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:17px;height:17px"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8Z"></path></svg>
+              <svg viewBox="0 0 24 24" data-attr-fill="p.favFill" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8Z"></path></svg>
             </button>
-            <span data-si="p.nFotos" hidden><span style="position:absolute;bottom:10px;left:10px;font-size:11px;font-weight:600;color:#fff;background:rgba(9,30,31,.72);padding:3px 8px;border-radius:6px;display:inline-flex;align-items:center;gap:5px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px"><rect x="3" y="5" width="18" height="14" rx="2"></rect><circle cx="12" cy="12" r="3.5"></circle></svg><span data-txt="p.nFotos"></span></span></span>
-            <span style="position:absolute;bottom:10px;right:10px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:10.5px;font-weight:600;color:#fff;background:rgba(9,30,31,.72);padding:3px 8px;border-radius:6px;letter-spacing:.03em"><span data-txt="p.codigo"></span></span>
+            <span data-si="p.haySpecs" hidden><span class="tarjeta__pildora"><span class="tarjeta__pildora-in"><template data-lista="p.specs" data-alias="s"><span data-txt="s"></span></template></span></span></span>
+            <span class="tarjeta__abajo">
+              <span class="tarjeta__nombre"><b data-txt="p.titulo"></b><small data-txt="p.ubicacion"></small></span>
+              <span class="tarjeta__precio"><span data-txt="p.precioTxt"></span><small data-txt="p.precioSufijo"></small></span>
+            </span>
           </div>
-          <div style="padding:16px 17px 17px;display:flex;flex-direction:column;flex:1">
-            <span style="font-size:11.5px;font-weight:600;letter-spacing:.04em;color:var(--verde-claro);display:flex;align-items:center;gap:5px">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;flex-shrink:0"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path><circle cx="12" cy="10" r="3"></circle></svg>
-              <span data-txt="p.ubicacion"></span></span>
-            <h3 style="margin:7px 0 3px;font-family:'Libre Caslon Text',Georgia,serif;font-weight:700;font-size:18px;line-height:1.25;letter-spacing:-.005em"><span data-txt="p.titulo"></span></h3>
-            <p style="margin:0 0 13px;font-size:12.5px;color:var(--gris)"><span data-txt="p.tipoLinea"></span></p>
-            <div style="display:flex;gap:7px;flex-wrap:wrap;padding-bottom:13px;border-bottom:1px solid var(--borde);margin-bottom:13px">
-              <template data-lista="p.specs" data-alias="s">
-                <span style="display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--tinta-suave);background:var(--hueso-3);border:1px solid var(--borde-suave);padding:4px 9px;border-radius:8px"><span data-txt="s"></span></span>
-              </template>
-            </div>
-            <div style="margin-top:auto">
-              <span style="font-family:'Libre Caslon Text',Georgia,serif;font-size:23px;font-weight:700;line-height:1.1;color:var(--tinta)"><span data-txt="p.precioTxt"></span></span>
-              <span style="font-size:12.5px;color:var(--gris)"><span data-txt="p.precioSufijo"></span></span>
-              <div data-si="p.cuota" hidden>
-                <div><span style="display:inline-flex;align-items:center;gap:5px;margin-top:8px;font-size:12px;font-weight:600;color:var(--naranja-oscuro);background:var(--naranja-suave);padding:4px 10px;border-radius:7px"><span data-txt="p.cuota"></span></span></div>
-              </div>
-            </div>
-            <div style="display:flex;gap:8px;margin-top:14px;align-items:center">
-              <span style="flex:1;font-size:13.5px;font-weight:600;color:var(--verde-claro);display:inline-flex;align-items:center;gap:6px">Ver la ficha
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></span>
-              <a data-href="p.wa" target="_blank" rel="noopener" aria-label="Consultar por WhatsApp" data-click="frenarBurbuja" style="width:42px;height:42px;flex:none;background:var(--whatsapp);color:#fff;border-radius:10px;display:grid;place-items:center;transition:background .2s" data-fx="fx-4">
-                <svg viewBox="0 0 24 24" fill="currentColor" style="width:19px;height:19px"><path d="M.057 24l1.687-6.163a11.867 11.867 0 0 1-1.587-5.946C.16 5.335 5.495 0 12.05 0a11.817 11.817 0 0 1 8.413 3.488 11.824 11.824 0 0 1 3.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 0 1-5.688-1.448L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884a9.86 9.86 0 0 0 1.51 5.26l-.999 3.648 3.978-1.052z"></path></svg>
-              </a>
-            </div>
+          <div class="tarjeta__pie">
+            <span class="tarjeta__tipo" data-txt="p.tipoLinea"></span>
+            <span data-si="p.cuota" hidden><span class="tarjeta__cuota" data-txt="p.cuota"></span></span>
+            <span data-si="p.nFotos" hidden><span class="tarjeta__nfotos" data-txt="p.nFotos"></span></span>
+            <a data-href="p.wa" target="_blank" rel="noopener" aria-label="Consultar por WhatsApp" data-click="frenarBurbuja" class="tarjeta__wa"><svg viewBox="0 0 24 24" fill="currentColor" style="width:16px;height:16px"><path d="M.057 24l1.687-6.163a11.867 11.867 0 0 1-1.587-5.946C.16 5.335 5.495 0 12.05 0a11.817 11.817 0 0 1 8.413 3.488 11.824 11.824 0 0 1 3.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 0 1-5.688-1.448L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884a9.86 9.86 0 0 0 1.51 5.26l-.999 3.648 3.978-1.052z"></path></svg></a>
           </div>
         </article>
       </template>
@@ -1022,39 +1074,30 @@
 
 <!-- ══ FICHA DE PROPIEDAD ══ -->
 <div data-si="fichaAbierta" hidden>
-  <div data-click="cerrarFichaFondo" role="dialog" aria-modal="true" data-screen-label="Ficha de propiedad" style="position:fixed;inset:0;z-index:500;display:flex;align-items:center;justify-content:center;padding:clamp(0px,2vw,20px);background:rgba(9,30,31,.72);animation:fadein .2s ease both">
-    <div id="fichaCaja" style="background:#fff;border-radius:clamp(0px,2vw,20px);max-width:980px;width:100%;max-height:96vh;overflow-y:auto;position:relative;box-shadow:0 24px 60px rgba(0,0,0,.3)">
-      <button data-click="compartirFicha" aria-label="Compartir la ficha" style="position:absolute;top:12px;right:60px;z-index:6;width:40px;height:40px;border-radius:50%;border:none;background:rgba(255,255,255,.92);color:#16211F;cursor:pointer;display:grid;place-items:center;box-shadow:0 1px 2px rgba(17,60,61,.1),0 4px 14px rgba(17,60,61,.15)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></svg></button>
-      <button data-click="cerrarFicha" aria-label="Cerrar la ficha" style="position:absolute;top:12px;right:12px;z-index:6;width:40px;height:40px;border-radius:50%;border:none;background:rgba(255,255,255,.92);color:var(--tinta);cursor:pointer;display:grid;place-items:center;box-shadow:0 1px 2px rgba(17,60,61,.1),0 4px 14px rgba(17,60,61,.15)">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" style="width:17px;height:17px"><path d="M18 6 6 18M6 6l12 12"></path></svg>
-      </button>
-
-      <div style="position:relative;background:var(--verde)">
-        <div id="fichaFotoCaja" class="foto-entra" style="position:relative;width:100%;height:clamp(260px,44vh,430px);overflow:hidden;touch-action:pan-y">
-          <div data-si="mFoto" hidden>
-            <div role="img" data-attr-aria-label="mTitulo" data-tpl-style="width:100%;height:100%;background-color:var(--verde);background-image:url('{mFoto}');background-size:cover;background-position:center"></div>
-          </div>
-          <div data-si="mSinFoto" hidden>
-            <div style="position:absolute;inset:0;display:grid;place-items:center;background:repeating-linear-gradient(45deg,var(--verde-hondo),var(--verde-hondo) 14px,var(--verde-medio) 14px,var(--verde-medio) 28px)"><span style="font-family:monospace;font-size:13px;color:rgba(255,255,255,.75)">las fotos se entregan en la consulta</span></div>
-          </div>
-          <div data-si="mVariasFotos" hidden>
-            <button data-click="fotoAnterior" aria-label="Foto anterior" style="position:absolute;top:50%;left:12px;transform:translateY(-50%);width:42px;height:42px;border-radius:50%;border:none;background:rgba(255,255,255,.92);color:var(--verde);cursor:pointer;display:grid;place-items:center">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:19px;height:19px"><path d="m15 18-6-6 6-6"></path></svg></button>
-            <button data-click="fotoSiguiente" aria-label="Foto siguiente" style="position:absolute;top:50%;right:12px;transform:translateY(-50%);width:42px;height:42px;border-radius:50%;border:none;background:rgba(255,255,255,.92);color:var(--verde);cursor:pointer;display:grid;place-items:center">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:19px;height:19px"><path d="m9 18 6-6-6-6"></path></svg></button>
-            <span style="position:absolute;left:12px;bottom:12px;font-size:12px;font-weight:600;color:rgba(255,255,255,.9);background:rgba(9,30,31,.7);padding:5px 11px;border-radius:100px"><span data-txt="mFotoCuenta"></span></span>
-          </div>
-          <span data-estilo="mBadgeEstilo"><span data-txt="mBadge"></span></span>
-        </div>
-        <div data-si="mVariasFotos" hidden>
-          <div id="fichaThumbs" style="display:flex;gap:8px;padding:10px 12px;overflow-x:auto;background:var(--verde-noche);scrollbar-width:thin">
-            <template data-lista="mThumbs" data-alias="th">
-              <button data-click="th.ver" aria-label="Ver foto" data-estilo="th.estilo" data-attr-aria-current="th.activa"><span data-tpl-style="display:block;width:100%;height:100%;background-image:url('{th.src}');background-size:cover;background-position:center"></span></button>
-            </template>
-          </div>
-        </div>
+  <div class="ficha" role="dialog" aria-modal="true" data-screen-label="Ficha de propiedad">
+    <div class="ficha__barra">
+      <button type="button" class="ficha__ico" data-click="cerrarFicha" aria-label="Cerrar la ficha"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" style="width:18px;height:18px"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
+      <div class="ficha__barra-titulo"><b data-txt="mTitulo"></b><small><span data-txt="mUbicacion"></span> · <span data-txt="mPrecio"></span></small></div>
+      <div class="ficha__barra-der">
+        <span data-si="mHayNav" hidden><span class="ficha__nav">
+          <button type="button" data-click="mAnterior" aria-label="Propiedad anterior"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px"><path d="m15 18-6-6 6-6"></path></svg></button>
+          <span data-txt="mPos"></span>
+          <button type="button" data-click="mSiguiente" aria-label="Propiedad siguiente"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px"><path d="m9 18 6-6-6-6"></path></svg></button>
+        </span></span>
+        <button type="button" class="ficha__ico" data-click="compartirFicha" aria-label="Compartir la ficha"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:17px;height:17px"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"></path></svg></button>
+        <button type="button" class="ficha__ico" data-click="guardarFicha" data-attr-aria-pressed="mEsFav" data-attr-aria-label="mFavTxt"><svg viewBox="0 0 24 24" data-attr-fill="mFavFill" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8Z"></path></svg></button>
+        <a class="ficha__consultar" data-href="mWa" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor" style="width:17px;height:17px"><path d="M.057 24l1.687-6.163a11.867 11.867 0 0 1-1.587-5.946C.16 5.335 5.495 0 12.05 0a11.817 11.817 0 0 1 8.413 3.488 11.824 11.824 0 0 1 3.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 0 1-5.688-1.448L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884a9.86 9.86 0 0 0 1.51 5.26l-.999 3.648 3.978-1.052z"></path></svg><span>Consultar</span></a>
       </div>
-
+    </div>
+    <div id="fichaCaja" class="ficha__scroll">
+      <div class="ficha__mosaico" id="fichaFotoCaja">
+        <div data-si="mFoto" hidden>
+          <template data-lista="mMosaico" data-alias="m"><button type="button" data-attr-class="m.clase" data-click="m.ver" aria-label="Ver la foto en grande"><img data-src="m.src" alt="" data-attr-loading="m.carga" /></button></template>
+          <div data-si="mVariasFotos" hidden><button type="button" class="mosaico__todas" data-click="verTodas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:15px;height:15px"><rect x="3" y="5" width="18" height="14" rx="2"></rect><circle cx="12" cy="12" r="3.5"></circle></svg><span data-txt="mFotosTxt"></span></button></div>
+        </div>
+        <div data-si="mSinFoto" hidden><div class="mosaico__sinfoto">fotos en la consulta</div></div>
+        <span class="mosaico__estado" data-estilo="mBadgeEstilo"><span data-txt="mBadge"></span></span>
+      </div>
       <div class="ficha__cuerpo">
       <div class="ficha__principal">
         <span style="display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;letter-spacing:.04em;color:var(--verde-claro)">
@@ -1069,15 +1112,6 @@
         <div style="font-family:'Libre Caslon Text',Georgia,serif;font-size:clamp(27px,4vw,34px);font-weight:700;line-height:1.1;margin-top:15px"><span data-txt="mPrecio"></span> <small style="font-size:15px;color:var(--gris);font-family:'Archivo',sans-serif;font-weight:500"><span data-txt="mPrecioSufijo"></span></small></div>
         <div data-si="mCuota" hidden>
           <div><span style="display:inline-flex;align-items:center;gap:6px;margin-top:10px;font-size:12.5px;font-weight:600;color:var(--naranja-oscuro);background:var(--naranja-suave);padding:5px 11px;border-radius:7px"><span data-txt="mCuota"></span></span></div>
-        </div>
-        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:18px">
-          <a data-href="mWa" target="_blank" rel="noopener" style="background:var(--whatsapp);color:var(--verde-noche);font-weight:600;font-size:14.5px;padding:12px 20px;border-radius:10px;display:inline-flex;align-items:center;gap:9px;min-height:46px;transition:background .2s" data-fx="fx-4">
-            <svg viewBox="0 0 24 24" fill="currentColor" style="width:17px;height:17px"><path d="M.057 24l1.687-6.163a11.867 11.867 0 0 1-1.587-5.946C.16 5.335 5.495 0 12.05 0a11.817 11.817 0 0 1 8.413 3.488 11.824 11.824 0 0 1 3.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 0 1-5.688-1.448L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884a9.86 9.86 0 0 0 1.51 5.26l-.999 3.648 3.978-1.052z"></path></svg>
-            Consultar por WhatsApp</a>
-          <button type="button" data-click="guardarFicha" data-estilo="mFavEstilo" data-attr-aria-pressed="mEsFav">
-            <svg viewBox="0 0 24 24" data-attr-fill="mFavFill" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:17px;height:17px"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8Z"></path></svg>
-            <span data-txt="mFavTxt"></span></button>
-          <button data-click="dejarDatos" style="background:#fff;color:var(--verde);border:1.5px solid var(--borde-fuerte);font-weight:600;font-size:14.5px;padding:12px 20px;border-radius:10px;cursor:pointer;min-height:46px;transition:border-color .2s" data-fx="fx-5">Dejar mis datos</button>
         </div>
         <p data-estilo="mEstadoEstilo"><span data-estilo="mPuntoEstilo"></span><span data-txt="mEstadoTxt"></span></p>
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-top:22px">
@@ -1149,26 +1183,6 @@
         </div>
       </div>
       <aside class="ficha__lado">
-        <div data-si="mHayNav" hidden>
-          <div class="ficha__nav">
-            <button type="button" data-click="mAnterior" aria-label="Propiedad anterior"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px"><path d="m15 18-6-6 6-6"></path></svg></button>
-            <span><span data-txt="mPos"></span></span>
-            <button type="button" data-click="mSiguiente" aria-label="Propiedad siguiente"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px"><path d="m9 18 6-6-6-6"></path></svg></button>
-          </div>
-        </div>
-        <div data-si="noEsMovil" hidden>
-        <div class="ficha__contacto">
-          <div class="ficha__corredor">
-            <img src="img/logo-molins.png" alt="" width="44" height="44" />
-            <div><b>Francisco Molins</b><small>Corredor matriculado · CUCIS 251</small></div>
-          </div>
-          <a data-href="mWa" target="_blank" rel="noopener" class="ficha__wa">
-            <svg viewBox="0 0 24 24" fill="currentColor" style="width:18px;height:18px"><path d="M.057 24l1.687-6.163a11.867 11.867 0 0 1-1.587-5.946C.16 5.335 5.495 0 12.05 0a11.817 11.817 0 0 1 8.413 3.488 11.824 11.824 0 0 1 3.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 0 1-5.688-1.448L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884a9.86 9.86 0 0 0 1.51 5.26l-.999 3.648 3.978-1.052z"></path></svg>
-            Consultar por WhatsApp</a>
-          <button type="button" class="ficha__datos" data-click="dejarDatos">Dejar mis datos y que me llamen</button>
-          <p>Respondemos en el día. La visita se coordina con turno.</p>
-        </div>
-        </div>
         <div data-si="mHayVecinas" hidden>
           <div class="ficha__vecinas">
             <div class="ficha__vecinas-cab"><b data-txt="mVecinasTitulo"></b><button type="button" data-click="mVerZona">Ver todas →</button></div>
@@ -1182,24 +1196,34 @@
         </div>
       </aside>
       </div>
+      <p class="ficha__corredor-linea">Comercializa Francisco Molins · Corredor inmobiliario matriculado · CUCIS 251 · Grupo LPZ-Molins</p>
       <div data-si="esMovil" hidden>
         <div class="ficha-acciones">
-          <a data-href="mWa" target="_blank" rel="noopener" style="background:var(--whatsapp);color:var(--verde-noche)">
-            <svg viewBox="0 0 24 24" fill="currentColor" style="width:17px;height:17px"><path d="M.057 24l1.687-6.163a11.867 11.867 0 0 1-1.587-5.946C.16 5.335 5.495 0 12.05 0a11.817 11.817 0 0 1 8.413 3.488 11.824 11.824 0 0 1 3.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 0 1-5.688-1.448L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884a9.86 9.86 0 0 0 1.51 5.26l-.999 3.648 3.978-1.052z"></path></svg>
-            WhatsApp</a>
+          <a data-href="mWa" target="_blank" rel="noopener" style="background:var(--whatsapp);color:var(--verde-noche)"><svg viewBox="0 0 24 24" fill="currentColor" style="width:17px;height:17px"><path d="M.057 24l1.687-6.163a11.867 11.867 0 0 1-1.587-5.946C.16 5.335 5.495 0 12.05 0a11.817 11.817 0 0 1 8.413 3.488 11.824 11.824 0 0 1 3.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 0 1-5.688-1.448L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884a9.86 9.86 0 0 0 1.51 5.26l-.999 3.648 3.978-1.052z"></path></svg>Consultar por WhatsApp</a>
           <button type="button" data-click="dejarDatos" style="background:#fff;color:var(--verde);border:1.5px solid var(--borde-fuerte)">Dejar mis datos</button>
         </div>
       </div>
     </div>
+    <div data-si="mVisor" hidden>
+      <div class="visor" data-click="cerrarVisorFondo" role="dialog" aria-modal="true" aria-label="Fotos">
+        <button type="button" class="visor__cerrar" data-click="cerrarVisor" aria-label="Cerrar las fotos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" style="width:20px;height:20px"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
+        <span class="visor__n"><span data-txt="mFotoCuenta"></span></span>
+        <button type="button" class="visor__flecha visor__flecha--izq" data-click="fotoAnterior" aria-label="Foto anterior"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:22px;height:22px"><path d="m15 18-6-6 6-6"></path></svg></button>
+        <div class="visor__marco" id="visorMarco"><img class="visor__foto" data-src="mFoto" data-attr-alt="mTitulo" /></div>
+        <button type="button" class="visor__flecha visor__flecha--der" data-click="fotoSiguiente" aria-label="Foto siguiente"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:22px;height:22px"><path d="m9 18 6-6-6-6"></path></svg></button>
+        <div class="visor__tira" id="fichaThumbs"><template data-lista="mThumbs" data-alias="th"><button data-click="th.ver" aria-label="Ver foto" data-attr-class="th.clase" data-attr-aria-current="th.activa"><img data-src="th.src" alt="" loading="lazy" /></button></template></div>
+      </div>
+    </div>
   </div>
 </div>
+</div>
 
 </div>
 
 
-<script src="src/pintor.js?v=20260905h"></script>
-<script src="src/medicion.js?v=20260905h"></script>
-<script src="src/app.js?v=20260905h"></script>
-<script src="src/reel.js?v=20260905h"></script>
+<script src="src/pintor.js?v=20260905k"></script>
+<script src="src/medicion.js?v=20260905k"></script>
+<script src="src/app.js?v=20260905k"></script>
+<script src="src/reel.js?v=20260905k"></script>
 </body>
 </html>
