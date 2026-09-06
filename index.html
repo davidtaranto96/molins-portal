@@ -329,7 +329,8 @@
   @media (max-width:1279px){.barra__buscar-largo{display:none}.barra__buscar-corto{display:inline}}
   /* En la portada la marca es grande y toma parte de la barra y del hero; al bajar vuelve sola a su lugar. */
   .barra .marca{transform-origin:left center;transition:transform .55s cubic-bezier(.2,.8,.2,1)}
-  @media (min-width:900px){.barra.es-arriba .marca{transform:translate(8px,30px) scale(1.7)}}
+  @media (min-width:900px){.barra.es-arriba .marca{transform:translate(8px,30px) scale(1.7)}.barra.es-arriba .barra__nav{transform:translate(-50%,calc(-50% + 30px))}}
+  .barra__nav{transition:background .35s,border-color .35s,box-shadow .35s,transform .55s cubic-bezier(.2,.8,.2,1)}
   .barra .marca b{color:#fff;text-shadow:0 1px 10px rgba(0,0,0,.3)}.barra .marca small{color:rgba(255,255,255,.75)}
   .barra__linea{width:23px;height:2px;background:#fff;border-radius:2px;display:block;transition:background .3s}
   .barra.es-solida{background:rgba(250,249,245,.9);backdrop-filter:blur(14px) saturate(1.4);-webkit-backdrop-filter:blur(14px) saturate(1.4);border-bottom-color:var(--borde);box-shadow:0 6px 24px rgba(9,30,31,.06)}
@@ -1051,7 +1052,7 @@
     document.head.appendChild(cf);
   }
 </script>
-<link rel="stylesheet" href="src/estilos.css?v=20260906w">
+<link rel="stylesheet" href="src/estilos.css?v=20260906x">
 </head>
 <body>
 
@@ -1987,9 +1988,9 @@
 </div>
 
 
-<script src="src/pintor.js?v=20260906w"></script>
-<script src="src/medicion.js?v=20260906w"></script>
-<script src="src/app.js?v=20260906w"></script>
-<script src="src/reel.js?v=20260906w"></script>
+<script src="src/pintor.js?v=20260906x"></script>
+<script src="src/medicion.js?v=20260906x"></script>
+<script src="src/app.js?v=20260906x"></script>
+<script src="src/reel.js?v=20260906x"></script>
 </body>
 </html>
