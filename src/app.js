@@ -67,7 +67,9 @@
     favs: leerLS("molins_favs", []), recientes: leerLS("molins_vistas", []),
     bOper: "todo", bZona: "",
     menuOpen: false, ancho: 1200,
-    ficha: null, fotoN: 1, visor: false, mosaicoPaso: 0, visorZoom: false, visorFull: false, vista: "inicio", toast: "",
+    ficha: null, fotoN: 1, visor: false, mosaicoPaso: 0, visorZoom: false, visorFull: false, toast: "",
+    vista: /^#(contacto|preguntas|buscar)$/.test(location.hash) ? location.hash.slice(1) : "inicio",
+    fichaPendiente: (function () { var m = /[?&]ficha=([^&#]+)/.exec(location.search); try { return m ? decodeURIComponent(m[1]) : null; } catch (e) { return null; } })(),
     formNombre: "", formWa: "", formMail: "", formBusca: "Para vivir", formZona: "", formMensaje: "",
     formError: "", enviado: false, enviando: false, okMsg: "", ctx: "", ctxProp: null,
     calcPrecio: 75000, calcAnt: 30, calcCuotas: 60,
@@ -80,12 +82,19 @@
   function leerLS(k, def) { try { var v = JSON.parse(localStorage.getItem(k)); return Array.isArray(v) ? v : def; } catch (e) { return def; } }
   function guardarLS(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
   function esFav(c) { return S.favs.indexOf(c) >= 0; }
+  /* Un repintado que no se note: sin animaciones de entrada mientras dura. */
+  var relojSuave = null;
+  function suave(fn) {
+    var h = document.documentElement; h.classList.add("sin-entrada"); clearTimeout(relojSuave);
+    fn();
+    relojSuave = setTimeout(function () { h.classList.remove("sin-entrada"); }, 450);
+  }
   function alternarFav(c) {
     var f = S.favs.slice(), i = f.indexOf(c);
     if (i >= 0) f.splice(i, 1); else f.unshift(c);
     guardarLS("molins_favs", f);
     if (window.VISITAS) VISITAS.anotar(i >= 0 ? "quitar_guardada" : "guardar", c, c);
-    set({ favs: f, seg: S.seg === "guardadas" && !f.length ? "todo" : S.seg });
+    suave(function () { set({ favs: f, seg: S.seg === "guardadas" && !f.length ? "todo" : S.seg }); });
   }
   function anotarVista(c) {
     var r = S.recientes.filter(function (x) { return x !== c; }); r.unshift(c);
@@ -96,7 +105,7 @@
   function set(cambios) { for (var k in cambios) S[k] = cambios[k]; pintar(); }
   function pintar() {
     window.Pintor.pintar(vista());
-    var capa = !!S.ficha || S.vista === "buscar";
+    var capa = !!S.ficha || S.vista === "buscar" || !!S.fichaPendiente;
     document.documentElement.classList.toggle("con-capa", capa);
     document.body.style.overflow = (capa || S.vista !== "inicio") ? "hidden" : "";
     if (window.observarTarjetas) observarTarjetas();
@@ -115,7 +124,7 @@
     if (window.history && history.replaceState) try { history.replaceState(null, "", location.pathname + location.search); } catch (e) {}
   }
   var relojToast = null;
-  function avisar(t) { clearTimeout(relojToast); set({ toast: t }); relojToast = setTimeout(function () { set({ toast: "" }); }, 2400); }
+  function avisar(t) { clearTimeout(relojToast); suave(function () { set({ toast: t }); }); relojToast = setTimeout(function () { suave(function () { set({ toast: "" }); }); }, 2400); }
 
   /* ── formato ─────────────────────────────────────────────────────────── */
   function tidy(s) { if (!s) return s; if (s === s.toUpperCase()) s = s.toLowerCase(); return s.charAt(0).toUpperCase() + s.slice(1); }
@@ -341,7 +350,7 @@
   /* ── ficha ───────────────────────────────────────────────────────────── */
   function abrirFicha(codigo) {
     anotarVista(codigo);
-    set({ ficha: codigo, fotoN: 1, descLarga: false, visor: false, visorZoom: false, mosaicoPaso: 0 });
+    set({ ficha: codigo, fotoN: 1, descLarga: false, visor: false, visorZoom: false, mosaicoPaso: 0, fichaPendiente: null });
     girarMosaico();
     precargarFotos(codigo, 1);
     urlFicha(codigo);
@@ -435,7 +444,7 @@
     var m = /[?&]ficha=([^&#]+)/.exec(location.search);
     if (!m) return;
     var cod = decodeURIComponent(m[1]);
-    if (prop(cod)) abrirFicha(cod); else urlFicha(null);
+    if (prop(cod)) abrirFicha(cod); else { urlFicha(null); set({ fichaPendiente: null }); }
   }
   function compartir() { var p = prop(S.ficha); if (p) compartirCodigo(p.codigo, p); }
   function compartirCodigo(codigo, p) {
@@ -553,7 +562,7 @@
       { k: "alquiler", t: "Alquiler", n: nAlquiler },
       S.favs.length ? { k: "guardadas", t: "Guardadas", n: S.favs.length } : null
     ].filter(Boolean).map(function (c) {
-      return { k: c.k, t: c.t, n: c.n, activo: S.seg === c.k ? "true" : "false", estilo: S.seg === c.k ? chipOn : chipBase, elegir: function () { set({ seg: c.k }); } };
+      return { k: c.k, t: c.t, n: c.n, activo: S.seg === c.k ? "true" : "false", elegir: function () { set({ seg: c.k }); guardarBusqueda(); } };
     });
 
     var conteoZona = {};
@@ -819,9 +828,9 @@
       }),
       formZona: S.formZona, escribirZona: function (ev) { set({ formZona: ev.target.value }); },
       formMensaje: S.formMensaje, escribirMensaje: function (ev) { S.formMensaje = ev.target.value; },
-      nombreOk: S.formNombre.trim().length >= 2 ? "true" : "false",
-      waOk: /\d{6,}/.test(S.formWa.replace(/\D/g, "")) ? "true" : "false",
-      mailOk: S.formMail.trim() && S.formMail.indexOf("@") > 0 ? "true" : "false",
+      nombreOk: S.formNombre.trim().length >= 2,
+      waOk: /\d{6,}/.test(S.formWa.replace(/\D/g, "")),
+      mailOk: !!(S.formMail.trim() && S.formMail.indexOf("@") > 0),
       enviarTxt: S.enviando ? "Enviando…" : "Enviar la consulta",
       estiloCampoNombre: faltaNombre ? campoErr : campoBase,
       estiloCampoWa: faltaWa ? campoErr : campoBase,
@@ -845,6 +854,7 @@
       verGuardadas: function () { if (!S.favs.length) { avisar("Todavía no guardaste ninguna: tocá el corazón de una propiedad."); return; } set({ seg: S.seg === "guardadas" ? "todo" : "guardadas" }); },
       abrirBuscar: function () { abrirVista("buscar"); setTimeout(function () { var c = document.getElementById("fTexto2"); if (c && S.ancho > 900) c.focus(); }, 350); },
       vistaBuscar: S.vista === "buscar",
+      fichaPendiente: !!S.fichaPendiente,
       cerrarVistaFondo: function (ev) { if (ev.target === ev.currentTarget) cerrarVista(); },
       toast: !!S.toast, toastTxt: S.toast,
       fichaAbierta: !!fp,
@@ -896,6 +906,7 @@
       var fotos = g.querySelectorAll(".minigal__foto"), puntos = g.querySelectorAll(".minigal__punto");
       if (!fotos.length) return;
       n = ((n % fotos.length) + fotos.length) % fotos.length;
+      fotos.forEach(function (f, i) { f.classList.toggle("es-previa", f.classList.contains("es-activa") && i !== n); });
       fotos.forEach(function (f, i) { f.classList.toggle("es-activa", i === n); if (i === n && f.dataset.lazy && !f.getAttribute("src")) f.setAttribute("src", f.dataset.lazy); });
       puntos.forEach(function (p, i) { p.classList.toggle("es-activa", i === n); });
       g.dataset.n = n;
@@ -922,7 +933,7 @@
       if (S.ficha) cerrarFicha();
       abrirVista(a.getAttribute("href").slice(1));
     });
-    if (/^#(contacto|preguntas)$/.test(location.hash)) abrirVista(location.hash.slice(1));
+    if (/^#(contacto|preguntas|buscar)$/.test(location.hash)) abrirVista(location.hash.slice(1));
     document.addEventListener("fullscreenchange", function () { if (!document.fullscreenElement && S.visorFull) set({ visorFull: false }); });
 
     /* Las secciones de la ficha entran al aparecer dentro de su propio scroll. */
@@ -947,38 +958,39 @@
     }
     function tiraPintar() {
       if (!tiraEl || miraObj === null) { miraCola = false; return; }
-      miraX = miraX === null ? miraObj : miraX + (miraObj - miraX) * 0.32;
-      var bs = tiraEl.querySelectorAll("button"), n = bs.length, esc = new Array(n), cen = new Array(n), m = 0, mejor = Infinity;
-      for (var j = 0; j < n; j++) {
-        var r = bs[j].getBoundingClientRect();
-        /* El centro real, sin el corrimiento que ya tenga puesto. */
-        cen[j] = r.left + r.width / 2 - parseFloat(bs[j].dataset.dx || 0);
-        var d = Math.abs(miraX - cen[j]), k = d < 300 ? 0.5 + 0.5 * Math.cos(Math.PI * d / 300) : 0;
+      miraX = miraX === null ? miraObj : miraX + (miraObj - miraX) * 0.35;
+      var bs = tiraEl.querySelectorAll("button"), n = bs.length;
+      if (!n) { miraCola = false; return; }
+      var w = bs[0].offsetWidth || 98, base = new Array(n), esc = new Array(n), j;
+      for (j = 0; j < n; j++) {
+        /* El borde izquierdo sin corrimiento (el origen del escalado es abajo a la izquierda). */
+        base[j] = bs[j].getBoundingClientRect().left - parseFloat(bs[j].dataset.dx || 0);
+        var d = Math.abs(miraX - (base[j] + w / 2)), k = d < 300 ? 0.5 + 0.5 * Math.cos(Math.PI * d / 300) : 0;
         esc[j] = 1 + 0.8 * k * k;
-        if (d < mejor) { mejor = d; m = j; }
       }
-      var w = n ? (bs[0].offsetWidth || 98) : 98, dxs = new Array(n), j2, k2;
-      for (j2 = 0; j2 < n; j2++) {
-        var dx = 0;
-        if (j2 > m) { dx = (esc[m] - 1) * w / 2 + (esc[j2] - 1) * w / 2; for (k2 = m + 1; k2 < j2; k2++) dx += (esc[k2] - 1) * w; }
-        else if (j2 < m) { dx = -((esc[m] - 1) * w / 2 + (esc[j2] - 1) * w / 2); for (k2 = j2 + 1; k2 < m; k2++) dx -= (esc[k2] - 1) * w; }
-        dxs[j2] = dx;
+      /* La fila escalada se arma de izquierda a derecha, y después se corre entera para
+         que el punto que está bajo el mouse no se mueva: así el cambio de una a otra es
+         continuo, como en el Dock. */
+      var L = new Array(n); L[0] = base[0];
+      for (j = 1; j < n; j++) L[j] = L[j - 1] + w * esc[j - 1] + (base[j] - base[j - 1] - w);
+      var S;
+      if (miraX < base[0]) S = miraX;
+      else {
+        var c = 0; for (j = 0; j < n; j++) if (miraX >= base[j]) c = j;
+        var dentro = miraX - base[c];
+        S = dentro <= w ? L[c] + dentro * esc[c] : L[c] + w * esc[c] + (dentro - w);
       }
-      /* En las puntas, si la primera o la última miniatura están a la vista, nada se
-         sale de la tira: se corre todo el conjunto lo justo, como hace el Dock. */
-      if (n) {
-        var rt = tiraEl.getBoundingClientRect(), margen = 16;
-        var izq = cen[0] - w * esc[0] / 2 + dxs[0], der = cen[n - 1] + w * esc[n - 1] / 2 + dxs[n - 1];
-        var corr = 0;
-        if (cen[0] - w / 2 >= rt.left && izq < rt.left + margen) corr = rt.left + margen - izq;
-        else if (cen[n - 1] + w / 2 <= rt.right && der > rt.right - margen) corr = rt.right - margen - der;
-        if (corr) for (j2 = 0; j2 < n; j2++) dxs[j2] += corr;
-      }
-      for (j2 = 0; j2 < n; j2++) {
-        var dx = dxs[j2];
-        bs[j2].dataset.dx = dx.toFixed(2);
-        bs[j2].style.transform = "translateX(" + dx.toFixed(2) + "px) scale(" + esc[j2].toFixed(3) + ")";
-        bs[j2].style.zIndex = esc[j2] > 1.01 ? String(2 + Math.round(esc[j2] * 10)) : "";
+      var corr = miraX - S;
+      /* En las puntas, si la primera o la última están a la vista, nada se sale de la tira. */
+      var rt = tiraEl.getBoundingClientRect(), margen = 16;
+      var izq = L[0] + corr, der = L[n - 1] + w * esc[n - 1] + corr;
+      if (base[0] >= rt.left && izq < rt.left + margen) corr += rt.left + margen - izq;
+      else if (base[n - 1] + w <= rt.right && der > rt.right - margen) corr -= der - (rt.right - margen);
+      for (j = 0; j < n; j++) {
+        var dx = L[j] + corr - base[j];
+        bs[j].dataset.dx = dx.toFixed(2);
+        bs[j].style.transform = "translateX(" + dx.toFixed(2) + "px) scale(" + esc[j].toFixed(3) + ")";
+        bs[j].style.zIndex = esc[j] > 1.01 ? String(2 + Math.round(esc[j] * 10)) : "";
       }
       requestAnimationFrame(tiraPintar);
     }
