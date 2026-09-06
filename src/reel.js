@@ -182,7 +182,9 @@
         ajustarAncho(ar);
         entra.classList.add("es-visible");
         sale.classList.remove("es-visible");
-        if (seco) requestAnimationFrame(function () { entra.style.transition = ""; sale.style.transition = ""; });
+        /* El cambio seco necesita que el estilo se aplique antes de devolver la
+           transición: el rAF corre antes del recálculo y no alcanzaba. */
+        if (seco) { void entra.offsetWidth; entra.style.transition = ""; sale.style.transition = ""; }
       };
       if (esPrimera || !volar(d, ar, sale, function () { cambiar(true); })) cambiar(false);
       activa = 1 - activa;

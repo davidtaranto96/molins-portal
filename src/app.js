@@ -977,7 +977,7 @@
       for (j2 = 0; j2 < n; j2++) {
         var dx = dxs[j2];
         bs[j2].dataset.dx = dx.toFixed(2);
-        bs[j2].style.transform = "translateX(" + dx.toFixed(2) + "px) translateY(" + (-(esc[j2] - 1) * 14).toFixed(1) + "px) scale(" + esc[j2].toFixed(3) + ")";
+        bs[j2].style.transform = "translateX(" + dx.toFixed(2) + "px) scale(" + esc[j2].toFixed(3) + ")";
         bs[j2].style.zIndex = esc[j2] > 1.01 ? String(2 + Math.round(esc[j2] * 10)) : "";
       }
       requestAnimationFrame(tiraPintar);
@@ -1039,7 +1039,7 @@
       function mirarBarra() {
         var y = window.scrollY, dy = y - yAntes; yAntes = y;
         var alto = portadaEl ? portadaEl.offsetHeight : 400;
-        if (cab) cab.classList.toggle("es-solida", y > alto - (cab.offsetHeight || 64));
+        if (cab) { cab.classList.toggle("es-solida", y > alto - (cab.offsetHeight || 64)); cab.classList.toggle("es-arriba", y < 40 && !document.documentElement.classList.contains("con-capa")); }
         var proy = document.getElementById("proyectos");
         busc.classList.toggle("es-fuera", !!proy && proy.getBoundingClientRect().top < innerHeight * 0.45);
         if (quieto || y < 120) { raizH.classList.remove("es-bajando"); acum = 0; return; }
