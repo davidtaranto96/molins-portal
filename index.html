@@ -332,6 +332,16 @@
   @media (min-width:900px){.barra.es-arriba .marca{transform:translate(8px,30px) scale(1.7)}.barra.es-arriba .barra__nav{transform:translate(-50%,calc(-50% + 30px))}}
   .barra__nav{transition:background .35s,border-color .35s,box-shadow .35s,transform .55s cubic-bezier(.2,.8,.2,1)}
   .barra .marca b{color:#fff;text-shadow:0 1px 10px rgba(0,0,0,.3)}.barra .marca small{color:rgba(255,255,255,.75)}
+  /* Fran (5/9): al bajar, arriba queda sólo el escudo; el nombre vive en la portada */
+  .barra .marca span{transition:opacity .3s,transform .3s}
+  .barra:not(.es-arriba) .marca span{opacity:0;transform:translateX(-6px);pointer-events:none;position:absolute;left:-9999px}
+  /* el logo de Grupo LPZ a la derecha: verde sobre la barra sólida, blanco sobre la portada */
+  .barra__lpz{display:flex;align-items:center;transform-origin:right center;transition:transform .55s cubic-bezier(.2,.8,.2,1),opacity .3s}
+  .barra__lpz img{height:44px;width:auto;display:block;transition:filter .35s}
+  .barra:not(.es-solida) .barra__lpz img{filter:brightness(0) invert(1);opacity:.95}
+  .barra__lpz:hover{opacity:.85}
+  @media (min-width:900px){.barra.es-arriba .barra__lpz{transform:translate(-8px,30px) scale(1.55)}}
+  @media (max-width:899px){.barra__lpz img{height:40px}.barra__lpz{margin-right:2px}}
   .barra__linea{width:23px;height:2px;background:#fff;border-radius:2px;display:block;transition:background .3s}
   .barra.es-solida{background:rgba(250,249,245,.9);backdrop-filter:blur(14px) saturate(1.4);-webkit-backdrop-filter:blur(14px) saturate(1.4);border-bottom-color:var(--borde);box-shadow:0 6px 24px rgba(9,30,31,.06)}
   .barra.es-solida nav a{color:var(--tinta-suave)}.barra.es-solida nav a:hover{color:var(--tinta)}
@@ -1107,8 +1117,10 @@
 <!-- NAV : el logo manda -->
 <header class="barra">
   <div style="max-width:1400px;margin:0 auto;padding:0 20px;display:flex;align-items:center;justify-content:space-between;min-height:64px;gap:16px">
-    <!-- Pedido de Fran (5/9): en la barra va sólo el escudo a la izquierda, el menú al
-         centro, y el logo de Luis (López Propiedades) a la derecha. -->
+    <!-- Pedido de Fran (5/9, por audio): sobre la portada la marca grande dice «Francisco
+         Molins · Real estate · Salta»; al bajar queda sólo el escudo. El menú al centro y el
+         logo de Grupo LPZ (Luis) a la derecha, grande en la portada y chico al bajar, como
+         el escudo. Aplicado el 8/9. -->
     <a href="#inicio" aria-label="Francisco Molins, inicio" class="marca" style="flex:0 0 auto">
       <img src="img/logo-molins.png" alt="Escudo de Molins" width="40" height="40" />
       <span><b>Francisco Molins</b><small>Real estate · Salta</small></span>
@@ -1128,12 +1140,15 @@
         <a href="#contacto">Contacto</a>
       </nav>
     </div>
+    <div style="flex:0 0 auto;display:flex;align-items:center;gap:6px">
+      <a href="https://wa.me/5493875030113" target="_blank" rel="noopener" class="barra__lpz" aria-label="Grupo LPZ, Luis López, por WhatsApp"><img src="img/logo-lpz.png" alt="Grupo LPZ" width="731" height="900" /></a>
     <div data-si="esMovil" hidden>
       <button data-click="alternarMenu" class="barra__hamb" data-attr-aria-expanded="menuAria" aria-label="Abrir o cerrar el menú" style="background:none;border:none;cursor:pointer;padding:10px;display:flex;flex-direction:column;gap:5px">
         <span class="barra__linea"></span>
         <span class="barra__linea"></span>
         <span class="barra__linea"></span>
       </button>
+    </div>
     </div>
   </div>
 </header>
