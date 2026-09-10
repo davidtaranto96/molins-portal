@@ -1129,20 +1129,23 @@
     })();
     if (busc) {
       var pegado = false;
-      if (lugar && "IntersectionObserver" in window) {
-        new IntersectionObserver(function (es) {
-          es.forEach(function (e) {
-            /* El centinela sale por arriba cuando el buscador ya está pegado. */
-            pegado = !e.isIntersecting && e.boundingClientRect.top < 0;
-            busc.classList.toggle("es-pegado", pegado);
-            if (!pegado) busc.classList.remove("es-oculto");
-          });
-        }, { rootMargin: "-" + ((cab ? cab.offsetHeight : 0) + 40) + "px 0px 0px 0px" }).observe(lugar);
+      /* El centinela queda en el lugar de origen del buscador: cuando sube hasta la barra,
+         el buscador ya está pegado. Se mide en el mismo cuadro del scroll (antes era un
+         IntersectionObserver, que avisaba una sola vez al cruzar y, bajando despacio, lo
+         hacía con el centinela todavía por encima de cero: nunca se pegaba). */
+      function mirarPegado() {
+        if (!lugar) return;
+        var pg = lugar.getBoundingClientRect().top < (cab ? cab.offsetHeight : 64) + 20;
+        if (pg === pegado) return;
+        pegado = pg;
+        busc.classList.toggle("es-pegado", pegado);
+        if (!pegado) busc.classList.remove("es-oculto");
       }
       var yAntes = window.scrollY, acum = 0, enCola = false, portadaEl = document.querySelector(".portada");
       var raizH = document.documentElement;
       function mirarBarra() {
         var y = window.scrollY, dy = y - yAntes; yAntes = y;
+        mirarPegado();
         var alto = portadaEl ? portadaEl.offsetHeight : 400;
         if (cab) { cab.classList.toggle("es-solida", y > alto - (cab.offsetHeight || 64)); cab.classList.toggle("es-arriba", y < 40 && !document.documentElement.classList.contains("con-capa")); }
         var proy = document.getElementById("proyectos");
@@ -1259,7 +1262,8 @@
         /* Aires se apila sobre La Torre, y la hoja de contacto sobre Aires: mientras lo cubre,
            el de abajo se encoge y se oscurece. Vale en todos los anchos: en el celular el
            bloque es más alto que la pantalla, así que se mide contra lo que se ve de él. */
-        [[editorialEl, torreEl], [torreEl, airesEl], [airesEl, cierreEl]].forEach(function (par) {
+        /* Aires va primero (Fran, 10/9): La Torre se apila sobre Aires. */
+        [[editorialEl, airesEl], [airesEl, torreEl], [torreEl, cierreEl]].forEach(function (par) {
           var abajo = par[0], arriba = par[1]; if (!abajo || !arriba) return;
           var ra = arriba.getBoundingClientRect(), rb = abajo.getBoundingClientRect();
           var visto = Math.max(1, Math.min(rb.height, innerHeight));

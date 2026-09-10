@@ -204,7 +204,7 @@
   @media (prefers-reduced-motion:reduce){.editorial__sobre,.editorial__bajada{opacity:1!important;transform:none!important}.editorial__palabra{transform:none!important}.tipeo__c{opacity:1}.tipeo__cursor{display:none}}
   /* ── los bloques de La Torre y Aires ── */
   .bloque{position:relative;overflow:hidden;color:#fff;margin-top:0;isolation:isolate;transform-origin:50% 100%;will-change:transform}
-  #proyectos .bloque{position:sticky;top:0;margin-top:0}#proyectos .bloque--aires{z-index:2;box-shadow:0 -30px 80px rgba(0,0,0,.35)}
+  #proyectos .bloque{position:sticky;top:0;margin-top:0}#proyectos .bloque--torre{z-index:2;box-shadow:0 -30px 80px rgba(0,0,0,.35)}
   .bloque__fondo{position:absolute;inset:-8% 0;background-size:cover;background-position:center;transform:scale(1.14);will-change:transform;z-index:-2}
   .bloque__velo{position:absolute;inset:0;z-index:-1}
   .bloque--torre{background:var(--torre-noche)}
@@ -995,7 +995,7 @@
 
   /* ══ Ronda catorce: más apilado ══ */
   .editorial-caja{position:sticky;top:0;z-index:0;background:var(--hueso);padding-bottom:28px;transform-origin:50% 100%;will-change:transform}
-  #proyectos .bloque--torre{z-index:1}
+  #proyectos .bloque--aires{z-index:1}
   .mosaico__lugar{display:none}
   @media (max-width:899px){
     .editorial__titulo{font-size:clamp(28px,9.4vw,44px);letter-spacing:-.01em}
@@ -1062,6 +1062,33 @@
     .reel__mando{margin-top:12px}
     .buscador{margin-top:-30px}
   }
+
+  /* ── la portada de foto (Fran, 10/9): foto plena, titular y buscador al medio. El buscador
+       es el mismo flotante: nace sobre la foto y al bajar se queda pegado bajo la barra. Sube
+       con un margen negativo del centinela y devuelve el lugar con su margen de abajo. ── */
+  :root{--portada-h:max(560px,min(88svh,880px));--busc-sube:calc(var(--portada-h) * .40)}
+  .portada--foto{display:block;height:var(--portada-h);min-height:0;background:var(--verde-noche)}
+  .portada__fondo{position:absolute;inset:0;display:block;overflow:hidden}
+  .portada__fondo img{width:100%;height:100%;object-fit:cover;display:block;transform:scale(1.03);animation:portadaEntra 1.8s cubic-bezier(.2,.8,.2,1) both}
+  @keyframes portadaEntra{from{transform:scale(1.1)}to{transform:scale(1.03)}}
+  .portada__velo{position:absolute;inset:0;background:linear-gradient(180deg,rgba(9,30,31,.62) 0%,rgba(9,30,31,.3) 30%,rgba(9,30,31,.4) 62%,rgba(9,30,31,.74) 100%)}
+  .portada__centro{position:absolute;left:0;right:0;top:0;height:calc(var(--portada-h) - var(--busc-sube));display:flex;flex-direction:column;justify-content:flex-end;align-items:center;text-align:center;padding:0 20px 28px;color:#fff}
+  .portada__titulo{margin:0;font-family:'Libre Caslon Text',Georgia,serif;font-weight:400;font-size:clamp(36px,4.6vw,66px);line-height:1.02;letter-spacing:-.015em;max-width:16ch;text-wrap:balance;text-shadow:0 2px 24px rgba(0,0,0,.35);animation:rise .8s cubic-bezier(.22,.61,.36,1) .15s both}
+  .portada__sub{margin:12px 0 0;font-size:clamp(14px,1.3vw,16.5px);color:rgba(255,255,255,.9);text-shadow:0 1px 10px rgba(0,0,0,.5);animation:rise .8s cubic-bezier(.22,.61,.36,1) .28s both}
+  #buscador-lugar{margin-top:calc(-1 * var(--busc-sube))}
+  .buscador{margin-top:0;margin-bottom:calc(var(--busc-sube) - 31px)}
+  @media (max-width:899px){
+    :root{--portada-h:max(500px,min(80svh,700px));--busc-sube:calc(var(--portada-h) * .38)}
+    .portada--foto{height:var(--portada-h)}
+    .portada__titulo{font-size:clamp(30px,8.6vw,40px);max-width:14ch}
+    .buscador{margin-top:0;margin-bottom:calc(var(--busc-sube) - 27px)}
+  }
+  @media (prefers-reduced-motion:reduce){.portada__fondo img,.portada__titulo,.portada__sub{animation:none}}
+  /* los logos de Aires y La Torre en los menús de Proyectos */
+  .logo-proy{display:block;line-height:0}
+  .barra__menu-item .logo-proy img,.menu__proy .logo-proy img{width:auto;height:15px;max-width:100%;object-fit:contain;border-radius:0}
+  .logo-proy--torre{width:32px;height:36px;background:var(--torre-terracota);-webkit-mask:url(img/logo-latorre.svg) no-repeat left center/contain;mask:url(img/logo-latorre.svg) no-repeat left center/contain}
+  .barra__menu-item span,.menu__proy span{gap:5px}
 </style>
 
 <title>Francisco Molins — Real Estate · Salta</title>
@@ -1107,7 +1134,7 @@
     document.head.appendChild(cf);
   }
 </script>
-<link rel="stylesheet" href="src/estilos.css?v=20260907e">
+<link rel="stylesheet" href="src/estilos.css?v=20260910a">
 </head>
 <body>
 
@@ -1131,8 +1158,9 @@
         <span class="barra__desp">
           <a href="#proyectos" aria-haspopup="true">Proyectos<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px;margin-left:5px"><path d="m6 9 6 6 6-6"></path></svg></a>
           <div class="barra__menu"><div class="barra__menu-caja">
-            <a class="barra__menu-item" href="https://edificiolatorre.com/" target="_blank" rel="noopener"><img src="img/torre-frente.webp" alt="" loading="lazy" /><span><b>La Torre</b><small>Doce unidades en el centro · edificiolatorre.com</small></span><i>↗</i></a>
-            <a class="barra__menu-item" href="https://airesdesanlorenzo.com/" target="_blank" rel="noopener"><img src="img/aires-laguna.webp" alt="" loading="lazy" /><span><b>Aires de San Lorenzo</b><small>Dúplex, oficinas y locales · airesdesanlorenzo.com</small></span><i>↗</i></a>
+            <!-- Aires siempre primero (Fran, 10/9), y cada uno con su logo. -->
+            <a class="barra__menu-item" href="https://airesdesanlorenzo.com/" target="_blank" rel="noopener"><img src="img/aires-laguna.webp" alt="" loading="lazy" /><span><b class="logo-proy logo-proy--aires"><img src="img/logo-aires-verde.webp" alt="Aires de San Lorenzo" width="576" height="87" loading="lazy" /></b><small>Dúplex, oficinas y locales · airesdesanlorenzo.com</small></span><i>↗</i></a>
+            <a class="barra__menu-item" href="https://edificiolatorre.com/" target="_blank" rel="noopener"><img src="img/torre-frente.webp" alt="" loading="lazy" /><span><b class="logo-proy logo-proy--torre" role="img" aria-label="La Torre"></b><small>Doce unidades en el centro · edificiolatorre.com</small></span><i>↗</i></a>
             <a class="barra__menu-todo" href="#proyectos">Ver los dos en el portal →</a>
           </div></div>
         </span>
@@ -1163,8 +1191,8 @@
       <button type="button" class="menu__item" data-click="alternarMenuProy" data-attr-aria-expanded="menuProyAria" style="--i:1">Proyectos<i class="menu__chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg></i></button>
       <div data-si="menuProy" hidden>
         <div class="menu__sub">
-          <a class="menu__proy" href="https://edificiolatorre.com/" target="_blank" rel="noopener"><img src="img/torre-frente.webp" alt="" loading="lazy" /><span><b>La Torre</b><small>Doce unidades en el centro de Salta</small></span><i>↗</i></a>
-          <a class="menu__proy" href="https://airesdesanlorenzo.com/" target="_blank" rel="noopener"><img src="img/aires-laguna.webp" alt="" loading="lazy" /><span><b>Aires de San Lorenzo</b><small>Dúplex, oficinas y locales, Etapa 1</small></span><i>↗</i></a>
+          <a class="menu__proy" href="https://airesdesanlorenzo.com/" target="_blank" rel="noopener"><img src="img/aires-laguna.webp" alt="" loading="lazy" /><span><b class="logo-proy logo-proy--aires"><img src="img/logo-aires-verde.webp" alt="Aires de San Lorenzo" width="576" height="87" loading="lazy" /></b><small>Dúplex, oficinas y locales, Etapa 1</small></span><i>↗</i></a>
+          <a class="menu__proy" href="https://edificiolatorre.com/" target="_blank" rel="noopener"><img src="img/torre-frente.webp" alt="" loading="lazy" /><span><b class="logo-proy logo-proy--torre" role="img" aria-label="La Torre"></b><small>Doce unidades en el centro de Salta</small></span><i>↗</i></a>
           <a class="menu__proy-todo" href="#proyectos" data-click="cerrarMenu">Ver los dos en el portal →</a>
         </div>
       </div>
@@ -1183,36 +1211,19 @@
 
 <!-- ══ HERO A · Institucional: foto plena, marca grande abajo ══ -->
 <div data-si="heroInstitucional" hidden>
-<!-- La portada (5/9, segunda vuelta de David): las propiedades de Fran a plena calidad y con
-     el texto corrido a un costado, para que la foto mande. Sólo fotos; los videos se fueron.
-     Debajo asoman las tarjetas, y entre las dos cosas flota el buscador (src/reel.js + app.js). -->
-<section class="portada" data-screen-label="Portada">
-  <div class="portada__texto">
-  <div class="reel__pie" aria-live="polite">
-    <span class="reel__n">01 / 09</span>
-    <b class="reel__t">Casa en Vaqueros</b>
-    <span class="reel__s">Cartera propia · En venta</span>
-    <a class="reel__cta" href="?ficha=MOL-204329">Ver la ficha</a>
-    <div class="reel__mando">
-      <button type="button" class="reel__prev" aria-label="Anterior"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px"><path d="m15 18-6-6 6-6"></path></svg></button>
-      <div class="reel__puntos" role="tablist" aria-label="Diapositivas"></div>
-      <button type="button" class="reel__next" aria-label="Siguiente"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px"><path d="m9 18 6-6-6-6"></path></svg></button>
-      <button type="button" class="reel__prox-m" aria-label="Ver la siguiente propiedad"><img class="reel__prox-foto" src="img/hero-227812.webp" alt="" loading="lazy" /><span><small>Siguiente</small><b>Finca en Jardines de San Lorenzo</b></span></button>
-    </div>
+<!-- La portada (Fran, 10/9): como su web de siempre, una foto plena del estudio (la misma de
+     molinsnegociosinmobiliarios.com), el titular y el buscador al medio. Ya no pasan propiedades:
+     el carrusel quedó en el historial (src/reel.js). -->
+<section class="portada portada--foto" data-screen-label="Portada">
+  <picture class="portada__fondo">
+    <source media="(max-width:899px)" srcset="img/portada-estudio-movil.webp" />
+    <img src="img/portada-estudio.webp" alt="" width="1600" height="900" fetchpriority="high" decoding="async" />
+  </picture>
+  <div class="portada__velo"></div>
+  <div class="portada__centro">
+    <h1 class="portada__titulo">Casas, departamentos y terrenos en Salta</h1>
+    <p class="portada__sub"><span data-txt="resumenCartera"></span></p>
   </div>
-  <a class="portada__bajar" href="#propiedades" aria-label="Bajar a las propiedades"><span data-txt="resumenCartera"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px"><path d="M12 5v14M5 12l7 7 7-7"></path></svg></a>
-  </div>
-  <div id="reel" class="reel" aria-hidden="true">
-    <span class="reel__cuadro"><img src="img/hero-204329.webp" alt="" width="1520" height="1140" fetchpriority="high" class="reel__img reel__poster" /></span>
-    <div class="reel__capa reel__capa--a"></div>
-    <div class="reel__capa reel__capa--b"></div>
-    <div class="reel__velo"></div>
-  </div>
-  <button type="button" class="reel__prox" aria-label="Ver la siguiente propiedad">
-    <img class="reel__prox-foto" src="img/hero-227812.webp" alt="" loading="lazy" />
-    <span class="reel__prox-velo"></span>
-    <span class="reel__prox-txt"><small>Siguiente</small><b>Finca en Jardines de San Lorenzo</b></span>
-  </button>
 </section>
 </div>
 
@@ -1446,6 +1457,37 @@
     </div>
   </div></div>
 
+  <!-- Aires siempre primero (Fran, 10/9); La Torre se apila encima al bajar.
+       Aires: el bloque con la paleta de su web (verde hondo, crema, arena) -->
+  <article class="bloque bloque--aires" data-screen-label="Bloque Aires">
+    <div class="bloque__fondo" style="background-image:url('img/aires-laguna.webp')"></div>
+    <div class="bloque__velo"></div>
+    <div class="bloque__caja bloque__caja--inversa">
+      <div class="bloque__texto">
+        <span class="bloque__etiqueta">Etapa 1 · San Lorenzo, Salta</span>
+        <h3 class="bloque__titulo">Aires de San Lorenzo</h3>
+        <p class="bloque__bajada">Un barrio nuevo en la zona verde de Salta: dúplex, oficinas y locales alrededor de la laguna, con financiación directa del desarrollo.</p>
+        <div class="bloque__foto bloque__video bloque__video--movil"><video data-src="video/aires-duplex.mp4" poster="img/aires-conjunto.webp" muted loop playsinline preload="none" aria-label="Recorrido por los dúplex de Aires de San Lorenzo" disablepictureinpicture disableremoteplayback></video><span>El barrio · render</span></div>
+        <div data-si="hayAires" hidden>
+          <p class="bloque__dato"><span class="bloque__punto"></span><span data-txt="airesLinea"></span></p>
+          <div class="bloque__tipos">
+            <template data-lista="airesTipos" data-alias="t">
+              <a class="bloque__tipo bloque__tipo--link" href="https://airesdesanlorenzo.com/#etapa1" target="_blank" rel="noopener"><b data-txt="t.n"></b><small><span data-txt="t.k"></span> <span data-txt="t.de"></span></small><i>↗</i></a>
+            </template>
+          </div>
+        </div>
+        <div class="bloque__acciones">
+          <a class="bloque__enlace" href="https://airesdesanlorenzo.com/#etapa1" target="_blank" rel="noopener"><span>Recorrer la Etapa 1 en airesdesanlorenzo.com</span><small>El plano interactivo: elegís la unidad y consultás desde ahí</small><i>↗</i></a>
+          <button type="button" class="bloque__enlace bloque__enlace--suave" data-click="pedirPlanAires"><span>Pedir el plan de pago</span><small>Anticipo y cuotas, por WhatsApp</small><i>→</i></button>
+        </div>
+      </div>
+      <div class="bloque__galeria">
+        <div class="bloque__foto bloque__video bloque__video--esc"><video data-src="video/aires-duplex.mp4" poster="img/aires-conjunto.webp" muted loop playsinline preload="none" aria-label="Recorrido por los dúplex de Aires de San Lorenzo" disablepictureinpicture disableremoteplayback></video><span>El barrio · render</span></div>
+        <a class="bloque__foto" href="https://airesdesanlorenzo.com/#etapa1" target="_blank" rel="noopener" aria-label="Aires de San Lorenzo, los dúplex"><img src="img/aires-duplex.webp" alt="" loading="lazy" width="1400" height="788" /><span>Los dúplex · render</span></a>
+      </div>
+    </div>
+  </article>
+
   <!-- La Torre: el bloque con su paleta (terracota sobre noche, crema) -->
   <article class="bloque bloque--torre" data-screen-label="Bloque La Torre">
     <div class="bloque__fondo" style="background-image:url('img/torre-frente.webp')"></div>
@@ -1476,36 +1518,6 @@
         </div>
       </div>
       <div class="bloque__foto bloque__video bloque__video--esc"><video data-src="video/torre-render.mp4" poster="video/torre-render.jpg" muted loop playsinline preload="none" aria-label="Renders del Edificio La Torre" disablepictureinpicture disableremoteplayback></video><span>El edificio · render</span></div>
-    </div>
-  </article>
-
-  <!-- Aires: el bloque con la paleta de su web (verde hondo, crema, arena) -->
-  <article class="bloque bloque--aires" data-screen-label="Bloque Aires">
-    <div class="bloque__fondo" style="background-image:url('img/aires-laguna.webp')"></div>
-    <div class="bloque__velo"></div>
-    <div class="bloque__caja bloque__caja--inversa">
-      <div class="bloque__texto">
-        <span class="bloque__etiqueta">Etapa 1 · San Lorenzo, Salta</span>
-        <h3 class="bloque__titulo">Aires de San Lorenzo</h3>
-        <p class="bloque__bajada">Un barrio nuevo en la zona verde de Salta: dúplex, oficinas y locales alrededor de la laguna, con financiación directa del desarrollo.</p>
-        <div class="bloque__foto bloque__video bloque__video--movil"><video data-src="video/aires-duplex.mp4" poster="img/aires-conjunto.webp" muted loop playsinline preload="none" aria-label="Recorrido por los dúplex de Aires de San Lorenzo" disablepictureinpicture disableremoteplayback></video><span>El barrio · render</span></div>
-        <div data-si="hayAires" hidden>
-          <p class="bloque__dato"><span class="bloque__punto"></span><span data-txt="airesLinea"></span></p>
-          <div class="bloque__tipos">
-            <template data-lista="airesTipos" data-alias="t">
-              <a class="bloque__tipo bloque__tipo--link" href="https://airesdesanlorenzo.com/#etapa1" target="_blank" rel="noopener"><b data-txt="t.n"></b><small><span data-txt="t.k"></span> <span data-txt="t.de"></span></small><i>↗</i></a>
-            </template>
-          </div>
-        </div>
-        <div class="bloque__acciones">
-          <a class="bloque__enlace" href="https://airesdesanlorenzo.com/#etapa1" target="_blank" rel="noopener"><span>Recorrer la Etapa 1 en airesdesanlorenzo.com</span><small>El plano interactivo: elegís la unidad y consultás desde ahí</small><i>↗</i></a>
-          <button type="button" class="bloque__enlace bloque__enlace--suave" data-click="pedirPlanAires"><span>Pedir el plan de pago</span><small>Anticipo y cuotas, por WhatsApp</small><i>→</i></button>
-        </div>
-      </div>
-      <div class="bloque__galeria">
-        <div class="bloque__foto bloque__video bloque__video--esc"><video data-src="video/aires-duplex.mp4" poster="img/aires-conjunto.webp" muted loop playsinline preload="none" aria-label="Recorrido por los dúplex de Aires de San Lorenzo" disablepictureinpicture disableremoteplayback></video><span>El barrio · render</span></div>
-        <a class="bloque__foto" href="https://airesdesanlorenzo.com/#etapa1" target="_blank" rel="noopener" aria-label="Aires de San Lorenzo, los dúplex"><img src="img/aires-duplex.webp" alt="" loading="lazy" width="1400" height="788" /><span>Los dúplex · render</span></a>
-      </div>
     </div>
   </article>
 </section>
@@ -2047,9 +2059,8 @@
 </div>
 
 
-<script src="src/pintor.js?v=20260907e"></script>
-<script src="src/medicion.js?v=20260907e"></script>
-<script src="src/app.js?v=20260907e"></script>
-<script src="src/reel.js?v=20260907e"></script>
+<script src="src/pintor.js?v=20260910a"></script>
+<script src="src/medicion.js?v=20260910a"></script>
+<script src="src/app.js?v=20260910a"></script>
 </body>
 </html>
