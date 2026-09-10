@@ -1089,6 +1089,48 @@
   .barra__menu-item .logo-proy img,.menu__proy .logo-proy img{width:auto;height:15px;max-width:100%;object-fit:contain;border-radius:0}
   .logo-proy--torre{width:32px;height:36px;background:var(--torre-terracota);-webkit-mask:url(img/logo-latorre.svg) no-repeat left center/contain;mask:url(img/logo-latorre.svg) no-repeat left center/contain}
   .barra__menu-item span,.menu__proy span{gap:5px}
+  /* Contacto y Preguntas más compactos (Fran, 10/9): todo entra de un vistazo. */
+  .campo-f select{-webkit-appearance:none;appearance:none;line-height:1.2}
+  .panel .contacto__izq,.panel .contacto__form{padding:clamp(20px,2.4vw,30px)}
+  .panel .contacto__izq h2{font-size:clamp(20px,1.9vw,25px);margin:10px 0 8px}
+  .panel .contacto__izq > p{font-size:14px;margin-bottom:14px}
+  .panel .canales{gap:7px}
+  .panel .canal{grid-template-columns:36px 1fr 16px;gap:11px;padding:8px 11px;border-radius:12px}
+  .panel .canal__icono{width:36px;height:36px;border-radius:10px}
+  .panel .canal__icono svg{width:18px!important;height:18px!important}
+  .panel .canal__texto b{font-size:13.5px}.panel .canal__texto span{font-size:13px}.panel .canal__texto small{font-size:11.5px;margin-top:0}
+  .panel .contacto__matricula{margin-top:14px;font-size:11.5px}
+  .panel .contacto__form h3{font-size:19px}.panel .contacto__sub{font-size:13px;margin:2px 0 14px}
+  .panel .campo-f{margin-bottom:9px}
+  .panel .campo-f input,.panel .campo-f select,.panel .campo-f textarea{min-height:50px;padding:20px 34px 7px 13px;font-size:14.5px;border-radius:12px}
+  .panel .campo-f textarea{min-height:72px}
+  .panel .campo-f__rotulo{top:15px;font-size:13.5px}
+  .panel .campo-f input:focus ~ .campo-f__rotulo,.panel .campo-f input:not(:placeholder-shown) ~ .campo-f__rotulo,.panel .campo-f textarea:focus ~ .campo-f__rotulo,.panel .campo-f textarea:not(:placeholder-shown) ~ .campo-f__rotulo,.panel .campo-f__rotulo--fijo{top:7px;font-size:11px}
+  .panel .campo-f > .campo-f__rotulo:only-child{font-size:12.5px}
+  .panel .contacto__enviar{min-height:50px;font-size:15px}
+  @media (max-width:899px){
+    /* en el celular los campos quedan en 16px: con menos, el iPhone hace zoom al tocarlos */
+    .panel .campo-f input,.panel .campo-f select,.panel .campo-f textarea{font-size:16px;min-height:52px}
+    .panel .contacto__form{padding:16px 18px 10px}.panel .contacto__izq{padding:22px 18px 28px}
+  }
+  .panel .chips-busca{gap:6px;margin:6px 0 14px}
+  .panel .chip-busca{min-height:0;padding:7px 8px;flex-direction:row;align-items:center;gap:6px;font-size:12.5px;border-radius:12px;line-height:1.2}
+  .panel .chip-busca__ico{width:20px;height:20px;flex:none;background-size:13px;border-radius:6px}
+  .panel .chip-busca__tilde{top:-5px;right:-5px;width:16px;height:16px;box-shadow:0 2px 6px rgba(9,30,31,.2)}
+  .panel .preguntas__caja{gap:clamp(20px,3.5vw,44px)}
+  .panel .preguntas__intro h2{font-size:clamp(24px,2.5vw,32px);margin:10px 0 8px}
+  .panel .preguntas__intro p{font-size:14.5px}
+  .panel .preguntas__wa{margin-top:16px;padding:10px 14px 10px 12px}
+  .panel .preguntas__lista{gap:7px}
+  .panel .pregunta{border-radius:13px}
+  .panel .pregunta summary{grid-template-columns:26px 1fr 26px;gap:10px;padding:12px 14px;font-size:15px}
+  .panel .pregunta__n{font-size:11px}
+  .panel .pregunta__mas{width:26px;height:26px}
+  .panel .pregunta__mas::before,.panel .pregunta__mas::after{width:10px}
+  .panel .pregunta__a{padding:0 14px 14px 50px}.panel .pregunta__a p{font-size:14px;line-height:1.6}
+  /* en el panel de escritorio las tarjetas van sin ícono: con él, «Aires de San Lorenzo» ocupaba tres líneas */
+  @media (min-width:900px){.panel .chip-busca__ico{display:none}.panel .chip-busca{padding:8px 10px;min-height:44px}}
+  @media (max-width:899px){.panel .preguntas__intro h2{font-size:21px;margin:4px 0 6px}.panel .preguntas__intro p{font-size:13.5px}}
 </style>
 
 <title>Francisco Molins — Real Estate · Salta</title>
