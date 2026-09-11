@@ -1215,6 +1215,29 @@
     .tarjeta__nfotos{display:none}
     .tarjeta__wa{width:30px;height:30px;border-radius:8px}
   }
+
+  /* Menú del celular, segunda vuelta (11/9): más chico, flechas iguales, velo sin desenfoque */
+  @media (max-width:899px){
+    .menu-velo{inset:-20vh 0;background:rgba(9,30,31,.55);-webkit-backdrop-filter:none;backdrop-filter:none}
+    .menu{padding:62px 12px 12px}
+    .menu__item{box-sizing:border-box;font-size:16.5px;padding:9px 4px 9px 6px;min-height:48px}
+    .menu__chev{width:28px;height:28px;flex:none;background:var(--hueso-3);color:var(--tinta);transition:transform .3s cubic-bezier(.2,.8,.2,1),background .2s,color .2s}
+    .menu__chev svg{width:14px;height:14px}
+    .menu__chev--ir svg{transition:transform .25s cubic-bezier(.2,.8,.2,1)}
+    .menu__item:active .menu__chev{background:var(--verde);color:#fff}
+    .menu__item:active .menu__chev--ir svg{transform:translateX(2px)}
+    .menu__item:active i.menu__chev--ir{transform:none}
+    .menu__proy b{font-size:14px}.menu__proy small{font-size:11.5px}
+    .menu__proy-todo{font-size:12.5px}
+    .menu__pie{padding-top:12px;gap:7px}
+    .menu__buscar{min-height:42px;font-size:13.5px;gap:8px}
+    .menu__wa{min-height:40px;font-size:13px}
+    .menu__buscar svg,.menu__wa svg{width:15px!important;height:15px!important}
+    .menu__nota{font-size:11px}
+    .menu__proy{grid-template-columns:52px 1fr 28px}
+    .menu__proy i{width:28px;height:28px;border-radius:50%;background:var(--hueso-3);display:grid;place-items:center;font-size:13px;color:var(--tinta);transition:background .2s,color .2s}
+    .menu__proy:active i{background:var(--verde);color:#fff}
+  }
 </style>
 
 <title>Francisco Molins — Real Estate · Salta</title>
@@ -1314,7 +1337,7 @@
       <div class="menu__marca"><img loading="lazy" src="img/logo-molins.png" alt="" /><b>Francisco Molins</b></div>
     </div>
     <nav class="menu__nav">
-      <a class="menu__item" href="#propiedades" data-click="cerrarMenu" style="--i:0">Propiedades<i>→</i></a>
+      <a class="menu__item" href="#propiedades" data-click="cerrarMenu" style="--i:0">Propiedades<i class="menu__chev menu__chev--ir"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></i></a>
       <button type="button" class="menu__item" data-click="alternarMenuProy" data-attr-aria-expanded="menuProyAria" style="--i:1">Proyectos<i class="menu__chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg></i></button>
       <div data-si="menuProy" hidden>
         <div class="menu__sub">
@@ -1323,8 +1346,8 @@
           <a class="menu__proy-todo" href="#proyectos" data-click="cerrarMenu">Ver los dos en el portal →</a>
         </div>
       </div>
-      <a class="menu__item" href="#preguntas" data-click="cerrarMenu" style="--i:2">Preguntas<i>→</i></a>
-      <a class="menu__item" href="#contacto" data-click="cerrarMenu" style="--i:3">Contacto<i>→</i></a>
+      <a class="menu__item" href="#preguntas" data-click="cerrarMenu" style="--i:2">Preguntas<i class="menu__chev menu__chev--ir"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></i></a>
+      <a class="menu__item" href="#contacto" data-click="cerrarMenu" style="--i:3">Contacto<i class="menu__chev menu__chev--ir"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></i></a>
     </nav>
     <div class="menu__pie">
       <button type="button" class="menu__buscar brilla" data-click="abrirBuscar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" style="width:17px;height:17px"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>Buscar entre todas las propiedades</button>
