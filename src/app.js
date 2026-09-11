@@ -789,7 +789,7 @@
 
     var v = {
       esMovil: esMovil, noEsMovil: !esMovil,
-      menuAbierto: S.menuOpen && esMovil, menuClase: "menu" + (S.menuOpen && esMovil ? " es-abierto" : ""), menuAria: S.menuOpen && esMovil ? "true" : "false", menuCerradoAria: S.menuOpen && esMovil ? "false" : "true",
+      menuAbierto: S.menuOpen && esMovil, menuClase: "menu" + (S.menuOpen && esMovil ? " es-abierto" : ""), menuVelo: "menu-velo" + (S.menuOpen && esMovil ? " es-abierto" : ""), menuAria: S.menuOpen && esMovil ? "true" : "false", menuCerradoAria: S.menuOpen && esMovil ? "false" : "true",
       alternarMenu: function () { set({ menuOpen: !S.menuOpen }); },
       cerrarMenu: function () { set({ menuOpen: false, menuProy: false }); },
       menuProy: S.menuProy, menuProyAria: S.menuProy ? "true" : "false", alternarMenuProy: function () { set({ menuProy: !S.menuProy }); },
