@@ -1154,6 +1154,28 @@
   /* en el panel de escritorio las tarjetas van sin ícono: con él, «Aires de San Lorenzo» ocupaba tres líneas */
   @media (min-width:900px){.panel .chip-busca__ico{display:none}.panel .chip-busca{padding:8px 10px;min-height:44px}}
   @media (max-width:899px){.panel .preguntas__intro h2{font-size:21px;margin:4px 0 6px}.panel .preguntas__intro p{font-size:13.5px}}
+
+  /* Pie compacto (11/9): una fila en escritorio; en el celular sólo marca, matrícula y copyright */
+  .pie{padding:22px 0 16px}
+  .pie__fila{display:flex;align-items:center;justify-content:space-between;gap:16px 28px;padding-bottom:14px;border-bottom:1px solid rgba(255,255,255,.1)}
+  .pie__logo{gap:10px}
+  .pie__logo img{width:30px;height:30px;border-radius:7px}
+  .pie__logo b{font-size:15px}
+  .pie__logo small{font-size:7.5px;margin-top:3px}
+  .pie__links{display:flex;flex-wrap:wrap;gap:4px 22px}
+  .pie__links a{font-size:13px;color:rgba(255,255,255,.64);padding:6px 0;transition:color .2s}
+  .pie__links a:hover{color:#fff}
+  .pie__lpz img{height:32px}
+  .pie__abajo{padding-top:12px;font-size:11.5px;gap:4px 16px}
+  .pie__abajo .pie__matricula{color:var(--naranja-claro)}
+  @media (min-width:900px){.pie__fila,.pie__abajo{padding-right:84px}}
+  @media (max-width:899px){
+    .pie{padding:18px 0 80px}
+    .pie__links{display:none}
+    .pie__fila{padding-bottom:12px}
+    .pie__lpz img{height:28px}
+    .pie__abajo{flex-direction:column;align-items:flex-start;gap:3px;padding-top:10px;font-size:11px;line-height:1.45}
+  }
 </style>
 
 <title>Francisco Molins — Real Estate · Salta</title>
@@ -1924,35 +1946,24 @@
 <!-- ══ FOOTER · Molins grande, Grupo LPZ chico ══ -->
 <footer data-screen-label="Pie" class="pie">
   <div class="pie__in">
-    <div class="pie__grid">
-      <div class="pie__marca">
-        <div class="pie__logo">
-          <img loading="lazy" src="img/logo-molins.png" alt="Escudo de Molins" />
-          <div><b>MOLINS</b><small>NEGOCIOS INMOBILIARIOS</small></div>
-        </div>
-        <p>Compra, venta y alquiler de inmuebles en Salta. Cartera propia y comercialización de emprendimientos.</p>
-        <p class="pie__matricula">Grupo LPZ-Molins · CUCIS 251<br>Corredor matriculado Luis López</p>
+    <div class="pie__fila">
+      <div class="pie__logo">
+        <img loading="lazy" src="img/logo-molins.png" alt="Escudo de Molins" width="30" height="30" />
+        <div><b>MOLINS</b><small>NEGOCIOS INMOBILIARIOS</small></div>
       </div>
-      <div class="pie__col">
-        <h4>Propiedades</h4>
-        <a href="#propiedades">Toda la cartera</a>
-        <a href="https://airesdesanlorenzo.com/" target="_blank" rel="noopener">Aires de San Lorenzo</a>
-        <a href="https://edificiolatorre.com/" target="_blank" rel="noopener">Edificio La Torre</a>
-        <a href="#preguntas">Preguntas frecuentes</a>
-      </div>
-      <div class="pie__col">
-        <h4>Contacto</h4>
-        <a href="tel:+543874153669">387 415 3669</a>
-        <a href="https://wa.me/5493874153669" target="_blank" rel="noopener">WhatsApp</a>
-        <a href="https://instagram.com/molins.negociosinmobilarios" target="_blank" rel="noopener">@molins.negociosinmobilarios</a>
-        <span>20 de Febrero 1705, Of. 7 — Salta</span>
-      </div>
+      <nav class="pie__links" aria-label="Pie">
+        <a href="#propiedades">Propiedades</a>
+        <a href="https://airesdesanlorenzo.com/" target="_blank" rel="noopener">Aires</a>
+        <a href="https://edificiolatorre.com/" target="_blank" rel="noopener">La Torre</a>
+        <a href="#preguntas">Preguntas</a>
+        <a href="https://instagram.com/molins.negociosinmobilarios" target="_blank" rel="noopener">Instagram</a>
+      </nav>
+      <a href="https://wa.me/5493875030113" target="_blank" rel="noopener" aria-label="Grupo LPZ, Luis López, por WhatsApp" class="pie__lpz">
+        <img loading="lazy" src="img/logo-lpz.png" alt="Grupo LPZ" width="731" height="900" /></a>
     </div>
     <div class="pie__abajo">
-      <span>© 2026 Francisco Molins · Real Estate · Salta — CUCIS 251 · Grupo LPZ-Molins</span>
-      <a href="https://wa.me/5493875030113" target="_blank" rel="noopener" aria-label="Grupo LPZ, Luis López, por WhatsApp" class="pie__lpz">
-        <span>Grupo LPZ-Molins<br><small>Luis López · 387 503 0113</small></span>
-        <img loading="lazy" src="img/logo-lpz.png" alt="Grupo LPZ" width="731" height="900" /></a>
+      <span class="pie__matricula">Grupo LPZ-Molins · CUCIS 251 · Corredor matriculado Luis López</span>
+      <span>© 2026 Francisco Molins · 20 de Febrero 1705, Of. 7, Salta</span>
     </div>
   </div>
 </footer>
